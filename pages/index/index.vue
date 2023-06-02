@@ -1,9 +1,9 @@
 <template>
   <view class="container">
-    <view class="title">{{$t('index.demo')}}</view>
+   <!-- <view class="title">{{$t('index.demo')}}</view>
     <view class="description">{{$t('index.demo-description')}}</view>
     <view class="detail-link">{{$t('index.detail')}}: <text
-        class="link">https://uniapp.dcloud.net.cn/collocation/i18n</text></view>
+        class="link">https://uniapp.dcloud.net.cn/collocation/i18n</text></view> -->
     <view class="locale-setting">{{$t('index.language-info')}}</view>
     <view class="list-item">
       <text class="k">{{$t('index.system-language')}}:</text>
@@ -20,6 +20,7 @@
         <text class="icon-check" v-if="item.code == applicationLocale"></text>
       </view>
     </view>
+	<view style="word-break: break-all;" v-if="token">token：{{token}}</view>
   </view>
 </template>
 
@@ -28,7 +29,8 @@
     data() {
       return {
         systemLocale: '',
-        applicationLocale: ''
+        applicationLocale: '',
+		token:''
       }
     },
     computed:{
@@ -57,28 +59,42 @@
     },
     onLoad() {
       let systemInfo = uni.getSystemInfoSync();
+	  console.log(systemInfo)
       this.systemLocale = systemInfo.language;
       this.applicationLocale = uni.getLocale();
       this.isAndroid = systemInfo.platform.toLowerCase() === 'android';
       uni.onLocaleChange((e) => {
+		  console.log(e)
         this.applicationLocale = e.locale;
       })
+	  this.token = this.$store.state.token
+	  if(this.$store.state.token){
+		  console.log(this.$store.state.token)
+	  }
+
     },
+	mounted(){
+		
+	},
     methods: {
       onLocaleChange(e) {
-        if (this.isAndroid) {
-          uni.showModal({
-            content: this.$t('index.language-change-confirm'),
-            success: (res) => {
-              if (res.confirm) {
-                uni.setLocale(e.code);
-              }
-            }
-          })
-        } else {
-          uni.setLocale(e.code);
-          this.$i18n.locale = e.code;
-        }
+		  uni.setLocale(e.code);
+		  this.$i18n.locale = e.code;
+		  // this.token = this.$store.state.token
+		  // console.log(this.$store.state.token)
+        // if (this.isAndroid) {
+        //   uni.showModal({
+        //     content: this.$t('index.language-change-confirm'),
+        //     success: (res) => {
+        //       if (res.confirm) {
+        //         uni.setLocale(e.code);
+        //       }
+        //     }
+        //   })
+        // } else {
+        //   uni.setLocale(e.code);
+        //   this.$i18n.locale = e.code;
+        // }
       }
     }
   }

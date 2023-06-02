@@ -1,10 +1,11 @@
 {
-    "name" : "Armour-Lark-front",
+    "name" : "UA-Lark-H5",
     "appid" : "__UNI__8D6944B",
     "description" : "",
     "versionName" : "1.0.1",
     "versionCode" : "100",
     "transformPx" : false,
+	"locale": "en" ,
     /* 5+App特有相关 */
     "app-plus" : {
         "usingComponents" : true,
@@ -68,5 +69,8 @@
     "uniStatistics" : {
         "enable" : false
     },
-    "vueVersion" : "2"
+    "vueVersion" : "2",
+    "mp-lark" : {
+        "appid" : "cli_a4faccf706f8902f"
+    }
 }
