@@ -92,13 +92,14 @@
   }
 </script>
 
-<style>
+<style lang="scss">
+	/*每个页面公共css */
+	@import '@/uni_modules/uni-scss/index.scss';
+  // .container {
+  //   padding: 15px;
+  // }
 
-  .container {
-    padding: 15px;
-  }
-
-  button {
-    margin-bottom: 15px;
-  }
+  // button {
+  //   margin-bottom: 15px;
+  // }
 </style>

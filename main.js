@@ -23,16 +23,15 @@ const app = new Vue({
 })
 app.$mount()
 // #endif
-
-// // #ifdef VUE3
-// import { createSSRApp } from 'vue'
-// import { createI18n } from 'vue-i18n'
-// const i18n = createI18n(i18nConfig)
-// export function createApp() {
-//   const app = createSSRApp(App)
-//   app.use(i18n).use(api)
-//   return {
-//     app
-//   }
-// }
-// // #endif
+// #ifdef VUE3
+import { createSSRApp } from 'vue'
+import { createI18n } from 'vue-i18n'
+const i18n = createI18n(i18nConfig)
+export function createApp() {
+  const app = createSSRApp(App)
+  app.use(api).use(i18n)
+  return {
+    app
+  }
+}
+// #endif
