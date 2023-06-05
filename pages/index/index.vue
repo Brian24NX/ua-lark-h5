@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<div class="language">English</div>
+		<div class="language" @click="changeLanguage">English</div>
 		<image mode="center" class="bg" src="https://web-assets.dcloud.net.cn/unidoc/zh/shuijiao.jpg"></image>
 		<div class="tab">
 			<div class="tabItem" v-for="(item ,index) in tab" :key="index">
@@ -9,7 +9,7 @@
 				<text>{{item.text}}</text>
 			</div>
 		</div>
-		<div class="mask">
+		<div class="mask" v-if="languageShow">
 			<div class="langItem" v-for="(item, index) in locales" :key="index" @click="onLocaleChange(item)">
 				<image class="iconActive"
 					src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg"
@@ -36,6 +36,8 @@
     </view>
 	<view style="word-break: break-all;" v-if="token">token：{{token}}</view>
 	<uni-link href="https://uniapp.dcloud.io/" text="https://uniapp.dcloud.io/"></uni-link> -->
+
+
 	</view>
 </template>
 
@@ -46,6 +48,7 @@
 				systemLocale: '',
 				applicationLocale: '',
 				token: '',
+				languageShow:false,
 				tab: [{
 						icon: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
 						text: "My Approval"
@@ -105,6 +108,10 @@
 
 		},
 		methods: {
+			changeLanguage(){
+				uni.n
+				this.languageShow = true
+			},
 			onLocaleChange(e) {
 				uni.setLocale(e.code);
 				this.$i18n.locale = e.code;

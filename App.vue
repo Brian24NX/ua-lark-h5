@@ -94,7 +94,7 @@
 
 <style lang="scss">
 	/*每个页面公共css */
-	@import '@/uni_modules/uni-scss/index.scss';
+	@import '/wxcomponents/@vant/weapp/common/index.wxss';
   // .container {
   //   padding: 15px;
   // }
