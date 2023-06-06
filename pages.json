@@ -1,19 +1,30 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "%index.materials-application%",
-				// "navigationStyle": "custom"
-				"usingComponents":{
-					"van-button":"/wxcomponents/@vant/weapp/button/index"
-				}
-			}
-		}, 
 	{
-		"path": "pages/material/material",
+		"path": "pages/index/index",
 		"style": {
-			"navigationBarTitleText": "%index.select-material%",
+			"navigationBarTitleText": "%index.materials-application%",
+			// "navigationStyle": "custom"
+			"usingComponents":{
+				"van-button":"/wxcomponents/@vant/weapp/button/index"
+			}
+		}
+	}, 
+	{
+		"path": "pages/selectMaterial/selectMaterial",
+		"style": {
+			// "navigationBarTitleText": "%index.selectMaterial%",
+			"navigationStyle": "custom",
+			"enablePullDownRefresh": false,
+			"usingComponents":{
+				"van-button":"/wxcomponents/@vant/weapp/popup/index"
+			}
+		}
+	},
+	{
+		"path": "pages/storeList/storeList",
+		"style": {
+			"navigationBarTitleText": "%index.select-store%",
 			"enablePullDownRefresh": false
 		}
 	}, 
@@ -23,15 +34,6 @@
 				"navigationBarTitleText": "%index.select-language%",
 				"navigationStyle": "custom",
 				"enablePullDownRefresh": false
-			}
-		}, {
-			"path": "pages/selectMaterial/selectMaterial",
-			"style": {
-				"navigationBarTitleText": "%index.selectMaterial%",
-				"enablePullDownRefresh": false,
-				"usingComponents":{
-					"van-button":"/wxcomponents/@vant/weapp/popup/index"
-				}
 			}
 		}
 	],

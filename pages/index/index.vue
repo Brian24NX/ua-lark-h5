@@ -43,9 +43,6 @@
 			}
 		},
 		computed: {
-			 // i18n () {  
-				// 	      return this.$t('index')  
-				// 	    }  ,
 			tabs(){
 				return  [{
 					    index:1,

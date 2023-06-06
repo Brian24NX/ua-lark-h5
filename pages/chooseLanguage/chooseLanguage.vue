@@ -1,10 +1,6 @@
 <template>
 	<view class="container">
-		<view class="header">
-			<!-- <view class="arrow-down" @tap="back()"></view> -->
-			<image class="arrow-down" src="../../static/down-arrow.png" mode=""></image>
-			<view class="barTitle">{{this.$t('index.select-language')}}</view>
-		</view>
+	<nav-header :lang="this.$t('index.select-language')"></nav-header>
 		<div class="langItem" v-for="(item, index) in locales" :key="index" @click="onLocaleChange(item)">
 			<image class="iconActive"
 				src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg"
@@ -15,7 +11,9 @@
 </template>
 
 <script>
+   import navHeader from "../../components/header/index.vue"
 	export default {
+		components: { navHeader },
 		data() {
 			return {
 				applicationLocale: '',
@@ -45,20 +43,13 @@
 				console.log(e)
 				this.applicationLocale = e.locale;
 			})
-			// this.token = this.$store.state.token
-			// if (this.$store.state.token) {
-			// 	console.log(this.$store.state.token)
-			// }
 
 		},
 		methods: {
-			back() {
-				uni.navigateBack()
-			},
 			onLocaleChange(e) {
 				uni.setLocale(e.code);
 				this.$i18n.locale = e.code;
-				this.back()
+				uni.navigateBack()
 				// this.token = this.$store.state.token
 				// console.log(this.$store.state.token)
 				// if (this.isAndroid) {
@@ -81,36 +72,6 @@
 </script>
 
 <style lang="scss">
-	.header {
-		height: 73px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		position: relative;
-
-		.arrow-down {
-			height: 25px;
-			width: 28px;
-			display: inline-block;
-			position: absolute;
-			left: 18px;
-		}
-
-		.arrow-down::after {
-			content: "";
-			height: 18px;
-			width: 18px;
-			border-width: 2px 2px 0 0;
-			border-color: #000;
-			border-style: solid;
-			-webkit-transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
-			transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
-			position: absolute;
-			transform: rotate(136deg);
-		}
-
-	}
-
 	.container {
 		width: 100vw;
 		height: 100vh;

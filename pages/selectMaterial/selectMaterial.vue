@@ -1,53 +1,49 @@
 <template>
-	<div class="container">
-		<view class="selectStore" @click="selectStore">
-			<text>Store：广州太古里</text>
-			<view class="arrowhead" />
-		</view>
-		<view class="search">
-			<view class="search_box">
-				<image
-					src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg">
-				</image>
-				<input type="text" confirm-type="search" v-model="keyword" @confirm="searchClick(key)"
-					@input="changeInput" :placeholder="defaultKeyword" />
-				<!-- <image src="@/static/icon/del_text.png" v-show="keyword" @click="delKeyword()"></image> -->
+	<div>
+		<div class="container">
+			<nav-header :lang="this.$t('index.selectMaterial')"></nav-header>
+			<view class="selectStore" @click="selectStore">
+				<text>Store：{{store.name}}</text>
+				<view class="arrowhead" />
 			</view>
-			<!-- <view class="search_btn" @click="searchClick(key)">搜索</view> -->
-		</view>
-
-		<view class="classbox">
-			<!-- 左侧tabs -->
-			<view class="tabs">
-				<view class="tab alldisplay" :class="item.id==current?'active' :''" @click="select(item)"
-					v-for="item in tabslist" :key="item.id">{{item.name}}</view>
-			</view>
-			<!-- 右侧cont -->
-			<scroll-view scroll-y="true" style="height: 100vh;">
-				<view class="conts">
-					<view class="cont" v-for="item in contlist" :key="item.id" @click="tz(item.id,item.name,item)">
-						<image :src="item.imgUrl" mode=""></image>
-						<view class="name">{{item.name}}</view>
-					</view>
+			<view class="search">
+				<view class="search_box">
+					<image
+						src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg">
+					</image>
+					<input type="text" confirm-type="search" v-model="keyword" @confirm="searchClick(key)"
+						@input="changeInput" :placeholder="defaultKeyword" />
+					<!-- <image src="@/static/icon/del_text.png" v-show="keyword" @click="delKeyword()"></image> -->
 				</view>
-			</scroll-view>
-		</view>
+			</view>
+			<div class="tabs">
+				<div class="tab" @click="toggleTab('all')">全部</div>
+				<div class="tab" @click="toggleTab('material')">办公耗材</div>
+				<div class="tab" @click="toggleTab('furniture')">办公家具</div>
+				<div class="tab" @click="choose">更多筛选</div>
+			</div>
+			<tab-category @getMaterial='getData' :tabslist="tabslist" :contlist="contlist" keep-alive></tab-category>
+
+		</div>
 		<!-- 分类弹窗 -->
 		<category-mask v-if="categoryShow" :skuList="skuList" :categoryList="categoryList" :skuTitle="skuTitle"
 			@getSearchProd="getProd" @closeSearch="closeSearch"></category-mask>
 	</div>
-
 </template>
 <script>
 	import categoryMask from "../../components/category-mask/index.vue"
+	import navHeader from "../../components/header/index.vue"
+	import tabCategory from "../../components/tab-category/index.vue"
 	export default {
-		components: { categoryMask },
+		components: {
+			categoryMask,
+			navHeader,
+			tabCategory
+		},
 		data() {
-			// components: {
-			// 	categoryMask
-			// },
 			return {
-				categoryShow:false,
+				store: {},
+				categoryShow: false,
 				current: 1,
 				catchMove: true,
 				show: false,
@@ -92,8 +88,25 @@
 			// 	this.current =this.tabslist[0].id
 			// },500)	
 		},
+		onShow() {
+			let that = this
+			uni.$on('returnData', function(data) {
+				that.store = data
+			})
+		},
+
 		methods: {
-			closeSearch(val){
+			choose(){
+					this.categoryShow = true
+			},
+			getData(id) {
+				console.log(id)
+
+			},
+			toggleTab(tab) {
+				console.log(tab)
+			},
+			closeSearch(val) {
 				this.categoryShow = val
 			},
 			gettabslist() {
@@ -105,14 +118,9 @@
 				})
 			},
 			selectStore() {
-
-				this.categoryShow = true
-				console.log(this.categoryShow)
-			},
-			select(item) {
-				this.current = item.id
-				this.getcontlist(this.current)
-
+				uni.navigateTo({
+					url: "/pages/storeList/storeList"
+				})
 			},
 			getcontlist(id) {
 				this.$http.get('/app/goodsTypeCopy/moreListById', {
@@ -149,7 +157,7 @@
 
 <style lang="scss">
 	.container {
-		// padding: 0 20px;
+		padding: 0 20px;
 	}
 
 	.selectStore {
@@ -165,8 +173,8 @@
 		.arrowhead {
 			width: 15rpx;
 			height: 15rpx;
-			border-top: 3rpx solid #000;
-			border-right: 3rpx solid #000;
+			border-top: 4rpx solid #000;
+			border-right: 4rpx solid #000;
 			-webkit-transform: rotate(45deg);
 			transform: rotate(45deg);
 			margin-left: 10rpx;
@@ -178,63 +186,19 @@
 	}
 
 	.tabs {
-		width: 30%;
-		min-height: 100vh;
 		display: flex;
-		flex-direction: column;
-		background-color: #f2f2f2;
+font-size: 18px;
+		.tab:not(:last-child) {
+			margin-right: 20px;
+		}
 	}
 
-	.tab {
-		width: 100%;
-		height: 80rpx;
-	}
-
-	.conts {
-		width: 100%;
-		min-height: 10vh;
-		padding: 26rpx;
-		box-sizing: border-box;
-		font-size: 20rpx;
-		display: flex;
-		flex-wrap: wrap;
-	}
-
-	.active {
-		background: #fff;
-	}
-
-	.cont {
-		width: 150rpx;
-		height: 200rpx;
-		margin: 0 20rpx 60rpx 0;
-	}
-
-	.cont image {
-		width: 150rpx;
-		height: 160rpx;
-	}
-
-	.classbox {
-		display: flex;
-	}
-
-	.name {
-		font-size: 26rpx;
-		text-align: center;
-	}
 
 	.search {
 		display: flex;
 		align-items: center;
 		background-color: #f7f7f7;
 		font-size: 26rpx;
-
-		// & > image {
-		// 	width: 18rpx;
-		// 	height: 31rpx;
-		// 	margin-left: 53rpx;
-		// }
 		.search_box {
 			display: flex;
 			align-items: center;
