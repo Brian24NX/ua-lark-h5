@@ -1,24 +1,17 @@
 <template>
 	<view class="container">
-		<div class="language" @click="changeLanguage">English</div>
+		<div class="language" @click="changeLanguage">{{this.$t('index.language')}}</div>
 		<image mode="center" class="bg" src="https://web-assets.dcloud.net.cn/unidoc/zh/shuijiao.jpg"></image>
 		<div class="tab">
-			<div class="tabItem" v-for="(item ,index) in tab" :key="index">
+			<div class="tabItem" v-for="(item ,index) in tabs" :key="index" @click="choosePage(item.index)">
 				<div class="num">1</div>
 				<image class="iconImage" :src="item.icon" mode=""></image>
 				<text>{{item.text}}</text>
 			</div>
 		</div>
-		<div class="mask" v-if="languageShow">
-			<div class="langItem" v-for="(item, index) in locales" :key="index" @click="onLocaleChange(item)">
-				<image class="iconActive"
-					src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg"
-					mode="" v-if="item.code == applicationLocale"></image>
-				<text>{{item.text}}</text>
-			</div>
-		</div>
-
-		<!--    <view class="locale-setting">{{$t('index.language-info')}}</view>
+			
+<!-- 
+		   <view class="locale-setting">{{$t('index.language-info')}}</view>
     <view class="list-item">
       <text class="k">{{$t('index.system-language')}}:</text>
       <text class="v">{{systemLocale}}</text>
@@ -35,9 +28,8 @@
       </view>
     </view>
 	<view style="word-break: break-all;" v-if="token">token：{{token}}</view>
-	<uni-link href="https://uniapp.dcloud.io/" text="https://uniapp.dcloud.io/"></uni-link> -->
-
-
+	<uni-link href="https://uniapp.dcloud.io/" text="https://uniapp.dcloud.io/"></uni-link>
+ -->
 	</view>
 </template>
 
@@ -48,69 +40,83 @@
 				systemLocale: '',
 				applicationLocale: '',
 				token: '',
-				languageShow:false,
-				tab: [{
-						icon: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
-						text: "My Approval"
-					},
-					{
-						icon: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
-						text: "My Application"
-					},
-					{
-						icon: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
-						text: "New Application"
-					}
-				]
 			}
 		},
 		computed: {
-			locales() {
-				return [{
-						text: this.$t('locale.auto'),
-						code: 'auto'
-					}, {
-						text: this.$t('locale.en'),
-						code: 'en'
+			 // i18n () {  
+				// 	      return this.$t('index')  
+				// 	    }  ,
+			tabs(){
+				return  [{
+					    index:1,
+						icon: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
+						text: this.$t('index.my-approval'),
 					},
-					{
-						text: this.$t('locale.zh-hans'),
-						code: 'zh-Hans'
+					{   index:2,
+						icon: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
+						text: this.$t('index.my-application'),
 					},
-					{
-						text: this.$t('locale.zh-hant'),
-						code: 'zh-Hant'
-					},
-					{
-						text: this.$t('locale.ja'),
-						code: 'ja'
+					{   index:3,
+						icon: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
+					    text: this.$t('index.new-application'),
 					}
 				]
 			}
+			// locales() {
+			// 	return [{
+			// 			text: this.$t('locale.auto'),
+			// 			code: 'auto'
+			// 		}, {
+			// 			text: this.$t('locale.en'),
+			// 			code: 'en'
+			// 		},
+			// 		{
+			// 			text: this.$t('locale.zh-hans'),
+			// 			code: 'zh-Hans'
+			// 		},
+			// 		{
+			// 			text: this.$t('locale.zh-hant'),
+			// 			code: 'zh-Hant'
+			// 		},
+			// 		{
+			// 			text: this.$t('locale.ja'),
+			// 			code: 'ja'
+			// 		}
+			// 	]
+			// }
 		},
 		onLoad() {
-			let systemInfo = uni.getSystemInfoSync();
-			console.log(systemInfo)
-			this.systemLocale = systemInfo.language;
-			this.applicationLocale = uni.getLocale();
-			this.isAndroid = systemInfo.platform.toLowerCase() === 'android';
-			uni.onLocaleChange((e) => {
-				console.log(e)
-				this.applicationLocale = e.locale;
-			})
-			this.token = this.$store.state.token
-			if (this.$store.state.token) {
-				console.log(this.$store.state.token)
-			}
+			// let systemInfo = uni.getSystemInfoSync();
+			// console.log(systemInfo)
+			// this.systemLocale = systemInfo.language;
+			// this.applicationLocale = uni.getLocale();
+			// this.isAndroid = systemInfo.platform.toLowerCase() === 'android';
+			// uni.onLocaleChange((e) => {
+			// 	console.log(e)
+			// 	this.applicationLocale = e.locale;
+			// })
+			// this.token = this.$store.state.token
+			// if (this.$store.state.token) {
+			// 	console.log(this.$store.state.token)
+			// }
 
 		},
 		mounted() {
 
 		},
 		methods: {
+			choosePage(index){
+				console.log(index)
+				if(index==3){
+					uni.navigateTo({
+						url:"/pages/selectMaterial/selectMaterial"
+					})
+				}
+			},
 			changeLanguage(){
-				uni.n
-				this.languageShow = true
+				uni.navigateTo({
+					url:"/pages/chooseLanguage/chooseLanguage"
+				})
 			},
 			onLocaleChange(e) {
 				uni.setLocale(e.code);
@@ -193,89 +199,69 @@
 
 	}
 
-	.mask {
-		width: 100vw;
-		height: 100vh;
-		background-color: #fff;
-		position: absolute;
-		top: 0;
 
-		.langItem {
-			padding: 20px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
 
-		.iconActive {
-			width: 60px;
-			height: 60px;
-			position: absolute;
-			left: 20%;
-		}
-	}
+	// .title {
+	// 	font-size: 16px;
+	// 	font-weight: bold;
+	// 	margin-bottom: 15px;
+	// }
 
-	.title {
-		font-size: 16px;
-		font-weight: bold;
-		margin-bottom: 15px;
-	}
+	// .description {
+	// 	font-size: 14px;
+	// 	opacity: 0.6;
+	// 	margin-bottom: 15px;
+	// }
 
-	.description {
-		font-size: 14px;
-		opacity: 0.6;
-		margin-bottom: 15px;
-	}
+	// .detail-link {
+	// 	font-size: 14px;
+	// 	word-break: break-all;
+	// }
 
-	.detail-link {
-		font-size: 14px;
-		word-break: break-all;
-	}
+	// .link {
+	// 	color: #007AFF;
+	// 	margin-left: 10px;
+	// }
 
-	.link {
-		color: #007AFF;
-		margin-left: 10px;
-	}
+	// .locale-setting {
+	// 	font-size: 16px;
+	// 	font-weight: bold;
+	// 	margin-top: 25px;
+	// 	margin-bottom: 5px;
+	// 	padding-bottom: 5px;
+	// 	border-bottom: 1px solid #f0f0f0;
+	// }
 
-	.locale-setting {
-		font-size: 16px;
-		font-weight: bold;
-		margin-top: 25px;
-		margin-bottom: 5px;
-		padding-bottom: 5px;
-		border-bottom: 1px solid #f0f0f0;
-	}
+	// .list-item {
+	// 	font-size: 14px;
+	// 	padding: 10px 0;
+	// }
 
-	.list-item {
-		font-size: 14px;
-		padding: 10px 0;
-	}
+	// .list-item .v {
+	// 	margin-left: 5px;
+	// }
 
-	.list-item .v {
-		margin-left: 5px;
-	}
+	// .locale-item {
+	// 	display: flex;
+	// 	flex-direction: row;
+	// 	padding: 10px 0;
+	// }
 
-	.locale-item {
-		display: flex;
-		flex-direction: row;
-		padding: 10px 0;
-	}
+	// .locale-item .text {
+	// 	flex: 1;
+	// }
 
-	.locale-item .text {
-		flex: 1;
-	}
-
-	.icon-check {
-		margin-right: 5px;
-		border: 2px solid #007aff;
-		border-left: 0;
-		border-top: 0;
-		height: 12px;
-		width: 6px;
-		transform-origin: center;
-		/* #ifndef APP-NVUE */
-		transition: all 0.3s;
-		/* #endif */
-		transform: rotate(45deg);
-	}
+	// .icon-check {
+	// 	margin-right: 5px;
+	// 	border: 2px solid #007aff;
+	// 	border-left: 0;
+	// 	border-top: 0;
+	// 	height: 12px;
+	// 	width: 6px;
+	// 	transform-origin: center;
+	// 	/* #ifndef APP-NVUE */
+	// 	transition: all 0.3s;
+	// 	/* #endif */
+	// 	transform: rotate(45deg);
+	// }
 </style>

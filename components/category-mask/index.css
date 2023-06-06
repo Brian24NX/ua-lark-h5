@@ -1,0 +1,84 @@
+.category-mask {
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.4);
+	position: fixed;
+	top: 0;
+    z-index: 99;
+}
+
+.category {
+	width: 90vw;
+	height: 100%;
+	position: fixed;
+	right: 0;
+	top: 0;
+	background-color: white;
+	border-radius: 16rpx 0px 0px 0px;
+    z-index: 999;
+    overflow: scroll;
+}
+
+.category .close {
+	width: 32rpx;
+	height: 32rpx;
+	position: absolute;
+	top: 40rpx;
+	left: 40rpx;
+}
+.category .btns{
+display: flex;
+    margin: calc(120rpx + env(safe-area-inset-bottom)) 46rpx calc(120rpx + env(safe-area-inset-bottom));
+    justify-content: space-between;
+    width: -webkit-fill-available;
+ /*   position: absolute;
+    bottom: calc(120rpx + env(safe-area-inset-bottom)); */
+}
+.category .btns view{
+   width: calc(calc(100% - 38rpx) /2);
+    line-height: 80rpx;
+    text-align: center;
+	border-radius: 40rpx;
+}
+.category .btns view.cancel{
+	border: 1px solid #111;
+	color: #111;
+}
+.category .btns view.complate{
+background-color: #161A49;
+	color: #fff;
+}
+.instructions {
+	margin: 122rpx 0 40rpx 40rpx;
+	    font-weight: 600;
+	    color: #111111;
+	    line-height: 36rpx;
+	    font-size: 32rpx;
+}
+
+.category-main {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin: 0 40rpx;
+}
+
+.category-item {
+	width: calc(calc(100% - 28rpx) / 2);
+	height: 76rpx;
+	color: #333333;
+	font-size: 24rpx;
+	background-color: #fff;
+	text-align: center;
+	line-height: 76rpx;
+	margin-bottom: 20rpx;
+	border-radius: 4rpx;
+	border: 2rpx solid #DDDDDD;
+}
+
+.category-item.active {
+	color: #fff;
+	background-color: #161A49;
+	border: 2rpx solid #DDDDDD;
+	border-radius: 4rpx;
+}

@@ -1,14 +1,21 @@
 <template>
-	<div>
+	<div class="container">
+		<view class="selectStore" @click="selectStore">
+			<text>Store：广州太古里</text>
+			<view class="arrowhead" />
+		</view>
 		<view class="search">
 			<view class="search_box">
-				<!-- <image src="@/static/icon/search.png"></image> -->
+				<image
+					src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg">
+				</image>
 				<input type="text" confirm-type="search" v-model="keyword" @confirm="searchClick(key)"
 					@input="changeInput" :placeholder="defaultKeyword" />
-				<image src="@/static/icon/del_text.png" v-show="keyword" @click="delKeyword()"></image>
+				<!-- <image src="@/static/icon/del_text.png" v-show="keyword" @click="delKeyword()"></image> -->
 			</view>
 			<!-- <view class="search_btn" @click="searchClick(key)">搜索</view> -->
 		</view>
+
 		<view class="classbox">
 			<!-- 左侧tabs -->
 			<view class="tabs">
@@ -25,15 +32,25 @@
 				</view>
 			</scroll-view>
 		</view>
+		<!-- 分类弹窗 -->
+		<category-mask v-if="categoryShow" :skuList="skuList" :categoryList="categoryList" :skuTitle="skuTitle"
+			@getSearchProd="getProd" @closeSearch="closeSearch"></category-mask>
 	</div>
 
 </template>
-
 <script>
+	import categoryMask from "../../components/category-mask/index.vue"
 	export default {
+		components: { categoryMask },
 		data() {
+			// components: {
+			// 	categoryMask
+			// },
 			return {
+				categoryShow:false,
 				current: 1,
+				catchMove: true,
+				show: false,
 				tabslist: [{
 					id: 1,
 					name: '家具'
@@ -42,12 +59,30 @@
 					name: '文具'
 				}],
 				contlist: [{
-					imgUrl: "https://image.baidu.com/search/detail?ct=503316480&z=0&ipn=d&word=%E5%9C%A8%E7%BA%BF%E5%9B%BE%E7%89%87&hs=0&pn=7&spn=0&di=7214885350303334401&pi=0&rn=1&tn=baiduimagedetail&is=0%2C0&ie=utf-8&oe=utf-8&cl=2&lm=-1&cs=675529237%2C3463061695&os=1748749636%2C1166520889&simid=675529237%2C3463061695&adpicid=0&lpn=0&ln=30&fr=ala&fm=&sme=&cg=&bdtype=0&oriquery=%E5%9C%A8%E7%BA%BF%E5%9B%BE%E7%89%87&objurl=https%3A%2F%2Fimg.tuguaishou.com%2Fips_templ_preview%2Feb%2F97%2F52%2Flg_4456220_1627664430_6104302eacabc.jpg!w1024_w%3Fauth_key%3D2288152006-0-0-a59502876ce313d748225d27cd3693d8&fromurl=ippr_z2C%24qAzdH3FAzdH3Fb8brf_z%26e3Bv54AzdH3FrtvAzdH3F99cmdda_z%26e3Bip4s&gsm=&islist=&querylist=&dyTabStr=MCwzLDEsNiw0LDUsNyw4LDIsOQ%3D%3D",
+					imgUrl: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
 					name: "家具"
 				}, {
-					imgUrl: "https://image.baidu.com/search/detail?ct=503316480&z=0&ipn=d&word=%E5%9C%A8%E7%BA%BF%E5%9B%BE%E7%89%87&hs=0&pn=7&spn=0&di=7214885350303334401&pi=0&rn=1&tn=baiduimagedetail&is=0%2C0&ie=utf-8&oe=utf-8&cl=2&lm=-1&cs=675529237%2C3463061695&os=1748749636%2C1166520889&simid=675529237%2C3463061695&adpicid=0&lpn=0&ln=30&fr=ala&fm=&sme=&cg=&bdtype=0&oriquery=%E5%9C%A8%E7%BA%BF%E5%9B%BE%E7%89%87&objurl=https%3A%2F%2Fimg.tuguaishou.com%2Fips_templ_preview%2Feb%2F97%2F52%2Flg_4456220_1627664430_6104302eacabc.jpg!w1024_w%3Fauth_key%3D2288152006-0-0-a59502876ce313d748225d27cd3693d8&fromurl=ippr_z2C%24qAzdH3FAzdH3Fb8brf_z%26e3Bv54AzdH3FrtvAzdH3F99cmdda_z%26e3Bip4s&gsm=&islist=&querylist=&dyTabStr=MCwzLDEsNiw0LDUsNyw4LDIsOQ%3D%3D",
+					imgUrl: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
 					name: "家具"
 				}],
+				categoryList: [{
+						categoryName: "办公耗材",
+						isChoose: true
+					},
+					{
+						categoryName: "办公家具",
+						isChoose: false
+					}
+				],
+				skuTitle: [{
+						name: "日常店铺物料",
+						isChoose: true
+					},
+					{
+						name: "标签打印设备",
+						isChoose: false
+					}
+				]
 			}
 		},
 		onLoad() {
@@ -58,6 +93,9 @@
 			// },500)	
 		},
 		methods: {
+			closeSearch(val){
+				this.categoryShow = val
+			},
 			gettabslist() {
 				this.$http.get('/app/goodsTypeCopy/parentList ', {}).then(res => {
 					if (res.code == 200) {
@@ -65,6 +103,11 @@
 						this.tabslist = res.data
 					}
 				})
+			},
+			selectStore() {
+
+				this.categoryShow = true
+				console.log(this.categoryShow)
 			},
 			select(item) {
 				this.current = item.id
@@ -105,6 +148,31 @@
 </script>
 
 <style lang="scss">
+	.container {
+		// padding: 0 20px;
+	}
+
+	.selectStore {
+		height: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		text {
+			font-size: 14px;
+		}
+
+		.arrowhead {
+			width: 15rpx;
+			height: 15rpx;
+			border-top: 3rpx solid #000;
+			border-right: 3rpx solid #000;
+			-webkit-transform: rotate(45deg);
+			transform: rotate(45deg);
+			margin-left: 10rpx;
+		}
+	}
+
 	page {
 		width: 100%;
 	}
@@ -159,17 +227,14 @@
 	.search {
 		display: flex;
 		align-items: center;
-		height: 120rpx;
-		padding-bottom: 30rpx;
 		background-color: #f7f7f7;
 		font-size: 26rpx;
 
-		&>image {
-			width: 18rpx;
-			height: 31rpx;
-			margin-left: 53rpx;
-		}
-
+		// & > image {
+		// 	width: 18rpx;
+		// 	height: 31rpx;
+		// 	margin-left: 53rpx;
+		// }
 		.search_box {
 			display: flex;
 			align-items: center;
@@ -178,9 +243,9 @@
 			background-color: #ffffff;
 			// box-shadow: 2rpx 2rpx 2rpx red;
 			border-radius: 30rpx;
-			margin: 0 12rpx 0 25rpx;
-			padding-left: 18rpx;
 
+			// margin: 0 12rpx 0 25rpx;
+			// padding-left: 18rpx;
 			image:nth-child(1) {
 				margin: 0 18rpx 0 7rpx;
 				width: 28rpx;

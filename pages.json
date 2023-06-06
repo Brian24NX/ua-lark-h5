@@ -18,16 +18,20 @@
 		}
 	}, 
 		{
-			"path": "pages/api/api",
+			"path": "pages/chooseLanguage/chooseLanguage",
 			"style": {
-				"navigationBarTitleText": "%index.api%",
+				"navigationBarTitleText": "%index.select-language%",
+				"navigationStyle": "custom",
 				"enablePullDownRefresh": false
 			}
 		}, {
-			"path": "pages/schema/schema",
+			"path": "pages/selectMaterial/selectMaterial",
 			"style": {
-				"navigationBarTitleText": "%index.schema%",
-				"enablePullDownRefresh": false
+				"navigationBarTitleText": "%index.selectMaterial%",
+				"enablePullDownRefresh": false,
+				"usingComponents":{
+					"van-button":"/wxcomponents/@vant/weapp/popup/index"
+				}
 			}
 		}
 	],
