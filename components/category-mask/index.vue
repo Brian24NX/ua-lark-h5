@@ -28,6 +28,7 @@
 			</view>
 
 		</view>
+		
 	</view>
 </template>
 

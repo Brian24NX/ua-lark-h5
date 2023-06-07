@@ -1,47 +1,61 @@
 <template>
 	<div>
 		<div class="container">
-			<nav-header :lang="this.$t('index.selectMaterial')"></nav-header>
-			<view class="selectStore" @click="selectStore">
-				<text>Store：{{store.name}}</text>
-				<view class="arrowhead" />
-			</view>
-			<view class="search">
-				<view class="search_box">
-					<image
-						src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg">
-					</image>
-					<input type="text" confirm-type="search" v-model="keyword" @confirm="searchClick(key)"
-						@input="changeInput" :placeholder="defaultKeyword" />
-					<!-- <image src="@/static/icon/del_text.png" v-show="keyword" @click="delKeyword()"></image> -->
+			<div class="headerFix">
+				<nav-header :lang="lang"></nav-header>
+				<view class="selectStore" @click="selectStore">
+					<text>Store：{{store.name}}</text>
+					<view class="arrowhead" />
 				</view>
-			</view>
-			<div class="tabs">
-				<div class="tab" @click="toggleTab('all')">全部</div>
-				<div class="tab" @click="toggleTab('material')">办公耗材</div>
-				<div class="tab" @click="toggleTab('furniture')">办公家具</div>
-				<div class="tab" @click="choose">更多筛选</div>
+				<view class="search">
+					<view class="search_box">
+						<image
+							src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg">
+						</image>
+						<input type="text" confirm-type="search" v-model="keyword" @confirm="searchClick(key)"
+							@input="changeInput" :placeholder="defaultKeyword" />
+						<!-- <image src="@/static/icon/del_text.png" v-show="keyword" @click="delKeyword()"></image> -->
+					</view>
+				</view>
+				<div class="tabs">
+					<div class="tab" @click="toggleTab('all')">全部</div>
+					<div class="tab" @click="toggleTab('material')">办公耗材</div>
+					<div class="tab" @click="toggleTab('furniture')">办公家具</div>
+					<div class="tab" @click="choose">{{this.$t('index.more')}}</div>
+				</div>
 			</div>
-			<tab-category @getMaterial='getData' :tabslist="tabslist" :contlist="contlist" keep-alive></tab-category>
+
+			<tab-category @getMaterial='getData' :tabslist="tabslist" :contlist="contlist" @showDetail="showDetail"
+				keep-alive></tab-category>
 
 		</div>
 		<!-- 分类弹窗 -->
 		<category-mask v-if="categoryShow" :skuList="skuList" :categoryList="categoryList" :skuTitle="skuTitle"
 			@getSearchProd="getProd" @closeSearch="closeSearch"></category-mask>
+		<!-- 提交 -->
+		<van-submit-bar :price="3050" custom-class="submit" :button-text="this.$t('index.submit')" suffix-label="CNY"
+			@submit="onSubmit">
+			<van-icon name="https://b.yzcdn.cn/vant/icon-demo-1126.png" info="9" size="40px" @click="showCar" />
+		</van-submit-bar>
+		<!-- 物料车 -->
+		<car-detail v-if="show" @hideDetail="hideDetail" :contlist="contlist"></car-detail>
 	</div>
 </template>
 <script>
 	import categoryMask from "../../components/category-mask/index.vue"
 	import navHeader from "../../components/header/index.vue"
 	import tabCategory from "../../components/tab-category/index.vue"
+	import carDetail from "../../components/car-detail/index.vue"
 	export default {
 		components: {
 			categoryMask,
 			navHeader,
-			tabCategory
+			tabCategory,
+			carDetail
 		},
 		data() {
 			return {
+				lang: this.$t('index.selectMaterial'),
 				store: {},
 				categoryShow: false,
 				current: 1,
@@ -96,8 +110,21 @@
 		},
 
 		methods: {
-			choose(){
-					this.categoryShow = true
+
+			showCar() {
+				this.show = true
+			},
+			onSubmit() {
+
+			},
+			hideDetail(val) {
+				this.show = val
+			},
+			showDetail(val) {
+				this.show = val
+			},
+			choose() {
+				this.categoryShow = true
 			},
 			getData(id) {
 				console.log(id)
@@ -131,33 +158,27 @@
 					}
 				})
 			},
-			tz(id, name, item) {
-				if (this.current !== 2) {
-					uni.navigateTo({
-						url: '/pages/index/chuanglian?id=' + id + '&title=' + name
-					})
-				} else {
-					console.log(item.isHaveSeries);
-					if (item.isHaveSeries == 0) {
-						uni.navigateTo({
-							url: '/pages/index/chuanglian?id=' + id + '&title=' + name
-						})
-					} else {
-						uni.navigateTo({
-							url: '/pages/class/class2?id=' + id + '&title=' + name
-						})
-					}
 
-				}
-
-			}
 		}
 	}
 </script>
 
 <style lang="scss">
+	.submit {
+		z-index: 105 !important;
+	}
+
 	.container {
 		padding: 0 20px;
+	}
+
+	.headerFix {
+		position: sticky;
+		top: 0;
+		background-color: #fff;
+		z-index: 3;
+		width: calc(100vw - 40px);
+
 	}
 
 	.selectStore {
@@ -187,7 +208,8 @@
 
 	.tabs {
 		display: flex;
-font-size: 18px;
+		font-size: 18px;
+
 		.tab:not(:last-child) {
 			margin-right: 20px;
 		}
@@ -199,6 +221,9 @@ font-size: 18px;
 		align-items: center;
 		background-color: #f7f7f7;
 		font-size: 26rpx;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+
 		.search_box {
 			display: flex;
 			align-items: center;

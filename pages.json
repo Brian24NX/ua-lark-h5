@@ -17,7 +17,13 @@
 			"navigationStyle": "custom",
 			"enablePullDownRefresh": false,
 			"usingComponents":{
-				"van-button":"/wxcomponents/@vant/weapp/popup/index"
+				"van-popup":"/wxcomponents/@vant/weapp/popup/index",
+				"van-card":"/wxcomponents/@vant/weapp/card/index",
+				"van-sticky":"/wxcomponents/@vant/weapp/sticky/index",
+				"van-submit-bar":"/wxcomponents/@vant/weapp/submit-bar/index",
+				"van-icon":"/wxcomponents/@vant/weapp/icon/index",
+					"van-stepper":"/wxcomponents/@vant/weapp/stepper/index",
+				"van-dialog":"/wxcomponents/@vant/weapp/dialog/index"
 			}
 		}
 	},

@@ -14,7 +14,8 @@
   "index.new-application":"New Application",
   "index.selectMaterial": "Select Material",
   "index.select-store":"Select Store",
-
+"index.more":"more",
+"index.submit":"Preview",
   "index.demo": "uni-app globalization",
   "index.demo-description": "Include uni-framework, manifest.json, pages.json, tabbar, Page, Component, API, Schema",
   "index.detail": "Detail",
