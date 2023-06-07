@@ -12,12 +12,12 @@
 						<image
 							src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg">
 						</image>
-						<input type="text" confirm-type="search" v-model="keyword" @confirm="searchClick(key)"
-							@input="changeInput" :placeholder="defaultKeyword" />
+						<input type="text" confirm-type="search" v-model="keyword" @confirm="searchClick(keyword)"
+							placeholder=" Please enter material name/code" />
 						<!-- <image src="@/static/icon/del_text.png" v-show="keyword" @click="delKeyword()"></image> -->
 					</view>
 				</view>
-				<div class="tabs">
+				<div class="tabs" v-if="!hideTab">
 					<div class="tab" @click="toggleTab('all')">全部</div>
 					<div class="tab" @click="toggleTab('material')">办公耗材</div>
 					<div class="tab" @click="toggleTab('furniture')">办公家具</div>
@@ -25,8 +25,8 @@
 				</div>
 			</div>
 
-			<tab-category @getMaterial='getData' :tabslist="tabslist" :contlist="contlist" @showDetail="showDetail"
-				keep-alive></tab-category>
+			<tab-category @getMaterial='getData' :hideTab="hideTab" :tabslist="tabslist" :contlist="contlist"
+				@showDetail="showDetail" keep-alive></tab-category>
 
 		</div>
 		<!-- 分类弹窗 -->
@@ -55,7 +55,9 @@
 		},
 		data() {
 			return {
+				hideTab: false,
 				lang: this.$t('index.selectMaterial'),
+				keyword: "",
 				store: {},
 				categoryShow: false,
 				current: 1,
@@ -110,12 +112,20 @@
 		},
 
 		methods: {
-
+			searchClick(key) {
+				if (key) {
+					this.hideTab = true
+				} else {
+					this.hideTab = false
+				}
+			},
 			showCar() {
 				this.show = true
 			},
 			onSubmit() {
-
+				uni.navigateTo({
+					url: "/pages/previewApplication/previewApplication"
+				})
 			},
 			hideDetail(val) {
 				this.show = val
@@ -248,6 +258,7 @@
 			}
 
 			input {
+				width: 100%;
 				height: 60rpx;
 				// letter-spacing: 4rpx;
 				line-height: 60rpx;

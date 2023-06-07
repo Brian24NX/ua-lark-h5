@@ -1,13 +1,10 @@
 <template>
 	<view class="classbox">
-		<view class="sub-tabs">
+		<view class="sub-tabs" v-if="!hideTab">
 			<view class="sub—tab alldisplay" :class="item.id==current?'active' :''" @click="select(item)"
 				v-for="item in tabslist" :key="item.id">{{item.name}}</view>
 		</view>
-		<!-- <scroll-view scroll-y="true" style="height: 100vh;">
-			
-		</scroll-view> -->
-		<view class="conts">
+		<view class="conts" :style="hideTab?'padding-left: 0;width: 100%;padding-right: 0;':'padding: 13px 13px 13px 30%;'">
 			<view class="cont" v-for="item in contlist" :key="item.id">
 				<view class="prod-pic">
 					<image :src="item.imgUrl" mode="aspectFit" />
@@ -49,6 +46,10 @@
 			contlist: {
 				type: Array,
 				default: []
+			},
+			hideTab:{
+				type:Boolean,
+				default:false
 			}
 		},
 		components: {

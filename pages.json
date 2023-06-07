@@ -11,6 +11,16 @@
 		}
 	}, 
 	{
+		"path": "pages/previewApplication/previewApplication",
+		"style": {
+			"navigationBarTitleText": "%index.previewApplication%",
+			// "navigationStyle": "custom"
+			"usingComponents":{
+				"van-button":"/wxcomponents/@vant/weapp/button/index"
+			}
+		}
+	}, 
+	{
 		"path": "pages/selectMaterial/selectMaterial",
 		"style": {
 			// "navigationBarTitleText": "%index.selectMaterial%",

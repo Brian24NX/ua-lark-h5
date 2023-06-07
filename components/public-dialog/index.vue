@@ -7,10 +7,10 @@
 			</view>
 			<view class="btn">
 				<view class="cancle" @click="onClose">
-					取消
+					{{this.$t('index.cancle')}}
 				</view>
 				<view class="confirm" @click="confirm">
-					确认
+					{{this.$t('index.sure')}}
 				</view>
 			</view>
 		</view>
