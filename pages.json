@@ -16,7 +16,11 @@
 			"navigationBarTitleText": "%index.previewApplication%",
 			// "navigationStyle": "custom"
 			"usingComponents":{
-				"van-button":"/wxcomponents/@vant/weapp/button/index"
+				"van-button":"/wxcomponents/@vant/weapp/button/index",
+				"van-cell":"/wxcomponents/@vant/weapp/cell/index",
+				"van-cell-group":"/wxcomponents/@vant/weapp/cell-group/index",
+				"van-field":"/wxcomponents/@vant/weapp/field/index",
+				"van-submit-bar":"/wxcomponents/@vant/weapp/submit-bar/index"
 			}
 		}
 	}, 
@@ -32,11 +36,25 @@
 				"van-sticky":"/wxcomponents/@vant/weapp/sticky/index",
 				"van-submit-bar":"/wxcomponents/@vant/weapp/submit-bar/index",
 				"van-icon":"/wxcomponents/@vant/weapp/icon/index",
-					"van-stepper":"/wxcomponents/@vant/weapp/stepper/index",
-				"van-dialog":"/wxcomponents/@vant/weapp/dialog/index"
+				"van-stepper":"/wxcomponents/@vant/weapp/stepper/index",
+				"van-dialog":"/wxcomponents/@vant/weapp/dialog/index",
+				"van-cell":"/wxcomponents/@vant/weapp/cell/index"
 			}
 		}
 	},
+	{
+		"path": "pages/myApplication/myApplication",
+		"style": {
+			"navigationBarTitleText": "%index.myApplication%",
+			"enablePullDownRefresh": false,
+			"usingComponents":{
+				"van-search":"/wxcomponents/@vant/weapp/search/index",
+				"van-collapse":"/wxcomponents/@vant/weapp/collapse/index",
+				"van-collapse-item":"/wxcomponents/@vant/weapp/collapse-item/index"
+				
+			}
+		}
+	}, 
 	{
 		"path": "pages/storeList/storeList",
 		"style": {

@@ -3,10 +3,7 @@
 		<div class="container">
 			<div class="headerFix">
 				<nav-header :lang="lang"></nav-header>
-				<view class="selectStore" @click="selectStore">
-					<text>Store：{{store.name}}</text>
-					<view class="arrowhead" />
-				</view>
+				<van-cell :title="store" is-link  @click="selectStore" />
 				<view class="search">
 					<view class="search_box">
 						<image
@@ -58,7 +55,7 @@
 				hideTab: false,
 				lang: this.$t('index.selectMaterial'),
 				keyword: "",
-				store: {},
+				store: "Store",
 				categoryShow: false,
 				current: 1,
 				catchMove: true,
@@ -107,7 +104,7 @@
 		onShow() {
 			let that = this
 			uni.$on('returnData', function(data) {
-				that.store = data
+				that.store = `Store ${data.name}`
 			})
 		},
 
@@ -191,26 +188,26 @@
 
 	}
 
-	.selectStore {
-		height: 30px;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
+	// .selectStore {
+	// 	height: 30px;
+	// 	display: flex;
+	// 	align-items: center;
+	// 	justify-content: space-between;
 
-		text {
-			font-size: 14px;
-		}
+	// 	text {
+	// 		font-size: 14px;
+	// 	}
 
-		.arrowhead {
-			width: 15rpx;
-			height: 15rpx;
-			border-top: 4rpx solid #000;
-			border-right: 4rpx solid #000;
-			-webkit-transform: rotate(45deg);
-			transform: rotate(45deg);
-			margin-left: 10rpx;
-		}
-	}
+	// 	.arrowhead {
+	// 		width: 15rpx;
+	// 		height: 15rpx;
+	// 		border-top: 4rpx solid #000;
+	// 		border-right: 4rpx solid #000;
+	// 		-webkit-transform: rotate(45deg);
+	// 		transform: rotate(45deg);
+	// 		margin-left: 10rpx;
+	// 	}
+	// }
 
 	page {
 		width: 100%;

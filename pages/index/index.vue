@@ -108,6 +108,10 @@
 					uni.navigateTo({
 						url:"/pages/selectMaterial/selectMaterial"
 					})
+				}else if(index==2){
+					uni.navigateTo({
+						url:"/pages/myApplication/myApplication"
+					})
 				}
 			},
 			changeLanguage(){

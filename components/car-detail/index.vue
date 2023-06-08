@@ -27,17 +27,14 @@
 			</view>
 		</van-popup>
 		<!-- 弹窗 -->
- <!-- <dialog v-if="clearShow"></dialog> -->
- <public-dialog v-if="clearShow" @hide="hide"></public-dialog>
+		<public-dialog v-if="clearShow" @hideDialog="dialogHide" />
 	</view>
 </template>
 
 <script>
 	import vanPopup from "@/wxcomponents/@vant/weapp/popup/index"
 	import vanStepper from "@/wxcomponents/@vant/weapp/stepper/index"
-		import publicDialog from "../../components/public-dialog/index.vue"
-	// import vanDialog from "@/wxcomponents/@vant/weapp/dialog/index"
-	// import Dialog from "../../wxcomponents/@vant/weapp/dialog/dialog"
+	import publicDialog from "../../components/public-dialog/index.vue"
 	export default {
 		props: {
 			contlist: {
@@ -60,34 +57,17 @@
 			onClose() {
 				this.$emit('hideDetail', false)
 			},
-			// beforeClose(action) {
-			// 	if (action === 'confirm') {
-			// 		resolve(true);
-			// 	} else {
-			// 		// 拦截取消操作
-			// 		resolve(false);
-			// 	}
-			// },
-
-			// onConfirm() {
-			// 	console.log('1111111111')
-			// },
-			// onCancel() {
-			// 	this.clearShow = false
-			// },
-			hide(val){
-				this.clearShow=val
+			dialogHide(val) {
+				this.clearShow = false
 			},
 			clearAll() {
-				console.log('1111111111')
-	        this.clearShow=true
+				this.clearShow = true
 			}
 		}
 	}
 </script>
 
 <style lang="scss">
-
 	.clearAll {
 		text-align: right;
 		margin-right: 20px;

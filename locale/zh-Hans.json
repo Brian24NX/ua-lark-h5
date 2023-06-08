@@ -18,6 +18,7 @@
    "index.submit":"提交",
    "index.cancle":"取消",
    "index.sure":"确定",
+   "index.myApplication":"我的申请",
    "index.previewApplication":"预览申请",
 	"index.demo": "uni-app 国际化演示",
 	"index.demo-description": "包含 uni-framework、manifest.json、pages.json、tabbar、页面、组件、API、Schema",

@@ -19,6 +19,7 @@
 "index.cancle":"cancle",
 "index.sure":"sure",
 "index.previewApplication":"Preview Application",
+"index.myApplication":"My Application",
   "index.demo": "uni-app globalization",
   "index.demo-description": "Include uni-framework, manifest.json, pages.json, tabbar, Page, Component, API, Schema",
   "index.detail": "Detail",

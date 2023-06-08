@@ -32,11 +32,11 @@
 		methods: {
 			onClose() {
 				this.show = false
-				this.$emit('hide', false)
+				this.$emit('hideDialog', false)
 			},
 			confirm() {
 				this.show = false
-				this.$emit('hide', false)
+				this.$emit('hideDialog', false)
 			}
 		}
 	}
