@@ -23,9 +23,10 @@ if (!system_info) {
 		}
 	})
 }
-	const cur_lang = system_info.language == 'en' ? 'en' :'zh-Hans'
+	// const cur_lang = system_info.language == 'en' ? 'en' :'zh-Hans'
 	const i18n = new VueI18n({
-		locale: cur_lang || 'zh_CN',  // 默认选择的语言
+		// locale: cur_lang || 'zh_CN',  // 默认选择的语言
+		locale:"en",
 		messages: {  
 				'en': en,
 				'zh-Hans': LangChs

@@ -95,6 +95,9 @@
 <style lang="scss">
 	/*每个页面公共css */
 	@import '/wxcomponents/@vant/weapp/common/index.wxss';
+	body{
+		font-family: MicrosoftYaHeiLight;
+	}
   // .container {
   //   padding: 15px;
   // }
