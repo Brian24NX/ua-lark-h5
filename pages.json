@@ -3,13 +3,9 @@
 	{
 		"path": "pages/index/index",
 		"style": {
-			"navigationBarTitleText": "%index.materials-application%",
-			// "navigationStyle": "custom"
-			"usingComponents":{
-				"van-button":"/wxcomponents/@vant/weapp/button/index"
-			}
+			"navigationBarTitleText": "%index.materials-application%"
 		}
-	}, 
+	},
 	{
 		"path": "pages/previewApplication/previewApplication",
 		"style": {
@@ -98,6 +94,5 @@
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
-	
 	}
 }
