@@ -2,7 +2,7 @@
 	<view class="container">
 		<van-search :value="value" placeholder=" Please enter material name/code" />
 		<view class="select-down">
-			<drop-down-list v-for="item in 3" :key="item.id" :dataList="dataList" :labelProperty="labelProperty"></drop-down-list>
+			<drop-down-list v-for="item in 3" key="item.id"  :dataList="dataList" :labelProperty="labelProperty"></drop-down-list>
 		</view>
 		 <view class="goods-info" v-for="(item,index) in itemList" :key="index">
         	<view class="title" @click="changeContent(item,index)">
@@ -14,7 +14,7 @@
 	        		<text>2023.06.03 10:54  </text>
 	        		<text>Claire Wang</text>
 	        	</view>
-	        	<view class="info" v-for="item in 2" @click="toDetail">
+	        	<view class="info" v-for="item in 2">
 	        		<image
 	        			src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg"
 	        			mode=""></image>
@@ -78,12 +78,6 @@
 					}
 				})
 				item.open = !item.open
-			},
-				
-			toDetail(){
-				uni.navigateTo({
-					url:"/pages/materialDetails/materialDetails"
-				})
 			}
 		}
 	}

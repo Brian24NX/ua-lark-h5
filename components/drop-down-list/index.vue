@@ -91,7 +91,7 @@ export default {
 				    width: 13px;
 				    height: 14px;
 				    transform: rotate(-90deg);
-                background: url("../../static/down-arrow.png") no-repeat center center;
+                background: url("../../static/arrow-left.png") no-repeat center center;
                 margin-left: 6px;
                 display: inline-block;
             }

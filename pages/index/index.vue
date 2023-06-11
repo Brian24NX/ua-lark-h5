@@ -1,88 +1,122 @@
 <template>
 	<view class="container">
-		<div class="language" @click="changeLanguage">{{this.$t('index.language')}}</div>
-		<image mode="center" class="bg" src="https://web-assets.dcloud.net.cn/unidoc/zh/shuijiao.jpg"></image>
-		<div class="tab">
-			<div class="tabItem" v-for="(item ,index) in tabs" :key="index" @click="choosePage(item.index)">
-				<div class="num">1</div>
-				<image class="iconImage" :src="item.icon" mode=""></image>
-				<text>{{item.text}}</text>
-			</div>
-		</div>
-			
-<!-- 
-		   <view class="locale-setting">{{$t('index.language-info')}}</view>
-    <view class="list-item">
-      <text class="k">{{$t('index.system-language')}}:</text>
-      <text class="v">{{systemLocale}}</text>
-    </view>
-    <view class="list-item">
-      <text class="k">{{$t('index.application-language')}}:</text>
-      <text class="v">{{applicationLocale}}</text>
-    </view>
-    <view class="locale-setting">{{$t('index.language')}}</view>
-    <view class="locale-list">
-      <view class="locale-item" v-for="(item, index) in locales" :key="index" @click="onLocaleChange(item)">
-        <text class="text">{{item.text}}</text>
-        <text class="icon-check" v-if="item.code == applicationLocale"></text>
-      </view>
-    </view>
-	<view style="word-break: break-all;" v-if="token">token：{{token}}</view>
-	<uni-link href="https://uniapp.dcloud.io/" text="https://uniapp.dcloud.io/"></uni-link>
- -->
+		<view class="navbar">
+			<view class="userInfo" :style="{'width':barWith+'px','height':barHeight +'px','padding-top':barTop +'px'}">
+				<view class="info" v-if="userInfo">
+					<image :src="userInfo.avatarUrl" mode=""></image>
+					<view class="name">
+						<view class="">Hi</view>
+						<view class="">{{userInfo.nickName}} !</view>
+					</view>
+				</view>
+				<div class="language" @click="changeLanguage">
+					<view class="">
+						{{this.$t('index.language')}}
+					</view>
+				</div>
+			</view>
+		</view>
+		<swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="true" indicator-dots="true"
+			style="height: 1124rpx;" duration="500">
+			<swiper-item>
+				<image src="../../static/banner.png" mode="aspectFill" style="width: 100vw;height: 1124rpx;!important">
+				</image>
+			</swiper-item>
+			<swiper-item>
+				<image src="../../static/banner.png" mode="aspectFill" style="width: 100vw;height: 1124rpx;!important">
+				</image>
+			</swiper-item>
+			<swiper-item>
+				<image src="../../static/banner.png" mode="aspectFill" style="width: 100vw;height: 1124rpx;!important">
+				</image>
+			</swiper-item>
+		</swiper>
+		<van-divider customStyle="background-color: #000;; border-color: #000; height:2px;margin:0" />
+		<van-divider customStyle="background-color: #000;; border-color: #000; height:6px;margin:0;margin-top:10rpx" />
+		<!-- sa -->
+		<!-- 		<view class="">
+			<nav-arrow :newApplication="newApplication" :img="addimg" :haveIcon="true" :myApplication="myApplication" @tap="choosePage(3)" ></nav-arrow>
+			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
+			<nav-arrow  :haveIcon="false" :myApplication="myApplication" :check="check"  @tap="choosePage(2)" ></nav-arrow>
+		</view> -->
+
+		<!-- ops -->
+		<!-- 		<view class="">
+				<nav-arrow :newApplication="myApproval" :img="ticket" :haveIcon="true" :myApplication="myApplication"  @tap="choosePage(1)" ></nav-arrow>
+				<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
+				<nav-arrow :newApplication="myApplication" :img="edit" :haveIcon="true" :myApplication="myApplication"  @tap="choosePage(2)" ></nav-arrow>
+				<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
+				<nav-arrow :haveIcon="false" :myApplication="newApplication" :check="now"  @tap="choosePage(3)" ></nav-arrow>
+		</view> -->
+
+		<!-- 区域经理 -->
+		<view class="">
+			<region-nav-arrow :newApplication="myApproval" :haveBtn="true" @tap="choosePage(1)"
+				:havepending="true"></region-nav-arrow>
+			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
+			<region-nav-arrow :newApplication="myApplication" :haveBtn="true" @tap="choosePage(2)"></region-nav-arrow>
+			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
+			<region-nav-arrow :newApplication="newApplication" :haveBtn="false" @tap="choosePage(3)"></region-nav-arrow>
+		</view>
+
 	</view>
 </template>
 
 <script>
+	import navArrow from "../../components/nav-arrow/index"
+	import regionNavArrow from "../../components/nav-arrow/index2"
+	import api from '../../fetch/api.js'
 	export default {
+		components: {
+			navArrow,
+			regionNavArrow
+		},
 		data() {
 			return {
 				systemLocale: '',
 				applicationLocale: '',
-				token: '',
+				addimg: '../../static/add.png',
+				ticket: "../../static/ticket.png",
+				edit: "../../static/edit.png",
+				userInfo: null,
+				system: {},
+				barHeight: 0,
+				barTop: 0,
+				barWith: 0
 			}
 		},
 		computed: {
-			tabs(){
-				return  [{
-					    index:1,
-						icon: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
-						text: this.$t('index.my-approval'),
-					},
-					{   index:2,
-						icon: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
-						text: this.$t('index.my-application'),
-					},
-					{   index:3,
-						icon: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
-					    text: this.$t('index.new-application'),
-					}
-				]
+			newApplication() {
+				return this.$t('index.new-application')
+			},
+			myApplication() {
+				return this.$t('index.my-application')
+			},
+			myApproval() {
+				return this.$t('index.my-approval')
+			},
+			check() {
+				return this.$t('index.check')
+			},
+			now() {
+				return this.$t('index.now')
 			}
-			// locales() {
-			// 	return [{
-			// 			text: this.$t('locale.auto'),
-			// 			code: 'auto'
-			// 		}, {
-			// 			text: this.$t('locale.en'),
-			// 			code: 'en'
-			// 		},
-			// 		{
-			// 			text: this.$t('locale.zh-hans'),
-			// 			code: 'zh-Hans'
-			// 		},
-			// 		{
-			// 			text: this.$t('locale.zh-hant'),
-			// 			code: 'zh-Hant'
-			// 		},
-			// 		{
-			// 			text: this.$t('locale.ja'),
-			// 			code: 'ja'
-			// 		}
-			// 	]
-			// }
+		},
+		onShow() {
+			this.userInfo = uni.getStorageSync('userInfo')
+			if (!uni.getStorageSync('userInfo')) {
+				const updateManager = tt.getUpdateManager()
+				updateManager.applyUpdate()
+			}
 		},
 		onLoad() {
+			uni.getSystemInfo({
+				success: res => {
+					this.barHeight = res.navigationBarSafeArea.height
+					this.barTop = res.navigationBarSafeArea.top
+					this.barWith = res.navigationBarSafeArea.width
+				}
+			})
 			// let systemInfo = uni.getSystemInfoSync();
 			// console.log(systemInfo)
 			// this.systemLocale = systemInfo.language;
@@ -98,45 +132,33 @@
 			// }
 
 		},
-		mounted() {
 
-		},
 		methods: {
-			choosePage(index){
+			choosePage(index) {
 				console.log(index)
-				if(index==3){
+				if (index == 3) {
 					uni.navigateTo({
-						url:"/pages/selectMaterial/selectMaterial"
+						url: "/pages/selectMaterial/selectMaterial"
 					})
-				}else if(index==2){
+				} else if (index == 2) {
 					uni.navigateTo({
-						url:"/pages/myApplication/myApplication"
+						url: "/pages/myApplication/myApplication"
+					})
+				} else {
+					uni.navigateTo({
+						url: "/pages/myApproval/myApproval"
 					})
 				}
 			},
-			changeLanguage(){
+			changeLanguage() {
 				uni.navigateTo({
-					url:"/pages/chooseLanguage/chooseLanguage"
+					url: "/pages/chooseLanguage/chooseLanguage"
 				})
 			},
 			onLocaleChange(e) {
 				uni.setLocale(e.code);
 				this.$i18n.locale = e.code;
-				// this.token = this.$store.state.token
-				// console.log(this.$store.state.token)
-				// if (this.isAndroid) {
-				//   uni.showModal({
-				//     content: this.$t('index.language-change-confirm'),
-				//     success: (res) => {
-				//       if (res.confirm) {
-				//         uni.setLocale(e.code);
-				//       }
-				//     }
-				//   })
-				// } else {
-				//   uni.setLocale(e.code);
-				//   this.$i18n.locale = e.code;
-				// }
+
 			}
 		}
 	}
@@ -144,7 +166,45 @@
 
 <style lang="scss">
 	.container {
-		margin: 0 10px;
+		background-color: #F0F0F0;
+		padding-bottom: 40rpx;
+
+		.navbar {
+			position: sticky;
+			top: 0;
+			z-index: 2;
+			background-color: #F0F0F0;
+			padding-bottom: 20rpx;
+		}
+
+		.userInfo {
+			height: 55px;
+			display: flex;
+			align-items: center;
+			position: relative;
+
+			.info {
+				display: flex;
+				margin-left: 30rpx;
+
+				image {
+					width: 104rpx;
+					height: 104rpx;
+					border-radius: 50%;
+				}
+
+				.name {
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					font-size: 40rpx;
+
+					view:last-child {
+						font-weight: bold;
+					}
+				}
+			}
+		}
 	}
 
 	.bg {
@@ -152,117 +212,17 @@
 	}
 
 	.language {
-		padding: 10px;
-		border: 1px solid #000;
-		width: fit-content;
-		border-radius: 30px;
-		float: right;
-		margin-bottom: 20px;
-	}
-
-	.tab {
+		width: 44rpx;
+		height: 44rpx;
+		color: #333333;
+		position: absolute;
+		right: 0px;
+		font-size: 12px;
 		display: flex;
-		justify-content: space-around;
-		margin-top: 20px;
-
-		.tabItem {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			position: relative;
-
-			.num {
-				width: 18px;
-				height: 18px;
-				background-color: red;
-				color: white;
-				text-align: center;
-				line-height: 18px;
-				font-size: 12px;
-				border-radius: 50%;
-				position: absolute;
-				right: 0;
-			}
-
-			.iconImage {
-				width: 60px;
-				height: 60px;
-			}
-
-			text {
-				width: 90px;
-				word-break: break-word;
-				font-size: 18px;
-				text-align: center;
-				display: inline-block;
-			}
-		}
-
+		align-items: center;
+		justify-content: center;
+		border: 1.6px solid #333333;
+		font-weight: bold;
+		border-radius: 3px;
 	}
-
-
-
-	// .title {
-	// 	font-size: 16px;
-	// 	font-weight: bold;
-	// 	margin-bottom: 15px;
-	// }
-
-	// .description {
-	// 	font-size: 14px;
-	// 	opacity: 0.6;
-	// 	margin-bottom: 15px;
-	// }
-
-	// .detail-link {
-	// 	font-size: 14px;
-	// 	word-break: break-all;
-	// }
-
-	// .link {
-	// 	color: #007AFF;
-	// 	margin-left: 10px;
-	// }
-
-	// .locale-setting {
-	// 	font-size: 16px;
-	// 	font-weight: bold;
-	// 	margin-top: 25px;
-	// 	margin-bottom: 5px;
-	// 	padding-bottom: 5px;
-	// 	border-bottom: 1px solid #f0f0f0;
-	// }
-
-	// .list-item {
-	// 	font-size: 14px;
-	// 	padding: 10px 0;
-	// }
-
-	// .list-item .v {
-	// 	margin-left: 5px;
-	// }
-
-	// .locale-item {
-	// 	display: flex;
-	// 	flex-direction: row;
-	// 	padding: 10px 0;
-	// }
-
-	// .locale-item .text {
-	// 	flex: 1;
-	// }
-
-	// .icon-check {
-	// 	margin-right: 5px;
-	// 	border: 2px solid #007aff;
-	// 	border-left: 0;
-	// 	border-top: 0;
-	// 	height: 12px;
-	// 	width: 6px;
-	// 	transform-origin: center;
-	// 	/* #ifndef APP-NVUE */
-	// 	transition: all 0.3s;
-	// 	/* #endif */
-	// 	transform: rotate(45deg);
-	// }
 </style>

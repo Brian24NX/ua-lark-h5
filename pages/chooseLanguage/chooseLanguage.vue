@@ -1,19 +1,18 @@
 <template>
 	<view class="container">
-	<nav-header :lang="this.$t('index.select-language')"></nav-header>
-		<div class="langItem" v-for="(item, index) in locales" :key="index" @click="onLocaleChange(item)">
-			<image class="iconActive"
-				src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg"
-				mode="" v-if="item.code == applicationLocale"></image>
-			<text>{{item.text}}</text>
+		<div :class="['langItem',item.code == applicationLocale? 'active':'']" v-for="(item, index) in locales"
+			:key="index" @click="onLocaleChange(item)">
+			<view class="langItem_l">
+				<image class="iconActive" :src="item.img" mode=""></image>
+				<text>{{item.text}}</text>
+			</view>
+			<image class="check" src="../../static/check.png" mode="" v-if="item.code == applicationLocale"></image>
 		</div>
 	</view>
 </template>
 
 <script>
-   import navHeader from "../../components/header/index.vue"
 	export default {
-		components: { navHeader },
 		data() {
 			return {
 				applicationLocale: '',
@@ -23,50 +22,29 @@
 			locales() {
 				return [{
 						text: this.$t('locale.en'),
-						code: 'en'
+						code: 'en',
+						img: "../../static/en.png"
 					},
 					{
 						text: this.$t('locale.zh-hans'),
-						code: 'zh-Hans'
+						code: 'zh-Hans',
+						img: "../../static/zh.png"
 					}
 				]
 			}
 		},
 		onLoad() {
-			uni.hideHomeButton()
-			let systemInfo = uni.getSystemInfoSync();
-			console.log(systemInfo)
-			this.systemLocale = systemInfo.language;
-			this.applicationLocale = uni.getLocale();
-			this.isAndroid = systemInfo.platform.toLowerCase() === 'android';
+			this.applicationLocale = this.$i18n.locale;
 			uni.onLocaleChange((e) => {
-				console.log(e)
 				this.applicationLocale = e.locale;
 			})
-
 		},
 		methods: {
 			onLocaleChange(e) {
 				uni.setLocale(e.code);
 				this.$i18n.locale = e.code;
 				uni.navigateBack()
-				// this.token = this.$store.state.token
-				// console.log(this.$store.state.token)
-				// if (this.isAndroid) {
-				//   uni.showModal({
-				//     content: this.$t('index.language-change-confirm'),
-				//     success: (res) => {
-				//       if (res.confirm) {
-				//         uni.setLocale(e.code);
-				//       }
-				//     }
-				//   })
-				// } else {
-				//   uni.setLocale(e.code);
-				//   this.$i18n.locale = e.code;
-				// }
 			}
-
 		}
 	}
 </script>
@@ -75,22 +53,50 @@
 	.container {
 		width: 100vw;
 		height: 100vh;
-		background-color: #fff;
-		position: absolute;
-		top: 0;
+		background-color: #f0f0f0;
 
 		.langItem {
-			padding: 20px;
 			display: flex;
 			align-items: center;
-			justify-content: center;
+			justify-content: space-between;
+			height: 152rpx;
+			border-radius: 48rpx;
+			border: 2rpx solid #DDDDDD;
+			margin: 40rpx 30rpx;
+			padding: 0 66rpx 0 60rpx;
+
+			.langItem_l {
+				display: flex;
+
+				image {
+					margin-right: 36rpx;
+				}
+
+				text {
+					font-size: 36rpx;
+					color: #000;
+					line-height: 48rpx;
+				}
+			}
+
+			.check {
+				width: 44rpx;
+				height: 44rpx;
+			}
+		}
+
+		.active {
+			border: 2rpx solid #111111;
+			.langItem_l {
+				text {
+					color: #111111;
+				}
+			}
 		}
 
 		.iconActive {
-			width: 60px;
-			height: 60px;
-			position: absolute;
-			left: 20%;
+			width: 84rpx;
+			height: 56rpx;
 		}
 	}
 </style>

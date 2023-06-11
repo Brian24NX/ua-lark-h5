@@ -1,39 +1,53 @@
 <template>
-	<view class="category-mask" @click.stop="stopMp(1)">
-		<view class="category" @click.stop="stopMp(2)">
-			<image src="/static/images/icon/close.png" mode="" class="close" @click="closeClass"></image>
-			<view class="instructions">产品类别</view>
-			<view class="category-main">
-				<view class="category-item" v-for="(item,index) in categoryLists" :key='index'
-					@tap='searchProd(item,index,1)' :class="[item.isChoose==true?'active':'']">
-					{{item.categoryName,item.isChoose}}
-				</view>
+	<van-popup
+	  :show="true"
+	  position="right"
+	  custom-style="height: 100%;width:90%; border-radius: 40rpx 0rpx 0rpx 40rpx;z-index:201"
+	  @close="onClose"
+	>
+	<view class="category">
+		<!-- <image src="/static/images/icon/close.png" mode="" class="close" @click="closeClass"></image> -->
+		<view class="instructions">Main Category</view>
+		<view class="category-main">
+			<view class="category-item" v-for="(item,index) in categoryLists" :key='index'
+				@tap='searchProd(item,index,1)' :class="[item.isChoose==true?'active':'']">
+				{{item.categoryName,item.isChoose}}
 			</view>
-			<view v-for="(item,index) in skuTitles" :key="index">
-				<view class="instructions" style="margin-top: 40rpx;">{{item.title}}</view>
-				<view class="category-main">
-					<view class="category-item" v-for="(val,indexs) in item.children" :key='indexs'
-						@tap='searchProd(val,index,2)' :class="[val.isChoose==true?'active':'']">
-						{{val.name}}
-					</view>
-				</view>
-			</view>
-			<view class="btns">
-				<view class="cancel" @tap="resert">
-					重置
-				</view>
-				<view class="complate" @tap="complate">
-					完成
-				</view>
-			</view>
-
 		</view>
-		
+		<view v-for="(item,index) in skuTitles" :key="index">
+			<view class="instructions" style="margin-top: 40rpx;">{{item.title}}</view>
+			<view class="category-main">
+				<view class="category-item" v-for="(val,indexs) in item.children" :key='indexs'
+					@tap='searchProd(val,index,2)' :class="[val.isChoose==true?'active':'']">
+					{{val.name}}
+				</view>
+			</view>
+		</view>
+		<view class="btns_bottom">
+		<van-divider customStyle="margin:0;color: #ddd; border-color: #ddd; padding:0 30rpx"  />
+		<view class="btns">
+			<view class="cancel" @tap="resert">
+				{{this.$t('index.reset')}}
+			</view>
+			<view class="complate" @tap="complate">
+			{{this.$t('index.confirm')}}
+			</view>
+		</view>
+		</view>
+	
 	</view>
+	
+	</van-popup>
 </template>
 
 <script>
+		import vanPopup from "@/wxcomponents/@vant/weapp/popup/index"
+			import vanDivider from "@/wxcomponents/@vant/weapp/divider/index"
 	export default {
+		components: {
+		vanPopup,
+		vanDivider
+		},
 		props: {
 			skuTitle: {
 				type: Array,
@@ -77,7 +91,7 @@
 					this.$emit('closeSearch', false)
 				}
 			},
-			closeClass() {
+			onClose() {
 				this.$emit('closeSearch', false)
 			},
 			searchProd(item, i, type) {

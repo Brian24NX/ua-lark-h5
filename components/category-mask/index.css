@@ -4,7 +4,7 @@
 	background-color: rgba(0, 0, 0, 0.4);
 	position: fixed;
 	top: 0;
-    z-index: 99;
+    z-index: 201;
 }
 
 .category {
@@ -13,72 +13,69 @@
 	position: fixed;
 	right: 0;
 	top: 0;
-	background-color: white;
+	background-color: #f0f0f0;
 	border-radius: 16rpx 0px 0px 0px;
     z-index: 999;
     overflow: scroll;
 }
-
-.category .close {
-	width: 32rpx;
-	height: 32rpx;
-	position: absolute;
-	top: 40rpx;
-	left: 40rpx;
+.btns_bottom{
+	width: 100%;
+	position: fixed;
+	bottom: 86rpx;
 }
 .category .btns{
 display: flex;
-    margin: calc(120rpx + env(safe-area-inset-bottom)) 46rpx calc(120rpx + env(safe-area-inset-bottom));
+    /* margin: calc(120rpx + env(safe-area-inset-bottom)) 46rpx calc(120rpx + env(safe-area-inset-bottom)); */
+margin: 46rpx 30rpx 0rpx 30rpx;
     justify-content: space-between;
     width: -webkit-fill-available;
  /*   position: absolute;
     bottom: calc(120rpx + env(safe-area-inset-bottom)); */
 }
 .category .btns view{
-   width: calc(calc(100% - 38rpx) /2);
-    line-height: 80rpx;
+   width: calc(calc(100% - 0rpx) /2);
+   line-height: 54rpx;
     text-align: center;
-	border-radius: 40rpx;
+	font-size: 32rpx;
 }
 .category .btns view.cancel{
-	border: 1px solid #111;
-	color: #111;
+	color: #999;
+	border-right: 1px solid #ddd;
 }
 .category .btns view.complate{
-background-color: #161A49;
-	color: #fff;
+font-weight: bold;
+	color: #111;
 }
 .instructions {
-	margin: 122rpx 0 40rpx 40rpx;
+	margin: 40rpx 0 28rpx 30rpx;
 	    font-weight: 600;
-	    color: #111111;
-	    line-height: 36rpx;
-	    font-size: 32rpx;
+	   font-size: 32rpx;
+	   color: #000000;
+	   line-height: 42rpx;
 }
 
 .category-main {
 	display: flex;
 	flex-wrap: wrap;
+	margin: 0 30rpx;
 	justify-content: space-between;
-	margin: 0 40rpx;
 }
 
 .category-item {
-	width: calc(calc(100% - 28rpx) / 2);
-	height: 76rpx;
-	color: #333333;
-	font-size: 24rpx;
+	width: calc(calc(100% - 40rpx) / 3);
+	height: 70rpx;
+	color: #111;
+	border-radius: 35rpx;
+	font-size: 28rpx;
 	background-color: #fff;
 	text-align: center;
-	line-height: 76rpx;
-	margin-bottom: 20rpx;
-	border-radius: 4rpx;
-	border: 2rpx solid #DDDDDD;
+	line-height: 70rpx;
+	margin-bottom: 28rpx;
+	border: 2rpx solid #111;
 }
-
 .category-item.active {
 	color: #fff;
-	background-color: #161A49;
-	border: 2rpx solid #DDDDDD;
-	border-radius: 4rpx;
+	background-color: #111111;
+	border: 2rpx solid #111111;
+	border-radius: 35rpx;
 }

@@ -6,7 +6,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
 		//公共的变量，这里的变量不能随便修改，只能通过触发mutations的方法才能改变
-		token:uni.getStorageSync('token')||''
+		token:uni.getStorageSync('token')||'',
+		userInfo:{}
 	},
     mutations: {
 		//相当于同步的操作
@@ -15,10 +16,8 @@ const store = new Vuex.Store({
 		// 	uni.setStorageSync('token',payload)
 		// },
 		userLogins(state){
-			// let parent = this
 			tt.login({
 			    success(res) {
-				 // that.code = res.code
 				 console.log(res.code)
 				 api
 				 	.userLogin({code:res.code})

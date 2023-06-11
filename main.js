@@ -6,6 +6,7 @@ import store from './store/index.js'
 //   locale: uni.getLocale(),
 //   messages
 // }
+uni.setLocale('en')
 import i18n from './locale/index'
 // #ifndef VUE3
 import Vue from 'vue'

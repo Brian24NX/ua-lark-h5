@@ -1,52 +1,62 @@
 <template>
-	<div>
-		<div class="container">
-			<div class="headerFix">
-				<nav-header :lang="lang"></nav-header>
-				<van-cell :title="store" is-link  @click="selectStore" />
+	<view>
+		<view class="container">
+			<view class="headerFix">
+				<view class="store" @click="selectStore">
+					<view class="store_l">
+						<image src="../../static/store.png" mode=""></image>
+						<text>{{store.title?`${this.$t('index.store')}：${store.title}`:`${this.$t('index.store')}`}}</text>
+					</view>
+					<image class="store_r" src="../../static/right.png" mode=""></image>
+				</view>
 				<view class="search">
 					<view class="search_box">
-						<image
-							src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg">
+						<image src="../../static/search.png">
 						</image>
 						<input type="text" confirm-type="search" v-model="keyword" @confirm="searchClick(keyword)"
-							placeholder=" Please enter material name/code" />
-						<!-- <image src="@/static/icon/del_text.png" v-show="keyword" @click="delKeyword()"></image> -->
+							:placeholder="this.$t('index.material-name') " />
 					</view>
 				</view>
-				<div class="tabs" v-if="!hideTab">
-					<div class="tab" @click="toggleTab('all')">全部</div>
-					<div class="tab" @click="toggleTab('material')">办公耗材</div>
-					<div class="tab" @click="toggleTab('furniture')">办公家具</div>
-					<div class="tab" @click="choose">{{this.$t('index.more')}}</div>
-				</div>
-			</div>
+				<view class="tabs" v-if="!hideTab">
+					<view class="tab active" @click="toggleTab('all')">全部</view>
+					<view class="tab" @click="toggleTab('material')">办公耗材</view>
+					<view class="tab" @click="toggleTab('furniture')">办公家具</view>
+					<view class="tab" @click="toggleTab('furniture')">办公文具</view>
+					<view class="tab" @click="toggleTab('furniture')">电脑周边</view>
+					<view class="tab" @click="choose">{{this.$t('index.more')}}
+						<image src="../../static/more.png" mode=""></image>
+					</view>
+				</view>
+			</view>
 
 			<tab-category @getMaterial='getData' :hideTab="hideTab" :tabslist="tabslist" :contlist="contlist"
 				@showDetail="showDetail" keep-alive></tab-category>
 
-		</div>
+		</view>
 		<!-- 分类弹窗 -->
 		<category-mask v-if="categoryShow" :skuList="skuList" :categoryList="categoryList" :skuTitle="skuTitle"
 			@getSearchProd="getProd" @closeSearch="closeSearch"></category-mask>
 		<!-- 提交 -->
-		<van-submit-bar :price="3050" custom-class="submit" :button-text="this.$t('index.submit')" suffix-label="CNY"
-			@submit="onSubmit">
-			<van-icon name="https://b.yzcdn.cn/vant/icon-demo-1126.png" info="9" size="40px" @click="showCar" />
-		</van-submit-bar>
+		<view class="submit">
+			<view class="submit_left">
+				<image src="../../static/car.png" mode="" @click="showCar"></image>
+				<view class="price">334.00 <text class="suffix">CNY</text></view> 
+			</view>
+			<view class="submit_right" @click="onSubmit">
+				{{this.$t('index.submit')}}
+			</view>
+		</view>
 		<!-- 物料车 -->
 		<car-detail v-if="show" @hideDetail="hideDetail" :contlist="contlist"></car-detail>
-	</div>
+	</view>
 </template>
 <script>
 	import categoryMask from "../../components/category-mask/index.vue"
-	import navHeader from "../../components/header/index.vue"
 	import tabCategory from "../../components/tab-category/index.vue"
 	import carDetail from "../../components/car-detail/index.vue"
 	export default {
 		components: {
 			categoryMask,
-			navHeader,
 			tabCategory,
 			carDetail
 		},
@@ -55,7 +65,7 @@
 				hideTab: false,
 				lang: this.$t('index.selectMaterial'),
 				keyword: "",
-				store: "Store",
+				store: {},
 				categoryShow: false,
 				current: 1,
 				catchMove: true,
@@ -67,16 +77,18 @@
 					id: 2,
 					name: '文具'
 				}],
-				contlist: [{
-					imgUrl: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
-					name: "家具"
-				}, {
-					imgUrl: "https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg",
-					name: "家具"
-				}],
+				contlist: [{}, {}],
 				categoryList: [{
 						categoryName: "办公耗材",
 						isChoose: true
+					},
+					{
+						categoryName: "办公家具",
+						isChoose: false
+					},
+					{
+						categoryName: "办公家具",
+						isChoose: false
 					},
 					{
 						categoryName: "办公家具",
@@ -95,6 +107,9 @@
 			}
 		},
 		onLoad() {
+	let systemInfo = uni.getSystemInfoSync();
+	
+	console.log(systemInfo)
 			// this.gettabslist()
 			// setTimeout(()=>{
 			// 	this.getcontlist(this.tabslist[0].id)
@@ -104,7 +119,8 @@
 		onShow() {
 			let that = this
 			uni.$on('returnData', function(data) {
-				that.store = `Store ${data.name}`
+				console.log(data)
+				that.store = data
 			})
 		},
 
@@ -171,44 +187,94 @@
 </script>
 
 <style lang="scss">
-	.submit {
-		z-index: 105 !important;
+	.container{
+		padding-bottom: 140rpx;
 	}
+	.store {
+		background-color: #F0F0F0;
+		font-size: 32rpx;
+		color: #000000;
+		line-height: 40rpx;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 32rpx 28rpx 26rpx 22rpx;
+		border-bottom: 2rpx solid #ddd;
 
-	.container {
-		padding: 0 20px;
+		.store_l {
+			display: flex;
+			align-items: center;
+
+			image {
+				width: 52rpx;
+				height: 52rpx;
+				margin-right: 6rpx;
+			}
+		}
+
+		.store_r {
+			width: 12rpx;
+			height: 18rpx;
+		}
+	}
+	.submit {
+		width: -webkit-fill-available;
+		position: fixed;
+		bottom: 0;
+		height: 138rpx;
+		background: #111111;
+		border-radius: 40rpx;
+		margin: 0 30rpx;
+		padding: 0 30rpx;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+        z-index: 200;
+		.submit_left {
+			display: flex;
+			align-items: center;
+
+			image {
+				width: 60rpx;
+				height: 60rpx;
+			}
+
+			.price {
+				font-size: 36rpx;
+				font-weight: bold;
+				color: #FFFFFF;
+				line-height: 48rpx;
+				margin: 0 12rpx;
+				.suffix {
+					font-size: 20rpx;
+					color: #FFFFFF;
+					line-height: 28rpx;
+					margin-left: 10rpx;
+				}
+			}
+
+		
+		}
+
+		.submit_right {
+			width: 176rpx;
+			height: 80rpx;
+			background: #FFFFFF;
+			border-radius: 45rpx;
+			font-size: 32rpx;
+			font-weight: bold;
+			color: #111111;
+			line-height: 80rpx;
+			text-align: center;
+		}
 	}
 
 	.headerFix {
 		position: sticky;
 		top: 0;
-		background-color: #fff;
 		z-index: 3;
-		width: calc(100vw - 40px);
-
+		background-color: #F0F0F0;
 	}
-
-	// .selectStore {
-	// 	height: 30px;
-	// 	display: flex;
-	// 	align-items: center;
-	// 	justify-content: space-between;
-
-	// 	text {
-	// 		font-size: 14px;
-	// 	}
-
-	// 	.arrowhead {
-	// 		width: 15rpx;
-	// 		height: 15rpx;
-	// 		border-top: 4rpx solid #000;
-	// 		border-right: 4rpx solid #000;
-	// 		-webkit-transform: rotate(45deg);
-	// 		transform: rotate(45deg);
-	// 		margin-left: 10rpx;
-	// 	}
-	// }
-
 	page {
 		width: 100%;
 	}
@@ -216,9 +282,48 @@
 	.tabs {
 		display: flex;
 		font-size: 18px;
-
+		margin: 38rpx 28rpx 32rpx 30rpx;
+		position: relative;
+		width: max-content;
+		align-items: center;
+		.tab {
+			position: relative;
+		}
+	
 		.tab:not(:last-child) {
-			margin-right: 20px;
+			margin-right: 44rpx;
+			font-size: 28rpx;
+			color: #999999;
+			line-height: 40rpx;
+		}
+
+		.tab:last-child {
+			position: absolute;
+			right: 0;
+			background-color: #F0F0F0;
+			padding-left: 20rpx;
+			border-left: 2rpx solid #000;
+			font-size: 28rpx;
+			color: #000000;
+			line-height: 32rpx;
+
+			image {
+				width: 22rpx;
+				height: 20rpx;
+			}
+		}
+		.active {
+			font-weight: bold;
+			color: #111 !important;
+			&::after {
+				display: inline-block;
+				content: "";
+				position: absolute;
+				left: 0;
+				bottom: -16rpx;
+				border: 6rpx solid #111;
+				min-width: -webkit-fill-available;
+			}
 		}
 	}
 
@@ -226,40 +331,25 @@
 	.search {
 		display: flex;
 		align-items: center;
-		background-color: #f7f7f7;
-		font-size: 26rpx;
-		border: 1px solid #ccc;
-		border-radius: 5px;
+		font-size: 32rpx;
+		padding: 26rpx 22rpx;
+		border-bottom: 2rpx solid #ddd;
 
 		.search_box {
 			display: flex;
 			align-items: center;
 			width: 100%;
-			height: 60rpx;
-			background-color: #ffffff;
-			// box-shadow: 2rpx 2rpx 2rpx red;
-			border-radius: 30rpx;
+			height: 52rpx;
 
-			// margin: 0 12rpx 0 25rpx;
-			// padding-left: 18rpx;
 			image:nth-child(1) {
-				margin: 0 18rpx 0 7rpx;
-				width: 28rpx;
-				height: 28rpx;
-			}
-
-			image:nth-child(3) {
-				margin: 0 14rpx 0 auto;
-				width: 31rpx;
-				height: 31rpx;
+				margin: 0 6rpx 0 0rpx;
+				width: 52rpx;
+				height: 52rpx;
 			}
 
 			input {
 				width: 100%;
-				height: 60rpx;
-				// letter-spacing: 4rpx;
-				line-height: 60rpx;
-				color: #969696;
+				color: #111;
 			}
 		}
 
