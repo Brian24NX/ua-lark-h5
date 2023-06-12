@@ -1,63 +1,64 @@
 <template>
 	<view class="container">
-		<van-search :value="value" placeholder=" Please enter material name/code" />
-		<view class="select-down">
-			<drop-down-list v-for="item in 3" key="item.id"  :dataList="dataList" :labelProperty="labelProperty"></drop-down-list>
+		<search-bar @searchClick="searchClick"></search-bar>
+		<view class="content">
+			<drop-down-list :key="item" :dataList="dataList"></drop-down-list>
+			<view class="goods-info" v-for="(item,index) in itemList" :key="index">
+				<view class="info-header">
+					<view class="info-header-top">
+						<van-checkbox use-icon-slot :value="checked" bind:change="onChange">
+							<image class="checkbox" slot="icon" :src="checked ? activeIcon : inactiveIcon" />
+						</van-checkbox>
+						上海太古汇
+						<image class="unfold" src="../../static/unfold.png" mode=""  @click="changeContent(item,index)"></image>
+					</view>
+					<view class="info-header-bottom">
+						<view class="">
+							Claire Wang
+						</view>
+						<view class="">
+							Quantity: 3
+						</view>
+						<view class="">
+							2023.06.04 10:54
+						</view>
+						<view class="">
+							Total: 65.10CNY
+						</view>
+					</view>
+				</view>
+				<!-- 展开 -->
+				<view class="" v-show="item.open==true">
+					<material-item v-for="item in 2" :key="item"></material-item>
+				</view>
+			</view>
 		</view>
-		 <view class="goods-info" v-for="(item,index) in itemList" :key="index">
-        	<view class="title" @click="changeContent(item,index)">
-        		  上海太古汇
-        	</view>
-			<!-- 展开 -->
-	        <view class="" v-show="item.open==true">
-	        	<view class="time">
-	        		<text>2023.06.03 10:54  </text>
-	        		<text>Claire Wang</text>
-	        	</view>
-	        	<view class="info" v-for="item in 2">
-	        		<image
-	        			src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg"
-	        			mode=""></image>
-	        		<view class="info_r">
-	        			<view class="info_r_l">
-	        				<view>
-	        					定制明兴 M17
-	        				</view>
-	        				<view>
-	        					上海齐心共赢
-	        				</view>
-	        			</view>
-	        			<view class="info_r_r">
-	        				<view>
-	        					1
-	        				</view>
-	        				<view>
-	        					32.00CNY
-	        				</view>
-	        			</view>
-	        		</view>
-	        	</view>
-	        </view>
-        </view>
+
 	</view>
 </template>
 
 <script>
 	import dropDownList from "../../components/drop-down-list/index.vue"
+	import searchBar from "../../components/search-bar/index.vue"
+	import materialItem from "../../components/material-item/index.vue"
 	export default {
 		components: {
-			dropDownList
+			dropDownList,
+			searchBar,
+			materialItem
 		},
 		data() {
 			return {
+				checked: true,
+				activeIcon: '../../static/checkbox-active.png',
+				inactiveIcon: '../../static/checkbox.png',
 				dataList: [{
-						name: "选项一"
+						name: "Store"
 					},
 					{
-						name: "选项二"
+						name: "Application Time"
 					}
 				],
-				labelProperty: "name",
 				level: "2",
 				itemList: [{
 						open: true,
@@ -71,6 +72,9 @@
 			}
 		},
 		methods: {
+			searchClick(key) {
+
+			},
 			changeContent(item, index) {
 				this.itemList.forEach(i => {
 					if (i.open !== this.itemList[index].open) {
@@ -82,41 +86,47 @@
 		}
 	}
 </script>
-
 <style lang="scss">
 	.container {
-		.select-down {
-			display: flex;
-			justify-content: space-around;
-		}
-
-		.goods-info {
-			.time {
-				display: flex;
-				justify-content: space-between;
-			}
-		}
-
-		.info {
-			display: flex;
-
-			image {
-				width: 100px;
-				height: 100px;
-			}
-
-			.info_r {
-				display: flex;
-				flex: 1;
-				justify-content: space-between;
-
-				.info_r_l,
-				.info_r_r {
-					display: flex;
-					flex-direction: column;
-					justify-content: space-around;
+		.content{
+			margin: 38rpx 30rpx 40rpx 30rpx;
+			.goods-info{
+				background: #F8F8F8;
+				border-radius: 40rpx;
+				margin-top: 28rpx;
+				padding: 16rpx 20rpx 20rpx 20rpx;
+				.info-header {
+							.info-header-top {
+								display: flex;
+								align-items: center;
+				position: relative;
+								.checkbox {
+									width: 32rpx;
+									height: 32rpx;
+									    vertical-align: text-bottom;
+								}
+				
+								.unfold {
+									width: 58rpx;
+									height: 56rpx;
+									position: absolute;
+									right: 22rpx;
+								}
+				
+								font-size: 28rpx;
+								color: #111111;
+								line-height: 40rpx;
+							}
+				.info-header-bottom{
+					font-size: 24rpx;
+					color: #999999;
+					line-height: 32rpx;
+					column-width: 178rpx;
 				}
+						}
 			}
+
 		}
+
 	}
 </style>

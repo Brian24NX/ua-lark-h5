@@ -1,10 +1,6 @@
 {
-	"locale.auto": "System",
 	"locale.en": "English",
-	"locale.zh-hans": "简体中文",
-	"locale.zh-hant": "繁体中文",
-	"locale.ja": "日语",
-	"locale.it": "意大利",
+	"locale.zh-hans": "zh-hans",
 	"index.materials-application": "Materials application",
 	"index.home": "Home",
 	"index.select-material": "Select Material",
@@ -36,16 +32,5 @@
 	"index.Confirm":"CONFIRM",
 	"index.empty":"No relevant material.",
 	"index.clean_up":"Are you sure to clean up all materials？",
-	"index.demo": "uni-app globalization",
-	"index.demo-description": "Include uni-framework, manifest.json, pages.json, tabbar, Page, Component, API, Schema",
-	"index.detail": "Detail",
-	"index.language": "EN",
-	"index.language-info": "Settings",
-	"index.system-language": "System language",
-	"index.application-language": "Application language",
-	"index.language-change-confirm": "Applying this setting will restart the app",
-	"api.message": "Message",
-	"schema.name": "Name",
-	"schema.add": "Add",
-	"schema.add-success": "Add success"
+	"index.language": "EN"
 }

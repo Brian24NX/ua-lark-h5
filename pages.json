@@ -1,6 +1,20 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 	{
+		"path": "pages/myApproval/myApproval",
+		"style": {
+			"navigationBarTitleText": "%index.myApproval%",
+			"enablePullDownRefresh": false,
+			"usingComponents":{
+				 "van-checkbox": "/wxcomponents/@vant/weapp/checkbox/index"
+				// "van-search":"/wxcomponents/@vant/weapp/search/index",
+				// "van-collapse":"/wxcomponents/@vant/weapp/collapse/index",
+				// "van-collapse-item":"/wxcomponents/@vant/weapp/collapse-item/index"
+				
+			}
+		}
+	},
+	{
 		"path": "pages/index/index",
 		"style": {
 			"navigationStyle": "custom",
@@ -25,7 +39,6 @@
 		"path": "pages/selectMaterial/selectMaterial",
 		"style": {
 			"navigationBarTitleText": "%index.selectMaterial%",
-			// "navigationStyle": "custom",
 			"enablePullDownRefresh": false,
 			"usingComponents":{
 				"van-popup":"/wxcomponents/@vant/weapp/popup/index",
@@ -52,19 +65,19 @@
 			}
 		}
 	}, 
-	{
-		"path": "pages/myApproval/myApproval",
-		"style": {
-			"navigationBarTitleText": "%index.myApproval%",
-			"enablePullDownRefresh": false,
-			"usingComponents":{
-				"van-search":"/wxcomponents/@vant/weapp/search/index",
-				"van-collapse":"/wxcomponents/@vant/weapp/collapse/index",
-				"van-collapse-item":"/wxcomponents/@vant/weapp/collapse-item/index"
+	// {
+	// 	"path": "pages/myApproval/myApproval",
+	// 	"style": {
+	// 		"navigationBarTitleText": "%index.myApproval%",
+	// 		"enablePullDownRefresh": false,
+	// 		"usingComponents":{
+	// 			"van-search":"/wxcomponents/@vant/weapp/search/index",
+	// 			"van-collapse":"/wxcomponents/@vant/weapp/collapse/index",
+	// 			"van-collapse-item":"/wxcomponents/@vant/weapp/collapse-item/index"
 				
-			}
-		}
-	},
+	// 		}
+	// 	}
+	// },
 	{
 		"path": "pages/storeList/storeList",
 		"style": {

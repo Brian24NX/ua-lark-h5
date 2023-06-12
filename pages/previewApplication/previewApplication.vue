@@ -41,7 +41,7 @@
 			<van-cell-group>
 				<van-field :value="message" type="textarea" :autosize="{maxHeight: 100, minHeight: 50 }"
 					placeholder="Expect to be delivered as soon as possible" autosize :border="true"
-					custom-style="height:192px;border-radius: 40rpx;background: #F8F8F8;" />
+					custom-style="height:192px;border-radius: 40rpx;background: #F8F8F8;z-index:100" />
 			</van-cell-group>
 
 		</view>
@@ -238,7 +238,7 @@
 		position: fixed;
 		bottom: 0;
 		left: 0;
-		z-index: 2;
+		z-index: 100;
 		align-items: center;
 		padding: 0 30rpx;
 

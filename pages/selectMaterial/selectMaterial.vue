@@ -9,14 +9,7 @@
 					</view>
 					<image class="store_r" src="../../static/right.png" mode=""></image>
 				</view>
-				<view class="search">
-					<view class="search_box">
-						<image src="../../static/search.png">
-						</image>
-						<input type="text" confirm-type="search" v-model="keyword" @confirm="searchClick(keyword)"
-							:placeholder="this.$t('index.material-name') " />
-					</view>
-				</view>
+	            <search-bar @searchClick="searchClick"></search-bar>
 				<view class="tabs" v-if="!hideTab">
 					<view class="tab active" @click="toggleTab('all')">全部</view>
 					<view class="tab" @click="toggleTab('material')">办公耗材</view>
@@ -37,31 +30,38 @@
 		<category-mask v-if="categoryShow" :skuList="skuList" :categoryList="categoryList" :skuTitle="skuTitle"
 			@getSearchProd="getProd" @closeSearch="closeSearch"></category-mask>
 		<!-- 提交 -->
-		<view class="submit">
+		<view class="submit" :style="clearShow?'z-index:100':'z-index:101'">
 			<view class="submit_left">
 				<image src="../../static/car.png" mode="" @click="showCar"></image>
-				<view class="price">334.00 <text class="suffix">CNY</text></view> 
+				<view class="price">334.00 <text class="suffix">CNY</text></view>
 			</view>
 			<view class="submit_right" @click="onSubmit">
 				{{this.$t('index.submit')}}
 			</view>
 		</view>
 		<!-- 物料车 -->
-		<car-detail v-if="show" @hideDetail="hideDetail" :contlist="contlist"></car-detail>
+		<car-detail v-if="show" @hideDetail="hideDetail" :contlist="contlist" @showDialog='showDialog'></car-detail>
+		<!-- 确认弹窗 -->
+		<public-dialog v-if="clearShow" @hideDialog="dialogHide" />
 	</view>
 </template>
 <script>
 	import categoryMask from "../../components/category-mask/index.vue"
 	import tabCategory from "../../components/tab-category/index.vue"
 	import carDetail from "../../components/car-detail/index.vue"
+	import publicDialog from "../../components/public-dialog/index.vue"
+	import searchBar from "../../components/search-bar/index.vue"
 	export default {
 		components: {
 			categoryMask,
 			tabCategory,
-			carDetail
+			carDetail,
+			publicDialog,
+			searchBar
 		},
 		data() {
 			return {
+				clearShow: false,
 				hideTab: false,
 				lang: this.$t('index.selectMaterial'),
 				keyword: "",
@@ -107,9 +107,9 @@
 			}
 		},
 		onLoad() {
-	let systemInfo = uni.getSystemInfoSync();
-	
-	console.log(systemInfo)
+			let systemInfo = uni.getSystemInfoSync();
+
+			console.log(systemInfo)
 			// this.gettabslist()
 			// setTimeout(()=>{
 			// 	this.getcontlist(this.tabslist[0].id)
@@ -125,8 +125,16 @@
 		},
 
 		methods: {
+			showDialog(val) {
+				this.clearShow = val
+				this.show = false
+			},
+			dialogHide(val) {
+				this.clearShow = false
+			},
 			searchClick(key) {
 				if (key) {
+					this.keyword = key
 					this.hideTab = true
 				} else {
 					this.hideTab = false
@@ -187,9 +195,10 @@
 </script>
 
 <style lang="scss">
-	.container{
+	.container {
 		padding-bottom: 140rpx;
 	}
+
 	.store {
 		background-color: #F0F0F0;
 		font-size: 32rpx;
@@ -217,6 +226,7 @@
 			height: 18rpx;
 		}
 	}
+
 	.submit {
 		width: -webkit-fill-available;
 		position: fixed;
@@ -229,7 +239,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-        z-index: 200;
+
 		.submit_left {
 			display: flex;
 			align-items: center;
@@ -245,6 +255,7 @@
 				color: #FFFFFF;
 				line-height: 48rpx;
 				margin: 0 12rpx;
+
 				.suffix {
 					font-size: 20rpx;
 					color: #FFFFFF;
@@ -253,7 +264,7 @@
 				}
 			}
 
-		
+
 		}
 
 		.submit_right {
@@ -275,6 +286,7 @@
 		z-index: 3;
 		background-color: #F0F0F0;
 	}
+
 	page {
 		width: 100%;
 	}
@@ -286,10 +298,11 @@
 		position: relative;
 		width: max-content;
 		align-items: center;
+
 		.tab {
 			position: relative;
 		}
-	
+
 		.tab:not(:last-child) {
 			margin-right: 44rpx;
 			font-size: 28rpx;
@@ -312,9 +325,11 @@
 				height: 20rpx;
 			}
 		}
+
 		.active {
 			font-weight: bold;
 			color: #111 !important;
+
 			&::after {
 				display: inline-block;
 				content: "";
@@ -324,43 +339,6 @@
 				border: 6rpx solid #111;
 				min-width: -webkit-fill-available;
 			}
-		}
-	}
-
-
-	.search {
-		display: flex;
-		align-items: center;
-		font-size: 32rpx;
-		padding: 26rpx 22rpx;
-		border-bottom: 2rpx solid #ddd;
-
-		.search_box {
-			display: flex;
-			align-items: center;
-			width: 100%;
-			height: 52rpx;
-
-			image:nth-child(1) {
-				margin: 0 6rpx 0 0rpx;
-				width: 52rpx;
-				height: 52rpx;
-			}
-
-			input {
-				width: 100%;
-				color: #111;
-			}
-		}
-
-		.search_btn {
-			width: 96rpx;
-			height: 52rpx;
-			background-color: #fff;
-			color: pink;
-			border-radius: 26rpx;
-			line-height: 52rpx;
-			text-align: center;
 		}
 	}
 </style>

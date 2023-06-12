@@ -1,5 +1,5 @@
 <template>
-	<van-popup :show="show" position="center" custom-style="width: 85%;border-radius: 20px;" @close="onClose">
+	<van-popup :show="true" position="center" custom-style="width: 85%;border-radius: 20px;z-index:500,background-color:#f8f8f8" @close="onClose">
 		<view class="dialog">
 			<h3 class="title">{{this.$t('index.Confirm')}}</h3>
 			<view class="massage">
@@ -25,23 +25,19 @@
 		},
 		data() {
 			return {
-				current: 1,
-				show: true
+				current: 1
 			}
 		},
 		methods: {
 			onClose() {
-				this.show = false
 				this.$emit('hideDialog', false)
 			},
 			confirm() {
-				this.show = false
 				this.$emit('hideDialog', false)
 			}
 		}
 	}
 </script>
-
 <style lang="scss">
 	.dialog {
 		.title {

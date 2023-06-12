@@ -1,11 +1,11 @@
 <template>
 	<view class="container">
 		<van-popup :show="true" round position="bottom" custom-style="padding-bottom:160rpx" @close="onClose">
-			<view class="clearAll" @click="clearAll">
+			<view class="clearAll">
 				<view class="clearAll_l">
 					Clear All
 				</view>
-				<view class="clearAll_r">
+				<view class="clearAll_r"  @click="clearAll">
 					<image src="../../static/delete.png" mode=""></image>
 					Clear All
 				</view>
@@ -32,8 +32,6 @@
 					v-if="index !=contlist.length-1" />
 			</view>
 		</van-popup>
-		<!-- 弹窗 -->
-		<public-dialog v-if="clearShow" @hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -41,7 +39,7 @@
 	import vanPopup from "@/wxcomponents/@vant/weapp/popup/index"
 	import vanStepper from "@/wxcomponents/@vant/weapp/stepper/index"
 	import vanDivider from "@/wxcomponents/@vant/weapp/divider/index"
-	import publicDialog from "../../components/public-dialog/index.vue"
+
 	export default {
 		props: {
 			contlist: {
@@ -52,24 +50,19 @@
 		components: {
 			vanPopup,
 			vanStepper,
-			publicDialog,
 			vanDivider
 		},
 		data() {
 			return {
-				show: true,
-				clearShow: false
+			
 			}
 		},
 		methods: {
 			onClose() {
 				this.$emit('hideDetail', false)
 			},
-			dialogHide(val) {
-				this.clearShow = false
-			},
 			clearAll() {
-				this.clearShow = true
+				this.$emit('showDialog',true)
 			}
 		}
 	}

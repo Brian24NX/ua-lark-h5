@@ -42,7 +42,9 @@
 		methods: {
 			onLocaleChange(e) {
 				uni.setLocale(e.code);
+				
 				this.$i18n.locale = e.code;
+				console.log(this.$i18n.locale)
 				uni.navigateBack()
 			}
 		}
