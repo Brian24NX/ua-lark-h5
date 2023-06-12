@@ -19,7 +19,7 @@
 					x1
 				</view>
 				<view>
-				<text  class="bold">32.00</text> <text style="font-size: 16rpx; margin-left: 2rpx;">CNY</text>
+				<text  class="bold" style="color: #C54646;">32.00</text> <text style="font-size: 16rpx; margin-left: 2rpx;">CNY</text>
 				</view>
 			</view>
 		</view>

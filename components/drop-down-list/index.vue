@@ -79,7 +79,7 @@
 		display: inline-block;
 		min-width: 100px;
 		position: relative;
-
+margin-right: 32rpx;
 		.title {
 			font-size: 28rpx;
 			color: #111111;
