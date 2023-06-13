@@ -57,6 +57,9 @@
 			
 			}
 		},
+		mounted() {
+		console.log(this.$store.state.carShop)	
+		},
 		methods: {
 			onClose() {
 				this.$emit('hideDetail', false)

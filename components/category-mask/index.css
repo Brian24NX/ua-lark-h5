@@ -58,11 +58,11 @@ font-weight: bold;
 	display: flex;
 	flex-wrap: wrap;
 	margin: 0 30rpx;
-	justify-content: space-between;
+	/* justify-content: space-between; */
 }
 
 .category-item {
-	width: calc(calc(100% - 40rpx) / 3);
+	width: calc(calc(100% - 80rpx) / 3);
 	height: 70rpx;
 	color: #111;
 	border-radius: 35rpx;
@@ -72,6 +72,7 @@ font-weight: bold;
 	line-height: 70rpx;
 	margin-bottom: 28rpx;
 	border: 2rpx solid #111;
+	margin-right: 20rpx;
 }
 .category-item.active {
 	color: #fff;

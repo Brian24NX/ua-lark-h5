@@ -2,18 +2,17 @@
 	<view class="classbox">
 		<!-- 左侧 -->
 		<view class="sub-tabs" v-if="!hideTab">
-			<view :class="['sub-tab',item.cid==current?'navActive' :'']" v-for="(item,index) in tabslist"
+			<view :class="['sub-tab',item.cid==subcurrent?'navActive' :'']" v-for="(item,index) in tabslist"
 				:key="item.cid" @click="select(item)">{{item.categoryName}}</view>
 		</view>
 		<!-- 左侧 -->
 		<view class="conts"
 			:style="hideTab?'padding-left: 0;width: 100%;padding-right: 0;margin-top:18rpx':'padding-left: 192rpx'">
-			<view class="cont" v-for="(item,index) in contlist" :key="index"
-				v-if="contlist.length ">
-				<view class="prod-pic"  @click.capture="tz(item)">
+			<view class="cont" v-if="contlist.length >0" v-for="(item,index) in contlist" :key="index">
+				<view class="prod-pic" @click.capture="tz(item)">
 					<image :src="item.imageUrl" mode="aspectFit" />
 				</view>
-				<view class="prod-info"  @click.capture="tz(item)">
+				<view class="prod-info" @click.capture="tz(item)">
 					<view class="prodname">{{item.shortName}}</view>
 					<view class="desc">{{item.specifications}}</view>
 					<view class="desc">{{item.supplierName}}</view>
@@ -25,10 +24,12 @@
 				<!-- <van-stepper custom-class="stepper" :value="1" theme="round" button-size="25px" input-class="input"
 					plus-class="add" :disable-minus="false"  minus-class="minus" @change.stop="onChange" /> -->
 				<view class="change-num">
-					<image class="addcar" src="../../static/minuscar.png" @tap.stop="showStep "></image><text>1</text><image src="../../static/addcar.png" mode=""></image>
+					<image class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image> <input
+						:value="item.scalar" type="text" />
+					<image class="addcar" src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)" ></image>
 				</view>
 			</view>
-			<view class="empty" v-else>
+			<view class="empty" v-if="contlist.length==0">
 				<image src="../../static/empty.png" mode=""></image>
 				{{this.$t('index.empty')}}
 			</view>
@@ -54,37 +55,43 @@
 			hideTab: {
 				type: Boolean,
 				default: false
+			},
+			subcurrent: {
+				type: Number,
+				default: 1
 			}
 		},
 		components: {
 			vanStepper,
-			// vanPopup,
 			materialDetail
 		},
 		data() {
 			return {
-				current: 1,
 				show: false,
-				// showStep:false,
 				detail: {}
 			}
 		},
 		methods: {
-			onChange(val){
+			onChange(val) {
 				console.log(val)
 			},
-showStep(){
-console.log('123')	
-},
+			showStep() {
+				console.log('123')
+			},
 			onClose() {
 				this.show = false
 			},
 			back() {
 				uni.navigateBack()
 			},
+			minusNum(item){
+				console.log(item)
+				this.$emit('minusNum',item)
+			},
+			plusNum(item){
+				this.$emit("plusNum",item)
+			},
 			select(item) {
-				this.current = item.cid
-				// this.getcontlist(this.current)
 				this.$emit('getMaterial', item.cid)
 
 			},
@@ -96,27 +103,30 @@ console.log('123')
 	}
 </script>
 <style>
-	
+
 </style>
-<style lang="scss">
-	// .stepper {
-	// 	position: absolute;
-	// 	right: 20rpx;
-	// 	bottom: 30rpx;
-	// }
-.change-num{
-	position: absolute;
-	right: 20rpx;
-	bottom: 30rpx;
-	image{
-		width: 36rpx !important;
-		height: 36rpx !important;
+<style lang="scss" scoped>
+	.change-num {
+		position: absolute;
+		right: 20rpx;
+		bottom: 30rpx;
+		display: flex;
+		align-items: center;
+
+		.addcar {
+			width: 36rpx;
+			height: 36rpx;
+			margin: 0;
+		}
+
+		input {
+			width: 20px;
+			font-size: 24rpx;
+			color: #111111;
+			line-height: 28rpx;
+			text-align: center;
+		}
 	}
-	.addcar {
-		
-		
-	}
-}
 
 
 	.sub-tabs {

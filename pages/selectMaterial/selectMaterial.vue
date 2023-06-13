@@ -21,12 +21,12 @@
 				</view>
 			</view>
 
-			<tab-category @getMaterial='getContlist' :hideTab="hideTab" :tabslist="tabslist" :contlist="contlist"
+			<tab-category @getMaterial='getContlist' @minusNum="minusNum" @plusNum="plusNum" :subcurrent="subcurrent" :hideTab="hideTab" :tabslist="tabslist" :contlist="contlist"
 				@showDetail="showDetail" keep-alive></tab-category>
 
 		</view>
 		<!-- 分类弹窗 -->
-		<category-mask v-if="categoryShow" :skuList="skuList" :categoryList="categoryList" :skuTitle="skuTitle"
+		<category-mask v-if="categoryShow" @searchSubMaterial="toggleTab" :current="current" :subcurrent="subcurrent" :categoryList="categoryList" :tabslist="tabslist"
 			@getSearchProd="getProd" @closeSearch="closeSearch"></category-mask>
 		<!-- 提交 -->
 		<view class="submit" :style="clearShow?'z-index:100':'z-index:101'">
@@ -65,7 +65,9 @@
 				keyword: "",
 				store: {},
 				categoryShow: false,
+				// 一级类型选中
 				current: 1,
+				subcurrent:1,
 				catchMove: true,
 				show: false,
 				// 物料列表
@@ -75,15 +77,15 @@
 				// 二级分类
 				tabslist: [],
 
-				skuTitle: [{
-						name: "日常店铺物料",
-						isChoose: true
-					},
-					{
-						name: "标签打印设备",
-						isChoose: false
-					}
-				],
+				// skuTitle: [{
+				// 		name: "日常店铺物料",
+				// 		isChoose: true
+				// 	},
+				// 	{
+				// 		name: "标签打印设备",
+				// 		isChoose: false
+				// 	}
+				// ],
 				pageNum: 1,
 				pageSize: 10,
 				param: {
@@ -126,6 +128,23 @@
 		},
 
 		methods: {
+			minusNum(val){
+				this.contlist.forEach((item,index)=>{
+					if(item.mid==val.mid){
+						item.scalar--
+						this.$store.commit('minusCar',item)
+					}
+				})
+			},
+			plusNum(val){
+				this.contlist.forEach((item,index)=>{
+					if(item.mid==val.mid){
+						item.scalar++
+						this.$store.commit('addCar',item)
+					}
+				})
+				
+			},
 			showDialog(val) {
 				this.clearShow = val
 				this.show = false
@@ -173,9 +192,9 @@
 				}).then(res => {
 					if (res.code == '200') {
 						res.data.forEach((item, index) => {
-							isChoose: false
+							item.isChoose=false
 						})
-							this.categoryList= res.data
+					this.categoryList= res.data
 					}
 
 				})
@@ -192,7 +211,7 @@
 				}).then(res => {
 					if (res.code == '200') {
 						res.data.forEach((item, index) => {
-							isChoose: false
+							item.isChoose=false
 						})
 					this.tabslist = res.data
 					this.getContlist(this.tabslist[0].cid)
@@ -201,6 +220,7 @@
 				})
 			},
          getContlist(id){
+			 this.subcurrent = id
 			 this.param.categoryId = id
 			 let param = {
 			 	pageNum: this.pageNum,
@@ -209,7 +229,10 @@
 			 }
 			 this.$api.searchMaterial(param).then(res => {
 			 	if (res.code == '200') {
-			 		this.contlist = res.data.data
+					res.data.data.forEach((item, index) => {
+						item.scalar=0
+					})
+					this.contlist = res.data.data
 			 	}
 			 })
 		 }

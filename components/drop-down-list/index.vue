@@ -2,7 +2,7 @@
 	<view class="container">
 		<view class="zq-drop-list"
 			v-for="(item, index) in dataList" :key="index">
-			<view class="title" @click="menuShow(item,index)">{{item.name}}</view>
+			<view :class="['title',item.show?'activemenu':'']" @click="menuShow(item,index)">{{item.name}}</view>
 			<!-- :style="show?'display:block':'display:none'" -->
 			<view class="mask" :style="item.show?'display:block':'display:none'" @click="hideMenu">
 				<ul>
@@ -97,6 +97,11 @@
 				position: absolute;
 				right: 34rpx;
 				top: 24rpx;
+			}
+		}
+		.activemenu{
+			&::after{
+				transform: rotate(314deg);
 			}
 		}
 

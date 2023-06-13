@@ -4,9 +4,10 @@
 			<!-- 搜索 -->
 			<search-bar @searchClick="searchClick"></search-bar>
 			<!-- 中心区域 -->
-			<drop-down-list :key="item" @selectMenu="selectMenu(arguments)" @hideMenu="hideMenu" :dataList="dataList"></drop-down-list>
-			</view>
-			<view class="content">
+			<drop-down-list :key="item" @selectMenu="selectMenu(arguments)" @hideMenu="hideMenu"
+				:dataList="dataList"></drop-down-list>
+		</view>
+		<view class="content">
 			<view class="goods-info" v-for="(item,index) in itemList" :key="index">
 				<view class="info-header">
 					<view class="info-header-top">
@@ -73,11 +74,11 @@
 				notAll: '../../static/notall.png',
 				dataList: [{
 						name: "Store",
-						show:false
+						show: false
 					},
 					{
 						name: "Application Time",
-						show:false
+						show: false
 					}
 				],
 				level: "2",
@@ -93,15 +94,15 @@
 			}
 		},
 		methods: {
-			selectMenu(val){
+			selectMenu(val) {
 				this.dataList.forEach(i => {
-						i.show = false;
+					i.show = false;
 				})
 				this.dataList[val[1]].show = true
 			},
-			hideMenu(){
+			hideMenu() {
 				this.dataList.forEach(i => {
-						i.show = false;
+					i.show = false;
 				})
 			},
 			searchClick(key) {
@@ -119,18 +120,19 @@
 	}
 </script>
 <style lang="scss">
-	.searchbar{
+	.searchbar {
 		position: sticky;
 		top: 0;
 		background-color: #f0f0f0;
-	    z-index: 2;
+		z-index: 2;
 	}
+
 	.vancheck {
 		width: 32rpx;
 		height: 32rpx;
 		position: relative;
 	}
-	
+
 	.checkbox {
 		width: 32rpx;
 		height: 32rpx;
@@ -139,10 +141,9 @@
 	}
 </style>
 <style lang="scss" scoped>
-
-
 	.container {
 		padding-bottom: 160rpx;
+
 		.content {
 			margin: 0rpx 30rpx 40rpx 30rpx;
 
@@ -150,6 +151,7 @@
 				background: #F8F8F8;
 				border-radius: 40rpx;
 				padding: 16rpx 20rpx 20rpx 20rpx;
+				margin-bottom: 28rpx;
 
 				.info-header {
 					.info-header-top {
@@ -206,9 +208,10 @@
 		align-items: center;
 		justify-content: space-between;
 		padding: 0 30rpx 0 12rpx;
-position: fixed;
-bottom: 0;
-left: 0;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+
 		.footer-l {
 			font-size: 24rpx;
 			color: #FFFFFF;

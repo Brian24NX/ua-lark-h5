@@ -7,7 +7,7 @@ const store = new Vuex.Store({
     state: {
 		//公共的变量，这里的变量不能随便修改，只能通过触发mutations的方法才能改变
 		token:uni.getStorageSync('token')||'',
-		userInfo:{}
+	    carShop:[]
 	},
     mutations: {
 		//相当于同步的操作
@@ -35,6 +35,14 @@ const store = new Vuex.Store({
 			});
 		
 		},
+		addCar(state,item){
+			state.carShop = state.carShop.filter((v)=>v.mid !=item.mid)
+			state.carShop.push(item)
+		},
+		minusCar(state,item){
+			state.carShop = state.carShop.filter((v)=>v.mid !=item.mid)
+			state.carShop.push(item)
+		}
 	},
     actions: {
 		//相当于异步的操作,不能直接改变state的值，只能通过触发mutations的方法才能改变
