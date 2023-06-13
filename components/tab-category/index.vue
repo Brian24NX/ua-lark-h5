@@ -2,34 +2,39 @@
 	<view class="classbox">
 		<!-- 左侧 -->
 		<view class="sub-tabs" v-if="!hideTab">
-			<view :class="['sub-tab',item.id==current?'navActive' :'']" @click="select(item)" v-for="item in tabslist"
-				:key="item.id">{{item.name}}</view>
+			<view :class="['sub-tab',item.cid==current?'navActive' :'']" v-for="(item,index) in tabslist"
+				:key="item.cid" @click="select(item)">{{item.categoryName}}</view>
 		</view>
 		<!-- 左侧 -->
 		<view class="conts"
 			:style="hideTab?'padding-left: 0;width: 100%;padding-right: 0;margin-top:18rpx':'padding-left: 192rpx'">
-				<view class="cont" v-for="item in contlist" :key="item.id" @click.native="tz(item.id,item.name,item)">
-				<view class="prod-pic">
-					<image src="../../static/xiezi.png" mode="aspectFit" />
+			<view class="cont" v-for="(item,index) in contlist" :key="index"
+				v-if="contlist.length ">
+				<view class="prod-pic"  @click.capture="tz(item)">
+					<image :src="item.imageUrl" mode="aspectFit" />
 				</view>
-				<view class="prod-info" >
-					<view class="prodname">定制明兴 M17</view>
-					<view class="desc">直径13mm｜高10mm｜100</view>
-					<view class="desc">上海齐心共赢</view>
+				<view class="prod-info"  @click.capture="tz(item)">
+					<view class="prodname">{{item.shortName}}</view>
+					<view class="desc">{{item.specifications}}</view>
+					<view class="desc">{{item.supplierName}}</view>
 					<view class="price-nums">
-						￥30 <text>CNY</text>
+						{{item.retailPrice}} <text>{{item.priceUnit}}</text>
 					</view>
 				</view>
-				<van-stepper custom-class="stepper" :value="1" theme="round" button-size="25px" input-class="input"
-					plus-class="add" minus-class="minus" bind:change="onChange" />
+				<!-- <image class="addcar" src="../../static/addcar.png" @tap.stop="showStep "></image> -->
+				<!-- <van-stepper custom-class="stepper" :value="1" theme="round" button-size="25px" input-class="input"
+					plus-class="add" :disable-minus="false"  minus-class="minus" @change.stop="onChange" /> -->
+				<view class="change-num">
+					<image class="addcar" src="../../static/minuscar.png" @tap.stop="showStep "></image><text>1</text><image src="../../static/addcar.png" mode=""></image>
+				</view>
 			</view>
-		<!-- 	<view class="empty">
+			<view class="empty" v-else>
 				<image src="../../static/empty.png" mode=""></image>
 				{{this.$t('index.empty')}}
-			</view> -->
+			</view>
 		</view>
 		<!-- 物料详情 -->
-		<material-detail v-if="show" @onClose="onClose"></material-detail>
+		<material-detail v-if="show" :detail="detail" @onClose="onClose"></material-detail>
 	</view>
 </template>
 
@@ -59,11 +64,18 @@
 		data() {
 			return {
 				current: 1,
-				show: false
+				show: false,
+				// showStep:false,
+				detail: {}
 			}
 		},
 		methods: {
-
+			onChange(val){
+				console.log(val)
+			},
+showStep(){
+console.log('123')	
+},
 			onClose() {
 				this.show = false
 			},
@@ -71,24 +83,41 @@
 				uni.navigateBack()
 			},
 			select(item) {
-				this.current = item.id
+				this.current = item.cid
 				// this.getcontlist(this.current)
-				this.$emit('getMaterial', item.id)
+				this.$emit('getMaterial', item.cid)
 
 			},
-			tz(id, name, item) {
+			tz(item) {
 				this.show = true
+				this.detail = item
 			}
 		}
 	}
 </script>
-
+<style>
+	
+</style>
 <style lang="scss">
-	.stepper {
-		position: absolute;
-		right: 20rpx;
-		bottom: 30rpx;
+	// .stepper {
+	// 	position: absolute;
+	// 	right: 20rpx;
+	// 	bottom: 30rpx;
+	// }
+.change-num{
+	position: absolute;
+	right: 20rpx;
+	bottom: 30rpx;
+	image{
+		width: 36rpx !important;
+		height: 36rpx !important;
 	}
+	.addcar {
+		
+		
+	}
+}
+
 
 	.sub-tabs {
 		position: fixed;
@@ -113,6 +142,7 @@
 	.conts {
 		width: -webkit-fill-available;
 		min-height: 600rpx;
+
 		.empty {
 			font-size: 36rpx;
 			color: #111111;

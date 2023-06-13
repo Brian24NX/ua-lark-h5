@@ -103,11 +103,16 @@
 			}
 		},
 		onShow() {
-			this.userInfo = uni.getStorageSync('userInfo')
-			if (!uni.getStorageSync('userInfo')) {
-				const updateManager = tt.getUpdateManager()
-				updateManager.applyUpdate()
-			}
+			let that = this
+			uni.getUserInfo({
+				success(res) {
+					that.userInfo = res.userInfo
+				},
+				fail(res) {
+					console.log(`getUserInfo µ÷ÓÃÊ§°Ü`);
+				}
+			});
+
 		},
 		onLoad() {
 			uni.getSystemInfo({
@@ -117,20 +122,6 @@
 					this.barWith = res.navigationBarSafeArea.width
 				}
 			})
-			// let systemInfo = uni.getSystemInfoSync();
-			// console.log(systemInfo)
-			// this.systemLocale = systemInfo.language;
-			// this.applicationLocale = uni.getLocale();
-			// this.isAndroid = systemInfo.platform.toLowerCase() === 'android';
-			// uni.onLocaleChange((e) => {
-			// 	console.log(e)
-			// 	this.applicationLocale = e.locale;
-			// })
-			// this.token = this.$store.state.token
-			// if (this.$store.state.token) {
-			// 	console.log(this.$store.state.token)
-			// }
-
 		},
 
 		methods: {

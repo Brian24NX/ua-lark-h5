@@ -75,6 +75,12 @@ export default {
 	userLogin(params) {
 		return fetchGet("/ua-material-api/login", params)
 	},
-	
-
+// 获取物料类型
+	getMaterialCategory(data) {
+		return fetchGet(`/ua-material-api/app/material/getMaterialCategory/${data.id}`)
+	},
+	// 搜索物料列表
+	searchMaterial(params) {
+		return fetchPost("/ua-material-api/app/material/searchMaterial/page",params,true)
+	},
 }

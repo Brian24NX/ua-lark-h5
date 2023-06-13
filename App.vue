@@ -6,14 +6,6 @@
 			if (!this.$store.state.token) {
 				this.$store.commit('userLogins')
 			}
-			tt.getUserInfo({
-				success(res) {
-					uni.setStorageSync('userInfo', res.userInfo)
-				},
-				fail(res) {
-					console.log(`getUserInfo 调用失败`);
-				}
-			});
 		},
 		onShow: function() {
 			console.log('App Show')

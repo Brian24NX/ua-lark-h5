@@ -1,10 +1,12 @@
 <template>
 	<view class="container">
-		<!-- 搜索 -->
-		<search-bar @searchClick="searchClick"></search-bar>
-		<!-- 中心区域 -->
-		<view class="content">
-			<drop-down-list :key="item" :dataList="dataList"></drop-down-list>
+		<view class="searchbar">
+			<!-- 搜索 -->
+			<search-bar @searchClick="searchClick"></search-bar>
+			<!-- 中心区域 -->
+			<drop-down-list :key="item" @selectMenu="selectMenu(arguments)" @hideMenu="hideMenu" :dataList="dataList"></drop-down-list>
+			</view>
+			<view class="content">
 			<view class="goods-info" v-for="(item,index) in itemList" :key="index">
 				<view class="info-header">
 					<view class="info-header-top">
@@ -70,10 +72,12 @@
 				selectAll: '../../static/selectall.png',
 				notAll: '../../static/notall.png',
 				dataList: [{
-						name: "Store"
+						name: "Store",
+						show:false
 					},
 					{
-						name: "Application Time"
+						name: "Application Time",
+						show:false
 					}
 				],
 				level: "2",
@@ -89,6 +93,17 @@
 			}
 		},
 		methods: {
+			selectMenu(val){
+				this.dataList.forEach(i => {
+						i.show = false;
+				})
+				this.dataList[val[1]].show = true
+			},
+			hideMenu(){
+				this.dataList.forEach(i => {
+						i.show = false;
+				})
+			},
 			searchClick(key) {
 
 			},
@@ -103,7 +118,13 @@
 		}
 	}
 </script>
-<style>
+<style lang="scss">
+	.searchbar{
+		position: sticky;
+		top: 0;
+		background-color: #f0f0f0;
+	    z-index: 2;
+	}
 	.vancheck {
 		width: 32rpx;
 		height: 32rpx;
@@ -123,12 +144,11 @@
 	.container {
 		padding-bottom: 160rpx;
 		.content {
-			margin: 38rpx 30rpx 40rpx 30rpx;
+			margin: 0rpx 30rpx 40rpx 30rpx;
 
 			.goods-info {
 				background: #F8F8F8;
 				border-radius: 40rpx;
-				margin-top: 28rpx;
 				padding: 16rpx 20rpx 20rpx 20rpx;
 
 				.info-header {

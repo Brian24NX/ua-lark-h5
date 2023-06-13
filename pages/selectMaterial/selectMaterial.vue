@@ -9,20 +9,19 @@
 					</view>
 					<image class="store_r" src="../../static/right.png" mode=""></image>
 				</view>
-	            <search-bar @searchClick="searchClick"></search-bar>
+				<search-bar @searchClick="searchClick"></search-bar>
 				<view class="tabs" v-if="!hideTab">
-					<view class="tab active" @click="toggleTab('all')">全部</view>
-					<view class="tab" @click="toggleTab('material')">办公耗材</view>
-					<view class="tab" @click="toggleTab('furniture')">办公家具</view>
-					<view class="tab" @click="toggleTab('furniture')">办公文具</view>
-					<view class="tab" @click="toggleTab('furniture')">电脑周边</view>
+					<!-- <view class="tab active" @click="toggleTab('all')">全部</view> -->
+					<view :class="['tab',item.cid==current?'active' :'']" v-for="(item,index) in categoryList" :key="index" @click="toggleTab(item)">
+						{{item.categoryName}}
+					</view>
 					<view class="tab" @click="choose">{{this.$t('index.more')}}
 						<image src="../../static/more.png" mode=""></image>
 					</view>
 				</view>
 			</view>
 
-			<tab-category @getMaterial='getData' :hideTab="hideTab" :tabslist="tabslist" :contlist="contlist"
+			<tab-category @getMaterial='getContlist' :hideTab="hideTab" :tabslist="tabslist" :contlist="contlist"
 				@showDetail="showDetail" keep-alive></tab-category>
 
 		</view>
@@ -63,38 +62,19 @@
 			return {
 				clearShow: false,
 				hideTab: false,
-				lang: this.$t('index.selectMaterial'),
 				keyword: "",
 				store: {},
 				categoryShow: false,
 				current: 1,
 				catchMove: true,
 				show: false,
-				tabslist: [{
-					id: 1,
-					name: '家具'
-				}, {
-					id: 2,
-					name: '文具'
-				}],
-				contlist: [{}, {}],
-				categoryList: [{
-						categoryName: "办公耗材",
-						isChoose: true
-					},
-					{
-						categoryName: "办公家具",
-						isChoose: false
-					},
-					{
-						categoryName: "办公家具",
-						isChoose: false
-					},
-					{
-						categoryName: "办公家具",
-						isChoose: false
-					}
-				],
+				// 物料列表
+				contlist: [],
+				// 大分类
+				categoryList: [],
+				// 二级分类
+				tabslist: [],
+
 				skuTitle: [{
 						name: "日常店铺物料",
 						isChoose: true
@@ -103,18 +83,39 @@
 						name: "标签打印设备",
 						isChoose: false
 					}
-				]
+				],
+				pageNum: 1,
+				pageSize: 10,
+				param: {
+					costPrice: 0,
+					createTime: "",
+					image: 0,
+					imageUrl: "",
+					materialName: "",
+					mid: 0,
+					oriSkuCode: "",
+					priceUnit: "",
+					retailPrice: 0,
+					shortName: "",
+					specifications: "",
+					status: true,
+					supplierCode: "",
+					supplierName: "",
+					tenantCode: "",
+					uaSkuCode: "",
+					unit: "",
+					updateTime: ""
+				}
 			}
 		},
 		onLoad() {
-			let systemInfo = uni.getSystemInfoSync();
+			// let systemInfo = uni.getSystemInfoSync();
 
-			console.log(systemInfo)
-			// this.gettabslist()
-			// setTimeout(()=>{
-			// 	this.getcontlist(this.tabslist[0].id)
-			// 	this.current =this.tabslist[0].id
-			// },500)	
+			// console.log(systemInfo)
+			this.gettabslist()
+			setTimeout(() => {
+				this.getSubCategory(this.categoryList[0].cid)
+			}, 500)
 		},
 		onShow() {
 			let that = this
@@ -157,22 +158,26 @@
 			choose() {
 				this.categoryShow = true
 			},
-			getData(id) {
-				console.log(id)
-
-			},
-			toggleTab(tab) {
-				console.log(tab)
+			toggleTab(item) {
+				console.log(item)
+				this.current = item.cid
+				this.getSubCategory(item.cid)
 			},
 			closeSearch(val) {
 				this.categoryShow = val
 			},
+			// 获取大分类列表
 			gettabslist() {
-				this.$http.get('/app/goodsTypeCopy/parentList ', {}).then(res => {
-					if (res.code == 200) {
-						console.log(res.data);
-						this.tabslist = res.data
+				this.$api.getMaterialCategory({
+					id: 0
+				}).then(res => {
+					if (res.code == '200') {
+						res.data.forEach((item, index) => {
+							isChoose: false
+						})
+							this.categoryList= res.data
 					}
+
 				})
 			},
 			selectStore() {
@@ -180,16 +185,34 @@
 					url: "/pages/storeList/storeList"
 				})
 			},
-			getcontlist(id) {
-				this.$http.get('/app/goodsTypeCopy/moreListById', {
-					id
+			// 获取二级分类列表
+			getSubCategory(id) {
+				this.$api.getMaterialCategory({
+					id: id
 				}).then(res => {
-					if (res.code == 200) {
-						this.contlist = res.data
+					if (res.code == '200') {
+						res.data.forEach((item, index) => {
+							isChoose: false
+						})
+					this.tabslist = res.data
+					this.getContlist(this.tabslist[0].cid)
 					}
+
 				})
 			},
-
+         getContlist(id){
+			 this.param.categoryId = id
+			 let param = {
+			 	pageNum: this.pageNum,
+			 	pageSize: this.pageSize,
+			 	param: this.param
+			 }
+			 this.$api.searchMaterial(param).then(res => {
+			 	if (res.code == '200') {
+			 		this.contlist = res.data.data
+			 	}
+			 })
+		 }
 		}
 	}
 </script>
@@ -294,10 +317,10 @@
 	.tabs {
 		display: flex;
 		font-size: 18px;
-		margin: 38rpx 28rpx 32rpx 30rpx;
-		position: relative;
+		padding: 38rpx 0rpx 32rpx 30rpx;
 		width: max-content;
 		align-items: center;
+		margin-right: 28rpx;
 
 		.tab {
 			position: relative;
@@ -319,6 +342,7 @@
 			font-size: 28rpx;
 			color: #000000;
 			line-height: 32rpx;
+			padding-right: 28rpx;
 
 			image {
 				width: 22rpx;
@@ -336,7 +360,7 @@
 				position: absolute;
 				left: 0;
 				bottom: -16rpx;
-				border: 6rpx solid #111;
+				border: 4rpx solid #111;
 				min-width: -webkit-fill-available;
 			}
 		}

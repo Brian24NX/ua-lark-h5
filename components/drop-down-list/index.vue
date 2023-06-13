@@ -1,11 +1,17 @@
 <template>
 	<view class="container">
-		<view class="zq-drop-list" @mouseover="onDplOver($event)" @mouseout="onDplOut($event)"
+		<view class="zq-drop-list"
 			v-for="(item, index) in dataList" :key="index">
-			<view class="title">{{item.name}}</view>
-			<ul :style="show?'display:block':'display:none'">
-				<li @click="onLiClick(index, $event)">{{item[labelProperty]}}</li>
-			</ul>
+			<view class="title" @click="menuShow(item,index)">{{item.name}}</view>
+			<!-- :style="show?'display:block':'display:none'" -->
+			<view class="mask" :style="item.show?'display:block':'display:none'" @click="hideMenu">
+				<ul>
+					<li @click="onLiClick(index, $event)">广州太古汇</li>
+					<li @click="onLiClick(index, $event)">深圳京基一百</li>
+					<li @click="onLiClick(index, $event)">上海浦东万达广场</li>
+					<li @click="onLiClick(index, $event)">东莞太一城</li>
+				</ul>
+			</view>
 		</view>
 	</view>
 
@@ -17,7 +23,6 @@
 		data() {
 			return {
 				activeIndex: 0,
-				show: false
 			}
 		},
 		props: {
@@ -25,39 +30,15 @@
 				type: Array,
 				default: []
 			},
-			labelProperty: {
-				type: String,
-				default () {
-					return "name"
-				}
-			}
 		},
-
-		//    directive:{
-		//        dpl:{
-		//    //         bind(el,binding){
-		// 			// console.log(el,binding)
-		//    //             el.style.display = "none";
-		//    //         }
-		// bind:function(el){
-		// 	console.log('11111111111111',el)
-		// }
-		//        }
-		//    },
 		methods: {
-			onDplOver(event) {
-				// let ul = event.currentTarget.childNodes[1];
-				// ul.style.display = "block";
-				this.show = true
-			},
-			onDplOut(event) {
-				// let ul = event.currentTarget.childNodes[1];
-				// ul.style.display = "none";
-				this.show = false
-			},
+		menuShow(item,index){
+			this.$emit("selectMenu",item,index)
+		},
+		hideMenu(){
+			this.$emit('hideMenu',false)
+		},
 			onLiClick(index) {
-				// let path = event.path || (event.composedPath && event.composedPath()) //兼容火狐和safari
-				// path[1].style.display = "none";
 				this.activeIndex = index;
 				this.$emit("change", {
 					index: index,
@@ -74,12 +55,24 @@
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
+	.container {
+		position: relative;
+	}
+
 	.zq-drop-list {
 		display: inline-block;
 		min-width: 100px;
-		position: relative;
-margin-right: 32rpx;
+		margin-right: 32rpx;
+
+		.mask {
+			width: 100vw;
+			height: 100vh;
+			background: rgba(0, 0, 0, 0.5);
+			position: absolute;
+			left: 0;
+		}
+
 		.title {
 			font-size: 28rpx;
 			color: #111111;
@@ -88,6 +81,7 @@ margin-right: 32rpx;
 			border-radius: 35rpx;
 			border: 2rpx solid #111111;
 			position: relative;
+			margin: 26rpx 0 28rpx 30rpx;
 
 			&::after {
 				display: inline-block;
@@ -108,22 +102,17 @@ margin-right: 32rpx;
 
 		ul {
 			position: absolute;
-			top: 30px;
-			left: 0;
-			width: 100%;
-			margin: 0;
-			padding: 0;
-			border: solid 1px #f1f1f1;
-			border-radius: 4px;
-			overflow: hidden;
+			width: -webkit-fill-available;
+			background-color: #f8f8f8;
+			z-index: 1;
+			border-radius: 0px 0px 40rpx 40rpx;
+			padding: 40rpx 0 0 30rpx;
 
 			li {
-				list-style: none;
-				height: 30px;
-				line-height: 30px;
-				font-size: 14px;
-				border-bottom: solid 1px #f1f1f1;
-				background: #ffffff;
+				font-size: 28rpx;
+				color: #111111;
+				line-height: 40rpx;
+				margin-bottom: 40rpx;
 			}
 
 			li:last-child {
