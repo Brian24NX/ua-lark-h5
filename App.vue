@@ -3,6 +3,15 @@
 		onLaunch: function() {
 			console.log('App Launch')
 			this.updateApp()
+			if(uni.getStorageSync('carShop')){
+				this.$store.replaceState(
+				Object.assign(
+				{},
+				this.$store.state,
+				JSON.parse(uni.getStorageSync('carShop'))
+				)
+				)
+			}
 			if (!this.$store.state.token) {
 				this.$store.commit('userLogins')
 			}

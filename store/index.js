@@ -38,10 +38,16 @@ const store = new Vuex.Store({
 		addCar(state,item){
 			state.carShop = state.carShop.filter((v)=>v.mid !=item.mid)
 			state.carShop.push(item)
+			uni.setStorageSync('carShop',JSON.stringify(state))
 		},
 		minusCar(state,item){
 			state.carShop = state.carShop.filter((v)=>v.mid !=item.mid)
 			state.carShop.push(item)
+			uni.setStorageSync('carShop',JSON.stringify(state))
+		},
+		deleteCar(state,arr){
+			state.carShop = arr
+			uni.setStorageSync('carShop',JSON.stringify(state))
 		}
 	},
     actions: {

@@ -5,31 +5,35 @@
 				<view class="clearAll_l">
 					Clear All
 				</view>
-				<view class="clearAll_r"  @click="clearAll">
+				<view class="clearAll_r" @click="clearAll">
 					<image src="../../static/delete.png" mode=""></image>
 					Clear All
 				</view>
 			</view>
-			<view class="conts" v-for="(item,index) in contlist" :key="item.id">
+			<view class="conts" v-for="(item,index) in carList" :key="index">
 				<view class="cont">
 					<image src="../../static/xiezi.png" mode="aspectFit" />
 					<view class="prod-info" @click.native="tz(item.id,item.name,item)">
-						<view class="prodname">定制明兴 M17</view>
-						<view class="prodesc">上海齐心共赢文化用品发展有限公司</view>
+						<view class="prodname">{{item.shortName}}</view>
+						<view class="prodesc">{{item.supplierName}}</view>
 						<view class="price-nums">
-							￥30 <text>CNY</text>
+							{{item.retailPrice}} <text>{{item.priceUnit}}</text>
 						</view>
 					</view>
 					<view class="pro-right">
-						<view class="pro-right-delete">
+						<view class="pro-right-delete" @click="deleteItem(item)">
 							<image src="../../static/delete_active.png" mode=""></image>删除
 						</view>
-						<van-stepper custom-class="stepper" :value="1" theme="round" button-size="25px"
-							input-class="input" plus-class="add" minus-class="minus" bind:change="onChange" />
+						<view class="change-num">
+							<image class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image>
+							<input :value="item.scalar" type="text" />
+							<image class="addcar" src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)">
+							</image>
+						</view>
 					</view>
 				</view>
 				<van-divider customStyle="margin:0;color: #ddd; border-color: #ddd; padding-left:166rpx"
-					v-if="index !=contlist.length-1" />
+					v-if="index !=carList.length-1" />
 			</view>
 		</van-popup>
 	</view>
@@ -41,12 +45,6 @@
 	import vanDivider from "@/wxcomponents/@vant/weapp/divider/index"
 
 	export default {
-		props: {
-			contlist: {
-				type: Array,
-				default: []
-			},
-		},
 		components: {
 			vanPopup,
 			vanStepper,
@@ -54,24 +52,61 @@
 		},
 		data() {
 			return {
-			
+				carList: []
 			}
 		},
 		mounted() {
-		console.log(this.$store.state.carShop)	
+			this.carList = this.$store.state.carShop
 		},
 		methods: {
 			onClose() {
 				this.$emit('hideDetail', false)
 			},
 			clearAll() {
-				this.$emit('showDialog',true)
+				this.$emit('showDialog', true)
+			},
+			minusNum(item) {
+				item.scalar--
+				this.$emit('minusNum', item)
+			},
+			plusNum(item) {
+				item.scalar++
+				this.$emit("plusNum", item)
+			},
+			deleteItem(item) {
+				if (this.carList.includes(item)) {
+					let index = this.carList.indexOf(item)
+					this.carList.splice(index, 1)
+					this.$emit('deleteItem', item)
+					this.$store.commit('deleteCar', this.carList)
+				}
 			}
 		}
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+	.change-num {
+		position: absolute;
+		right: 0rpx;
+		display: flex;
+		align-items: center;
+
+		.addcar {
+			width: 36rpx;
+			height: 36rpx;
+			margin: 0;
+		}
+
+		input {
+			width: 20px;
+			font-size: 24rpx;
+			color: #111111;
+			line-height: 28rpx;
+			text-align: center;
+		}
+	}
+
 	.clearAll {
 		display: flex;
 		justify-content: space-between;

@@ -5,7 +5,7 @@
 			<view :class="['sub-tab',item.cid==subcurrent?'navActive' :'']" v-for="(item,index) in tabslist"
 				:key="item.cid" @click="select(item)">{{item.categoryName}}</view>
 		</view>
-		<!-- 左侧 -->
+		<!-- 右侧 -->
 		<view class="conts"
 			:style="hideTab?'padding-left: 0;width: 100%;padding-right: 0;margin-top:18rpx':'padding-left: 192rpx'">
 			<view class="cont" v-if="contlist.length >0" v-for="(item,index) in contlist" :key="index">
@@ -71,6 +71,9 @@
 				detail: {}
 			}
 		},
+		// mounted() {
+		// 	this.get
+		// },
 		methods: {
 			onChange(val) {
 				console.log(val)

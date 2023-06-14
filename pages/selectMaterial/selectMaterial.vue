@@ -11,8 +11,8 @@
 				</view>
 				<search-bar @searchClick="searchClick"></search-bar>
 				<view class="tabs" v-if="!hideTab">
-					<!-- <view class="tab active" @click="toggleTab('all')">全部</view> -->
-					<view :class="['tab',item.cid==current?'active' :'']" v-for="(item,index) in categoryList" :key="index" @click="toggleTab(item)">
+					<view :class="['tab',item.cid==current?'active' :'']" v-for="(item,index) in categoryList"
+						:key="index" @click="toggleTab(item)">
 						{{item.categoryName}}
 					</view>
 					<view class="tab" @click="choose">{{this.$t('index.more')}}
@@ -21,25 +21,28 @@
 				</view>
 			</view>
 
-			<tab-category @getMaterial='getContlist' @minusNum="minusNum" @plusNum="plusNum" :subcurrent="subcurrent" :hideTab="hideTab" :tabslist="tabslist" :contlist="contlist"
-				@showDetail="showDetail" keep-alive></tab-category>
+			<tab-category @getMaterial='getMaterial' @minusNum="minusNum" @plusNum="plusNum" :subcurrent="subcurrent"
+				:hideTab="hideTab" :tabslist="tabslist" :contlist="contlist" @showDetail="showDetail"
+				keep-alive></tab-category>
 
 		</view>
 		<!-- 分类弹窗 -->
-		<category-mask v-if="categoryShow" @searchSubMaterial="toggleTab" :current="current" :subcurrent="subcurrent" :categoryList="categoryList" :tabslist="tabslist"
-			@getSearchProd="getProd" @closeSearch="closeSearch"></category-mask>
+		<category-mask v-if="categoryShow" @searchSubMaterial="toggleTab" :current="current" :subcurrent="subcurrent"
+			:categoryList="categoryList" :tabslist="tabslist" @getSearchProd="getProd"
+			@closeSearch="closeSearch"></category-mask>
 		<!-- 提交 -->
 		<view class="submit" :style="clearShow?'z-index:100':'z-index:101'">
 			<view class="submit_left">
-				<image src="../../static/car.png" mode="" @click="showCar"></image>
-				<view class="price">334.00 <text class="suffix">CNY</text></view>
+				<van-icon name="https://hr-dev.underarmour.cn/upload/img/notification/cover/1686735414489-car.png" :info='getCarShop.num' custom-style="width:60rpx;height:60rpx" @click="showCar" />
+				<view class="price">{{getCarShop.sumPrice}} <text class="suffix">CNY</text></view>
 			</view>
 			<view class="submit_right" @click="onSubmit">
 				{{this.$t('index.submit')}}
 			</view>
 		</view>
 		<!-- 物料车 -->
-		<car-detail v-if="show" @hideDetail="hideDetail" :contlist="contlist" @showDialog='showDialog'></car-detail>
+		<car-detail v-if="show" @hideDetail="hideDetail" @minusNum="minusNum" @plusNum="plusNum" @deleteItem="deleteItem"
+			@showDialog='showDialog'></car-detail>
 		<!-- 确认弹窗 -->
 		<public-dialog v-if="clearShow" @hideDialog="dialogHide" />
 	</view>
@@ -66,8 +69,8 @@
 				store: {},
 				categoryShow: false,
 				// 一级类型选中
-				current: 1,
-				subcurrent:1,
+				current: 0,
+				subcurrent: 0,
 				catchMove: true,
 				show: false,
 				// 物料列表
@@ -76,16 +79,11 @@
 				categoryList: [],
 				// 二级分类
 				tabslist: [],
-
-				// skuTitle: [{
-				// 		name: "日常店铺物料",
-				// 		isChoose: true
-				// 	},
-				// 	{
-				// 		name: "标签打印设备",
-				// 		isChoose: false
-				// 	}
-				// ],
+				// 二级菜单默认全部
+				subdefault: [{
+					cid: 0,
+					categoryName: "全部"
+				}],
 				pageNum: 1,
 				pageSize: 10,
 				param: {
@@ -111,13 +109,7 @@
 			}
 		},
 		onLoad() {
-			// let systemInfo = uni.getSystemInfoSync();
-
-			// console.log(systemInfo)
-			this.gettabslist()
-			setTimeout(() => {
-				this.getSubCategory(this.categoryList[0].cid)
-			}, 500)
+			this.getAllMaterial()
 		},
 		onShow() {
 			let that = this
@@ -126,24 +118,57 @@
 				that.store = data
 			})
 		},
-
+		computed:{
+			getCarShop(){
+				  var sumPrice = 0;
+				  var num = 0
+					 this.$store.state.carShop.forEach(item=>{
+						 sumPrice+=item.scalar*item.retailPrice
+						 num+=item.scalar
+					 })
+					 return {
+						 sumPrice:sumPrice.toFixed(2),
+						 num
+					 }
+					 console.log(sumPrice,num)
+			}
+		},
 		methods: {
-			minusNum(val){
-				this.contlist.forEach((item,index)=>{
-					if(item.mid==val.mid){
-						item.scalar--
-						this.$store.commit('minusCar',item)
+			deleteItem(val){
+				console.log(val)
+				this.contlist.forEach(item=>{
+					if(item.mid == val.mid){
+						item.scalar = 0
 					}
 				})
 			},
-			plusNum(val){
-				this.contlist.forEach((item,index)=>{
-					if(item.mid==val.mid){
-						item.scalar++
-						this.$store.commit('addCar',item)
+			getAllMaterial() {
+				this.$api.getAllMaterialCategory().then(res => {
+					let arr = [{
+						cid: 0,
+						categoryName: "全部"
+					}]
+					this.categoryList = arr.concat(res.data.category1)
+					this.tabslist = arr.concat(res.data.category2)
+					this.getContlist(this.tabslist[0].cid)
+				})
+			},
+			minusNum(val) {
+				this.contlist.forEach((item, index) => {
+					if (item.mid == val.mid) {
+						item.scalar--
+						this.$store.commit('minusCar', item)
 					}
 				})
-				
+			},
+			plusNum(val) {
+				this.contlist.forEach((item, index) => {
+					if (item.mid == val.mid) {
+						item.scalar++
+						this.$store.commit('addCar', item)
+					}
+				})
+
 			},
 			showDialog(val) {
 				this.clearShow = val
@@ -165,7 +190,7 @@
 			},
 			onSubmit() {
 				uni.navigateTo({
-					url: "/pages/previewApplication/previewApplication"
+					url: "/pages/previewApplication/previewApplication?getCarShop="+JSON.stringify(this.getCarShop)
 				})
 			},
 			hideDetail(val) {
@@ -178,26 +203,13 @@
 				this.categoryShow = true
 			},
 			toggleTab(item) {
-				console.log(item)
 				this.current = item.cid
+				this.subcurrent = 0
+				// this.subdefault[0].cid = item.cid
 				this.getSubCategory(item.cid)
 			},
 			closeSearch(val) {
 				this.categoryShow = val
-			},
-			// 获取大分类列表
-			gettabslist() {
-				this.$api.getMaterialCategory({
-					id: 0
-				}).then(res => {
-					if (res.code == '200') {
-						res.data.forEach((item, index) => {
-							item.isChoose=false
-						})
-					this.categoryList= res.data
-					}
-
-				})
 			},
 			selectStore() {
 				uni.navigateTo({
@@ -211,31 +223,49 @@
 				}).then(res => {
 					if (res.code == '200') {
 						res.data.forEach((item, index) => {
-							item.isChoose=false
+							item.isChoose = false
 						})
-					this.tabslist = res.data
-					this.getContlist(this.tabslist[0].cid)
+						this.tabslist = this.subdefault.concat(res.data)
+						// 获取二级菜单全部
+						this.getContlist(id)
 					}
 
 				})
 			},
-         getContlist(id){
-			 this.subcurrent = id
-			 this.param.categoryId = id
-			 let param = {
-			 	pageNum: this.pageNum,
-			 	pageSize: this.pageSize,
-			 	param: this.param
-			 }
-			 this.$api.searchMaterial(param).then(res => {
-			 	if (res.code == '200') {
-					res.data.data.forEach((item, index) => {
-						item.scalar=0
-					})
-					this.contlist = res.data.data
-			 	}
-			 })
-		 }
+			getMaterial(val) {
+				this.subcurrent = val
+				if (val == 0) {
+					this.getContlist(this.current)
+				} else {
+					this.getContlist(val)
+				}
+
+
+			},
+			getContlist(id) {
+				this.param.categoryId = id
+				let param = {
+					pageNum: this.pageNum,
+					pageSize: this.pageSize,
+					param: this.param
+				}
+				this.$api.searchMaterial(param).then(res => {
+					if (res.code == '200') {
+						res.data.data.forEach((item, index) => {
+							item.scalar = 0
+						})
+						this.contlist = res.data.data
+						console.log('------', this.contlist, this.$store.state.carShop)
+						this.contlist.forEach(item => {
+							this.$store.state.carShop.forEach(val => {
+								if (item.mid == val.mid) {
+									item.scalar = val.scalar
+								}
+							})
+						})
+					}
+				})
+			}
 		}
 	}
 </script>
@@ -290,10 +320,10 @@
 			display: flex;
 			align-items: center;
 
-			image {
-				width: 60rpx;
-				height: 60rpx;
-			}
+			// image {
+			// 	width: 60rpx;
+			// 	height: 60rpx;
+			// }
 
 			.price {
 				font-size: 36rpx;

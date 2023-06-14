@@ -9,22 +9,22 @@
 		</view>
 		<view class="product">
 			<div id="article" class="article" :class="[status == 1 && 'extended']">
-				<view class="info" v-for="item in 5">
-					<image src="../../static/xiezi.png" mode=""></image>
+				<view class="info" v-for="(item,index) in materialList" :key="index">
+					<image :src="item.imageUrl" mode=""></image>
 					<view class="info_r">
 						<view class="info_r_l">
 							<view class="titles">
-								定制明兴 M17
+								{{item.shortName}}
 							</view>
 							<view class="desc">
-								上海齐心共赢
+								{{item.supplierName}}
 							</view>
 							<view class="num">
-								Quantity: 1
+								Quantity: {{item.scalar}}
 							</view>
 						</view>
 						<view class="info_r_r">
-							32.00 <text>CNY</text>
+							{{item.retailPrice}} <text>CNY</text>
 						</view>
 					</view>
 				</view>
@@ -57,9 +57,10 @@
 		</van-submit-bar> -->
 		<view class="submit-bar">
 			<view class="submit-bar-l">
-				<view class="num">Quantity： <text class="bold">3</text> </view>
+				<view class="num">Quantity： <text class="bold">{{priceInfo.num}}</text> </view>
 				<view class="price">
-					<text>Total： </text><text class="bold">96.00 </text><text style="font-size: 20rpx">CNY</text>
+					<text>Total： </text><text class="bold">{{priceInfo.sumPrice}}</text><text
+						style="font-size: 20rpx">CNY</text>
 				</view>
 			</view>
 			<view class="submit-bar-r" @click="onSubmit">
@@ -82,8 +83,14 @@
 				status: 0, // 状态值
 				btnTxt: "View More", // 按钮文案
 				message: "",
-				dialogShow: false
+				dialogShow: false,
+				priceInfo: {},
+				materialList: []
 			}
+		},
+		onLoad(option) {
+			this.priceInfo = JSON.parse(option.getCarShop)
+			this.materialList = this.$store.state.carShop
 		},
 		methods: {
 			openOrClose() {
