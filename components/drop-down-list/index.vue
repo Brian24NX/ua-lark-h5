@@ -63,7 +63,6 @@
 	.zq-drop-list {
 		display: inline-block;
 		min-width: 100px;
-		margin-right: 32rpx;
 
 		.mask {
 			width: 100vw;

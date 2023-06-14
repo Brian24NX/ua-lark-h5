@@ -36,6 +36,30 @@
 				</view>
 			</view>
 		</view>
+		<view class="operate">
+		<!-- 	<view class="operate-all flex-center font-bold margin-right-10 z-index-1">
+				Approve All
+			</view>
+			<view class="operate-all flex-center font-bold margin-right-10 z-index-2">
+				Approve All
+			</view> -->
+						<view class="operate-main">
+				<view class="operate-all flex-center font-bold margin-right-10 z-index-1">
+					Approve All
+				</view>
+				<view class="yuan"></view>
+			</view>
+			
+			<view class="operate-main">
+				<view class="operate-all flex-center font-bold margin-right-10 z-index-2">
+					Approve All
+				</view>
+				<view class="yuan"></view>
+			</view>
+			<view class="batch flex-center font-bold">
+				Batch
+			</view>
+		</view>
 		<view class="footer">
 			<view class="footer-l">
 				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" bind:change="onChange">
@@ -52,6 +76,8 @@
 				</view>
 			</view>
 		</view>
+		<!-- 弹窗 -->
+		<public-dialog v-if="dialogShow"></public-dialog>
 	</view>
 </template>
 
@@ -59,14 +85,17 @@
 	import dropDownList from "../../components/drop-down-list/index.vue"
 	import searchBar from "../../components/search-bar/index.vue"
 	import materialItem from "../../components/material-item/index.vue"
+	import publicDialog from "../../components/public-dialog/index.vue"
 	export default {
 		components: {
 			dropDownList,
 			searchBar,
-			materialItem
+			materialItem,
+			publicDialog
 		},
 		data() {
 			return {
+				dialogShow: false,
 				checked: true,
 				activeIcon: '../../static/checkbox-active.png',
 				inactiveIcon: '../../static/checkbox.png',
@@ -120,6 +149,8 @@
 	}
 </script>
 <style lang="scss">
+
+ //利用这句代码撑开容器
 	.searchbar {
 		position: sticky;
 		top: 0;
@@ -198,6 +229,99 @@
 
 		}
 
+	}
+
+	.flex-center {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.font-bold {
+		font-weight: bold;
+	}
+
+	.margin-right-10 {
+		margin-right: 10rpx;
+	}
+
+	.z-index-1 {
+		z-index: 1;
+	}
+
+	.z-index-2 {
+		z-index: 2;
+	}
+
+	.operate {
+		width: -webkit-fill-available;
+		height: 100rpx;
+		position: fixed;
+		bottom: 190rpx;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		margin-right: 30rpx;
+
+		.operate-all {
+			width: 220rpx;
+			height: 92rpx;
+			// padding: 0rpx 10rpx;
+			border-radius: 92rpx;
+			border: 2rpx solid #111111;
+			background: #ffffff;
+			font-size: 32rpx;
+			color: #111111;
+			font-family: MicrosoftYaHeiSemibold;
+		}
+
+		// .operate-main {
+		// 	height: 92rpx;
+		// 	width: 220rpx;
+		// 	border-radius: 92rpx;
+		// 	background: transparent;
+		// 	position: relative;
+		// 	overflow: hidden;
+		// 	font-size: 32rpx;
+		// 	font-family: MicrosoftYaHeiSemibold;
+		// 	color: #111111;
+		// }
+		// .operate-all {
+		// 	width: 100%;
+		// 	height: 100%;
+		// 	border-radius: 92rpx;
+		// 	border: 2rpx solid #111111;
+		// 	background: #ffffff;
+		// }
+		// .yuan {
+		// 	width: 92rpx;
+		// 	height: 92rpx;
+		// 	border-radius: 50%;
+		// 	background: #FFFFFF;
+		// 	border: 2rpx solid #111111;
+		// 	position: absolute;
+		// 	background: transparent;
+		// 	top: 0rpx;
+		// 	right: -50rpx;
+		// 	z-index: 3;
+		// }
+
+		.operate-all::after {
+			content: ' ';
+
+		}
+
+		.batch {
+			width: 100rpx;
+			height: 100rpx;
+			border-radius: 50%;
+			background: #FFFFFF;
+			border: 2rpx solid #111111;
+			font-size: 32rpx;
+			font-family: MicrosoftYaHeiSemibold;
+			color: #111111;
+
+		}
 	}
 
 	.footer {

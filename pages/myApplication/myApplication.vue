@@ -8,7 +8,7 @@
         	<view class="title" @click="changeContent(item,index)">
         		  上海太古汇
         	</view>
-			<!-- 展开 -->
+			<!-- 展开  -->
 	        <view class="" v-show="item.open==true">
 	        	<view class="time">
 	        		<text>2023.06.03 10:54  </text>

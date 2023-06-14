@@ -48,6 +48,10 @@ const store = new Vuex.Store({
 		deleteCar(state,arr){
 			state.carShop = arr
 			uni.setStorageSync('carShop',JSON.stringify(state))
+		},
+		deleteCarAll(state){
+			state.carShop = []
+			uni.setStorageSync('carShop',JSON.stringify(state))
 		}
 	},
     actions: {

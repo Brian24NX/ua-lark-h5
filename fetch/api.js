@@ -13,6 +13,7 @@ export function fetchGet(url, params, need_error) {
 				'timestamp' : new Date().getTime(),
 				 'appId' : appId,
 				'sign' : md5(new Date().getTime() + secret + appId),
+				'Authorization' : `${uni.getStorageSync("token")}`
 			},
 			timeout: 10000,
 			success(res) {
@@ -46,7 +47,8 @@ export function fetchPost(url, params, need_error) {
 				'content-type': 'application/json',
 				'timestamp' : new Date().getTime(),
 				 'appId' : appId,
-				'sign' : md5(new Date().getTime() + secret + appId)
+				'sign' : md5(new Date().getTime() + secret + appId),
+				'Authorization' : `${uni.getStorageSync("token")}`
 			},
 			timeout: 10000,
 			success(res) {

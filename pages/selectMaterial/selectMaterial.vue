@@ -33,7 +33,10 @@
 		<!-- 提交 -->
 		<view class="submit" :style="clearShow?'z-index:100':'z-index:101'">
 			<view class="submit_left">
-				<van-icon name="https://hr-dev.underarmour.cn/upload/img/notification/cover/1686735414489-car.png" :info='getCarShop.num' custom-style="width:60rpx;height:60rpx" @click="showCar" />
+				<van-icon name="https://hr-dev.underarmour.cn/upload/img/notification/cover/1686735414489-car.png"
+					:info='getCarShop.num' v-if="getCarShop.num" custom-style="width:60rpx;height:60rpx"
+					@click="showCar" />
+				<image src="../../static/car.png" mode="" v-else></image>
 				<view class="price">{{getCarShop.sumPrice}} <text class="suffix">CNY</text></view>
 			</view>
 			<view class="submit_right" @click="onSubmit">
@@ -41,10 +44,10 @@
 			</view>
 		</view>
 		<!-- 物料车 -->
-		<car-detail v-if="show" @hideDetail="hideDetail" @minusNum="minusNum" @plusNum="plusNum" @deleteItem="deleteItem"
-			@showDialog='showDialog'></car-detail>
+		<car-detail v-if="show" @hideDetail="hideDetail" @minusNum="minusNum" @plusNum="plusNum"
+			@deleteItem="deleteItem" @showDialog='showDialog'></car-detail>
 		<!-- 确认弹窗 -->
-		<public-dialog v-if="clearShow" @hideDialog="dialogHide" />
+		<public-dialog v-if="clearShow" @deleteAll="deleteAll" :pageFrom="pageFrom" @hideDialog="dialogHide" />
 	</view>
 </template>
 <script>
@@ -63,9 +66,9 @@
 		},
 		data() {
 			return {
+				pageFrom: "clear",
 				clearShow: false,
 				hideTab: false,
-				keyword: "",
 				store: {},
 				categoryShow: false,
 				// 一级类型选中
@@ -118,28 +121,33 @@
 				that.store = data
 			})
 		},
-		computed:{
-			getCarShop(){
-				  var sumPrice = 0;
-				  var num = 0
-					 this.$store.state.carShop.forEach(item=>{
-						 sumPrice+=item.scalar*item.retailPrice
-						 num+=item.scalar
-					 })
-					 return {
-						 sumPrice:sumPrice.toFixed(2),
-						 num
-					 }
-					 console.log(sumPrice,num)
+		computed: {
+			getCarShop() {
+				var sumPrice = 0;
+				var num = 0
+				this.$store.state.carShop.forEach(item => {
+					sumPrice += item.scalar * item.retailPrice
+					num += item.scalar
+				})
+				return {
+					sumPrice: sumPrice.toFixed(2),
+					num
+				}
+				console.log(sumPrice, num)
 			}
 		},
 		methods: {
-			deleteItem(val){
+			deleteItem(val) {
 				console.log(val)
-				this.contlist.forEach(item=>{
-					if(item.mid == val.mid){
+				this.contlist.forEach(item => {
+					if (item.mid == val.mid) {
 						item.scalar = 0
 					}
+				})
+			},
+			deleteAll() {
+				this.contlist.forEach(item => {
+					item.scalar = 0
 				})
 			},
 			getAllMaterial() {
@@ -179,18 +187,21 @@
 			},
 			searchClick(key) {
 				if (key) {
-					this.keyword = key
 					this.hideTab = true
 				} else {
 					this.hideTab = false
 				}
+				this.param.materialName = key
+				this.getContlist()
 			},
 			showCar() {
+				if (this.getCarShop.num == 0) return
 				this.show = true
 			},
 			onSubmit() {
 				uni.navigateTo({
-					url: "/pages/previewApplication/previewApplication?getCarShop="+JSON.stringify(this.getCarShop)
+					url: "/pages/previewApplication/previewApplication?getCarShop=" + JSON.stringify(this
+						.getCarShop)
 				})
 			},
 			hideDetail(val) {
@@ -270,7 +281,7 @@
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 	.container {
 		padding-bottom: 140rpx;
 	}
@@ -320,10 +331,11 @@
 			display: flex;
 			align-items: center;
 
-			// image {
-			// 	width: 60rpx;
-			// 	height: 60rpx;
-			// }
+			image {
+				width: 60rpx;
+				height: 60rpx;
+				margin-top: -14rpx;
+			}
 
 			.price {
 				font-size: 36rpx;
