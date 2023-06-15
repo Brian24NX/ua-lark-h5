@@ -22,8 +22,9 @@
 				</view>
 				<view class="change-num">
 					<image v-if="item.scalar>0" class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image> 
-					<input v-if="item.scalar>0" :value="item.scalar" type="text" class="inp" />
-					<image class="addcar" src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)" ></image>
+					<input v-if="item.scalar>0" v-model="item.scalar" type="number" class="inp" @blur="editNum(item)" />
+					<image class="addcar" v-if="item.scalar>=999"  src="../../static/notadd.png" mode="" ></image>
+					<image class="addcar" v-else src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)" ></image>
 				</view>
 			</view>
 			<view class="empty" v-if="contlist.length==0">
@@ -85,6 +86,12 @@
 				if(item.scalar<=0) return
 				this.$emit('minusNum',item)
 			},
+			editNum(item){
+				if(item.scalar>=999){
+					item.scalar=999
+				}
+				this.$emit("editNum",item)
+			},
 			plusNum(item){
 				this.$emit("plusNum",item)
 			},
@@ -114,7 +121,7 @@
 		}
 
 		input{
-			width: 20px;
+			width: 44rpx;
 			height: 36rpx;
 			font-size: 24rpx;
 			color: #111111;

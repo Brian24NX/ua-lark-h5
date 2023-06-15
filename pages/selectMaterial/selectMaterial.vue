@@ -21,7 +21,7 @@
 				</view>
 			</view>
 
-			<tab-category @getMaterial='getMaterial' @minusNum="minusNum" @plusNum="plusNum" :subcurrent="subcurrent"
+			<tab-category @getMaterial='getMaterial' @minusNum="minusNum" @plusNum="plusNum" @editNum="editNum" :subcurrent="subcurrent"
 				:hideTab="hideTab" :tabslist="tabslist" :contlist="contlist" @showDetail="showDetail"
 				keep-alive></tab-category>
 
@@ -44,7 +44,7 @@
 			</view>
 		</view>
 		<!-- 物料车 -->
-		<car-detail v-if="show" @hideDetail="hideDetail" @minusNum="minusNum" @plusNum="plusNum"
+		<car-detail v-if="show" @hideDetail="hideDetail" @minusNum="minusNum" @plusNum="plusNum" @editNum="editNum"
 			@deleteItem="deleteItem" @showDialog='showDialog'></car-detail>
 		<!-- 确认弹窗 -->
 		<public-dialog v-if="clearShow" @deleteAll="deleteAll" :tip="tip" :pageFrom="'clear'"
@@ -114,31 +114,28 @@
 			}
 		},
 		onLoad(option) {
-			this.store = JSON.parse(option.store)
+			if(option.store != 'undefined'){
+				this.store = JSON.parse(option.store)
+			}
 			if(option.page){
 				this.page = option.page
 			}
-			
 			this.getAllMaterial()
-		},
-		onShow() {
-			// let that = this
-			// uni.$on('returnData', function(data) {
-			// 	console.log(data)
-			// 	that.store = data
-			// })
 		},
 		computed: {
 			getCarShop() {
 				var sumPrice = 0;
-				var num = 0
+				var num = 0;
+				var unit = ''
 				this.$store.state.carShop.forEach(item => {
 					sumPrice += item.scalar * item.retailPrice
-					num += item.scalar
+					num += parseInt(item.scalar),
+					unit=item.priceUnit
 				})
 				return {
 					sumPrice: sumPrice.toFixed(2),
-					num
+					num,
+					unit
 				}
 			}
 		},
@@ -170,6 +167,9 @@
 				this.contlist.forEach((item, index) => {
 					if (item.mid == val.mid) {
 						item.scalar--
+						if(item.scalar==0){
+							this.show=false
+						}
 						this.$store.commit('minusCar', item)
 					}
 				})
@@ -181,7 +181,15 @@
 						this.$store.commit('addCar', item)
 					}
 				})
-
+			},
+			editNum(val){
+				this.contlist.forEach((item, index) => {
+					if (item.mid == val.mid) {
+						item.scalar = val.scalar
+						this.$store.commit('editCar', item)
+					}
+				})
+				
 			},
 			showDialog(val) {
 				this.clearShow = val
@@ -206,7 +214,7 @@
 			onSubmit() {
 				uni.navigateTo({
 					url: "/pages/previewApplication/previewApplication?getCarShop=" + JSON.stringify(this
-						.getCarShop)
+						.getCarShop)+"&store="+JSON.stringify(this.store)
 				})
 			},
 			hideDetail(val) {

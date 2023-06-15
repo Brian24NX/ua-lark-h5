@@ -25,14 +25,15 @@
 							<image src="../../static/delete_active.png" mode=""></image>{{this.$t('index.delete')}}
 						</view>
 						<view class="change-num">
-							<image v-if="item.scalar>0" class="addcar" src="../../static/minuscar.png"
-								@tap.stop="minusNum(item)"></image>
-							<input v-if="item.scalar>0" :value="item.scalar" type="text" />
-							<image class="addcar" src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)">
+							<image class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image>
+							<input v-model="item.scalar" type="text"  @blur="editNum(item)" />
+						<image class="addcar" v-if="item.scalar>=999"  src="../../static/notadd.png" mode="" ></image>
+						<image class="addcar" v-else src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)" ></image>
 							</image>
 						</view>
 					</view>
 				</view>
+				<!-- v-if="item.scalar>0&& edit" -->
 				<van-divider customStyle="margin:0;color: #ddd; border-color: #ddd; padding-left:166rpx"
 					v-if="index !=carList.length-1" />
 			</view>
@@ -52,7 +53,9 @@
 			vanDivider
 		},
 		data() {
-			return {}
+			return {
+				edit:true
+			}
 		},
 		computed: {
 			carList() {
@@ -71,6 +74,12 @@
 			},
 			plusNum(item) {
 				this.$emit("plusNum", item)
+			},
+			editNum(item){
+				if(item.scalar>=999){
+					item.scalar=999
+				}
+				this.$emit("editNum",item)
 			},
 			deleteItem(item) {
 				if (this.carList.includes(item)) {
@@ -99,7 +108,7 @@
 		}
 
 		input {
-			width: 20px;
+			width: 44rpx;
 			font-size: 24rpx;
 			color: #111111;
 			line-height: 28rpx;
@@ -140,7 +149,7 @@
 		display: flex;
 		align-items: center;
 		font-size: 14px;
-		padding: 28rpx 30rpx 28rpx 30rpx;
+		margin: 28rpx 30rpx 28rpx 30rpx;
 		position: relative;
 
 		image {
@@ -195,12 +204,12 @@
 		.pro-right {
 			position: absolute;
 			right: 30rpx;
-
+top: 0;
 			.pro-right-delete {
 				font-size: 24rpx;
 				color: #111111;
 				line-height: 32rpx;
-				margin-bottom: 25rpx;
+				margin-bottom: 50rpx;
 				display: flex;
 				justify-content: end;
 				align-items: center;

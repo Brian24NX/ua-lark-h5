@@ -12,10 +12,10 @@
 				)
 				)
 			}
-			this.$store.commit('userLogins')
-			// if (!this.$store.state.token) {
-			// 	this.$store.commit('userLogins')
-			// }
+			// this.$store.commit('userLogins')
+			if (!this.$store.state.token) {
+				this.$store.commit('userLogins')
+			}
 		},
 		onShow: function() {
 			console.log('App Show')

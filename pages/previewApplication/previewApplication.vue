@@ -2,7 +2,7 @@
 	<view class="container">
 		<!-- 区域 -->
 		<view class="address">
-			<image src="../../static/store.png" mode=""></image>广州太古汇
+			<image src="../../static/store.png" mode=""></image>{{form.storeName}}
 		</view>
 		<view class="title">
 			{{this.$t('index.material')}}
@@ -73,9 +73,9 @@
 				materialList: [],
 				form: {
 					remark: "",
-					storeLarkDeptId: 74,
-					storeName: '广州奥体天河城',
-					priceUnit: "CNY",
+					storeLarkDeptId: 0 ,//74,
+					storeName: '',    //广州奥体天河城
+					priceUnit: "",
 					totalPrice: "",
 					totalQuantity: "",
 					orderItemPos: []
@@ -83,15 +83,20 @@
 			}
 		},
 		onLoad(option) {
+			if(option.store != 'undefined'){
+				this.form.storeName = JSON.parse(option.store).name
+				this.form.storeLarkDeptId = JSON.parse(option.store).id
+			}
 			this.priceInfo = JSON.parse(option.getCarShop)
 			this.materialList = this.$store.state.carShop
 			this.form.totalPrice = this.priceInfo.sumPrice
 			this.form.totalQuantity = this.priceInfo.num
+			this.form.priceUnit = this.priceInfo.unit
 			this.form.orderItemPos = this.$store.state.carShop
 			this.form.orderItemPos.forEach(item=>{
 				item.supplierSkuCode = item.oriSkuCode
-				item.storeLarkDeptId =74
-				item.storeName='广州奥体天河城'
+				item.storeLarkDeptId =this.form.storeName
+				item.storeName=this.form.storeLarkDeptId
 			})
 		},
 		methods: {

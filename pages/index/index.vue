@@ -133,7 +133,7 @@
 					console.log(res)
 					if (res.code == '200') {
 						this.storeList = res.data
-						if (this.storeList.length == 1) {
+						if (this.storeList.length <= 1) {
 							this.url = "/pages/selectMaterial/selectMaterial?store=" + JSON.stringify(this
 								.storeList[0])
 						} else {

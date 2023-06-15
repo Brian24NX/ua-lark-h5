@@ -37,26 +37,16 @@
 			</view>
 		</view>
 		<view class="operate">
-		<!-- 	<view class="operate-all flex-center font-bold margin-right-10 z-index-1">
+			<view
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']  ">
 				Approve All
 			</view>
-			<view class="operate-all flex-center font-bold margin-right-10 z-index-2">
+
+			<view
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']">
 				Approve All
-			</view> -->
-						<view class="operate-main">
-				<view class="operate-all flex-center font-bold margin-right-10 z-index-1">
-					Approve All
-				</view>
-				<view class="yuan"></view>
 			</view>
-			
-			<view class="operate-main">
-				<view class="operate-all flex-center font-bold margin-right-10 z-index-2">
-					Approve All
-				</view>
-				<view class="yuan"></view>
-			</view>
-			<view class="batch flex-center font-bold">
+			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
 				Batch
 			</view>
 		</view>
@@ -95,6 +85,7 @@
 		},
 		data() {
 			return {
+				btnActive: false,
 				dialogShow: false,
 				checked: true,
 				activeIcon: '../../static/checkbox-active.png',
@@ -149,8 +140,7 @@
 	}
 </script>
 <style lang="scss">
-
- //利用这句代码撑开容器
+	//利用这句代码撑开容器
 	.searchbar {
 		position: sticky;
 		top: 0;
@@ -253,8 +243,21 @@
 		z-index: 2;
 	}
 
+	.operate-all-active {
+		animation: enter-x-right 0.4s ease-in-out 0.3s;
+		animation-fill-mode: forwards;
+
+	}
+
+	@keyframes enter-x-right {
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
 	.operate {
-		width: -webkit-fill-available;
+		// width: -webkit-fill-available;
 		height: 100rpx;
 		position: fixed;
 		bottom: 190rpx;
@@ -262,53 +265,23 @@
 		align-items: center;
 		justify-content: flex-end;
 		margin-right: 30rpx;
+		right: 0;
 
 		.operate-all {
 			width: 220rpx;
 			height: 92rpx;
-			// padding: 0rpx 10rpx;
 			border-radius: 92rpx;
 			border: 2rpx solid #111111;
 			background: #ffffff;
 			font-size: 32rpx;
 			color: #111111;
 			font-family: MicrosoftYaHeiSemibold;
+			transform: translateX(50px);
+			opacity: 0;
 		}
-
-		// .operate-main {
-		// 	height: 92rpx;
-		// 	width: 220rpx;
-		// 	border-radius: 92rpx;
-		// 	background: transparent;
-		// 	position: relative;
-		// 	overflow: hidden;
-		// 	font-size: 32rpx;
-		// 	font-family: MicrosoftYaHeiSemibold;
-		// 	color: #111111;
-		// }
-		// .operate-all {
-		// 	width: 100%;
-		// 	height: 100%;
-		// 	border-radius: 92rpx;
-		// 	border: 2rpx solid #111111;
-		// 	background: #ffffff;
-		// }
-		// .yuan {
-		// 	width: 92rpx;
-		// 	height: 92rpx;
-		// 	border-radius: 50%;
-		// 	background: #FFFFFF;
-		// 	border: 2rpx solid #111111;
-		// 	position: absolute;
-		// 	background: transparent;
-		// 	top: 0rpx;
-		// 	right: -50rpx;
-		// 	z-index: 3;
-		// }
 
 		.operate-all::after {
 			content: ' ';
-
 		}
 
 		.batch {
@@ -320,7 +293,7 @@
 			font-size: 32rpx;
 			font-family: MicrosoftYaHeiSemibold;
 			color: #111111;
-
+			z-index: 9;
 		}
 	}
 
