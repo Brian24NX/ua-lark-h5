@@ -82,7 +82,9 @@
 				system: {},
 				barHeight: 0,
 				barTop: 0,
-				barWith: 0
+				barWith: 0,
+				url: "/pages/selectMaterial/selectMaterial",
+				storeList: []
 			}
 		},
 		computed: {
@@ -109,10 +111,10 @@
 					that.userInfo = res.userInfo
 				},
 				fail(res) {
-					console.log(`getUserInfo µ÷ÓÃÊ§°Ü`);
+
 				}
 			});
-
+			console.log('å½“å‰è¯­è¨€', uni.getLocale())
 		},
 		onLoad() {
 			uni.getSystemInfo({
@@ -122,14 +124,30 @@
 					this.barWith = res.navigationBarSafeArea.width
 				}
 			})
+			this.getStoreList()
 		},
 
 		methods: {
+			getStoreList() {
+				this.$api.searchStoreList().then(res => {
+					console.log(res)
+					if (res.code == '200') {
+						this.storeList = res.data
+						if (this.storeList.length == 1) {
+							this.url = "/pages/selectMaterial/selectMaterial?store=" + JSON.stringify(this
+								.storeList[0])
+						} else {
+
+							this.url = "/pages/storeList/storeList"
+						}
+					}
+				})
+			},
 			choosePage(index) {
 				console.log(index)
 				if (index == 3) {
 					uni.navigateTo({
-						url: "/pages/selectMaterial/selectMaterial"
+						url: this.url
 					})
 				} else if (index == 2) {
 					uni.navigateTo({

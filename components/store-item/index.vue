@@ -3,10 +3,10 @@
 		<view class="item_list">
 			<view class="list-l">
 				<view class="title">
-				{{store.title}}
+				{{store.name}}
 				</view>
 				<view class="desc">
-				{{store.desc}}
+				{{store.address}}
 				</view>
 			</view>
 		   <image class="list-r" src="../../static/arrow-right.png" mode=""></image>
@@ -35,10 +35,14 @@
 		},
 		methods: {
 			selectItem(item) {
-				uni.$emit('returnData', item)
-				uni.navigateBack({
-					delta: 1
+				// uni.$emit('returnData', item)
+				uni.navigateTo({
+					// url:"/pages/selectMaterial/selectMaterial?pageFrom=store"
+					url:"/pages/selectMaterial/selectMaterial?store="+JSON.stringify(item)+'&page=store'
 				})
+				// uni.navigateBack({
+				// 	delta: 1
+				// })
 			}
 		}
 	}

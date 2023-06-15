@@ -5,9 +5,9 @@
 				<view class="store" @click="selectStore">
 					<view class="store_l">
 						<image src="../../static/store.png" mode=""></image>
-						<text>{{store.title?`${this.$t('index.store')}：${store.title}`:`${this.$t('index.store')}`}}</text>
+						<text>{{store.name?`${this.$t('index.store')}：${store.name}`:`${this.$t('index.store')}`}}</text>
 					</view>
-					<image class="store_r" src="../../static/right.png" mode=""></image>
+					<image class="store_r" src="../../static/right.png" mode="" v-if="page"></image>
 				</view>
 				<search-bar @searchClick="searchClick"></search-bar>
 				<view class="tabs" v-if="!hideTab">
@@ -40,14 +40,15 @@
 				<view class="price">{{getCarShop.sumPrice}} <text class="suffix">CNY</text></view>
 			</view>
 			<view class="submit_right" @click="onSubmit">
-				{{this.$t('index.submit')}}
+				{{this.$t('index.preview')}}
 			</view>
 		</view>
 		<!-- 物料车 -->
 		<car-detail v-if="show" @hideDetail="hideDetail" @minusNum="minusNum" @plusNum="plusNum"
 			@deleteItem="deleteItem" @showDialog='showDialog'></car-detail>
 		<!-- 确认弹窗 -->
-		<public-dialog v-if="clearShow" @deleteAll="deleteAll" :pageFrom="pageFrom" @hideDialog="dialogHide" />
+		<public-dialog v-if="clearShow" @deleteAll="deleteAll" :tip="tip" :pageFrom="'clear'"
+			@hideDialog="dialogHide" />
 	</view>
 </template>
 <script>
@@ -66,7 +67,7 @@
 		},
 		data() {
 			return {
-				pageFrom: "clear",
+				tip: this.$t('index.clean_up'),
 				clearShow: false,
 				hideTab: false,
 				store: {},
@@ -85,7 +86,7 @@
 				// 二级菜单默认全部
 				subdefault: [{
 					cid: 0,
-					categoryName: "全部"
+					categoryName: this.$t('index.all')
 				}],
 				pageNum: 1,
 				pageSize: 10,
@@ -108,18 +109,24 @@
 					uaSkuCode: "",
 					unit: "",
 					updateTime: ""
-				}
+				},
+				page:""
 			}
 		},
-		onLoad() {
+		onLoad(option) {
+			this.store = JSON.parse(option.store)
+			if(option.page){
+				this.page = option.page
+			}
+			
 			this.getAllMaterial()
 		},
 		onShow() {
-			let that = this
-			uni.$on('returnData', function(data) {
-				console.log(data)
-				that.store = data
-			})
+			// let that = this
+			// uni.$on('returnData', function(data) {
+			// 	console.log(data)
+			// 	that.store = data
+			// })
 		},
 		computed: {
 			getCarShop() {
@@ -133,12 +140,10 @@
 					sumPrice: sumPrice.toFixed(2),
 					num
 				}
-				console.log(sumPrice, num)
 			}
 		},
 		methods: {
 			deleteItem(val) {
-				console.log(val)
 				this.contlist.forEach(item => {
 					if (item.mid == val.mid) {
 						item.scalar = 0
@@ -154,7 +159,7 @@
 				this.$api.getAllMaterialCategory().then(res => {
 					let arr = [{
 						cid: 0,
-						categoryName: "全部"
+						categoryName: this.$t('index.all')
 					}]
 					this.categoryList = arr.concat(res.data.category1)
 					this.tabslist = arr.concat(res.data.category2)
@@ -223,6 +228,7 @@
 				this.categoryShow = val
 			},
 			selectStore() {
+				if(!this.page) return
 				uni.navigateTo({
 					url: "/pages/storeList/storeList"
 				})

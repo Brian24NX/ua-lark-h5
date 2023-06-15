@@ -2,7 +2,7 @@
 	<van-popup :show="true" :close-on-click-overlay="false" position="right"
 		custom-style="height: 100%;width:90%; border-radius: 40rpx 0rpx 0rpx 40rpx;z-index:201">
 		<view class="category">
-			<view class="instructions">Main Category</view>
+			<view class="instructions">{{this.$t('index.main-category')}}</view>
 			<view class="category-main">
 				<view v-for="(item,index) in categoryList" :key='index' @tap='searchProd(item,index,1)'
 					:class="['category-item',item.cid==current?'active' :'']">
@@ -10,7 +10,7 @@
 				</view>
 			</view>
 			<view>
-				<view class="instructions" style="margin-top: 40rpx;">Sub Category</view>
+				<view class="instructions" style="margin-top: 40rpx;">{{this.$t('index.sub-category')}}</view>
 				<view class="category-main">
 					<view v-for="(item,index) in tabslist" :key='index' @tap='searchProd(item,index,2)'
 						:class="['category-item',item.cid==subcurrent?'active' :'']">

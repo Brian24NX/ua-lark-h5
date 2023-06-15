@@ -5,7 +5,7 @@
 			<image src="../../static/store.png" mode=""></image>广州太古汇
 		</view>
 		<view class="title">
-			Material
+			{{this.$t('index.material')}}
 		</view>
 		<view class="product">
 			<div id="article" class="article" :class="[status == 1 && 'extended']">
@@ -24,7 +24,7 @@
 							</view>
 						</view>
 						<view class="info_r_r">
-							{{item.retailPrice}} <text>CNY</text>
+							{{item.retailPrice}} <text>{{item.priceUnit}}</text>
 						</view>
 					</view>
 				</view>
@@ -35,29 +35,14 @@
 		</view>
 		<!-- 备注 -->
 		<view class="title">
-			Comment
+			{{this.$t('index.comment')}}
 		</view>
-		<view class="common">
-			<van-cell-group>
-				<van-field :value="message" type="textarea" :autosize="{maxHeight: 100, minHeight: 50 }"
-					placeholder="Expect to be delivered as soon as possible" autosize :border="true"
-					custom-style="height:192px;border-radius: 40rpx;background: #F8F8F8;z-index:100" />
-			</van-cell-group>
-
-		</view>
+		<!-- 备注 -->
+		<textarea v-model="form.remark" name="" id="" :placeholder="this.$t('index.textarea')"></textarea>
 		<!-- 提交 -->
-		<!-- 	<van-submit-bar bar-class="submit-bar" button-class="btnsClss"  :button-text="this.$t('index.submit')"
-			@submit="onSubmit">
-			<view class="submit-bar-l">
-				<view class="num">Quantity： <text class="bold">3</text> </view>
-				<view class="price">
-					<text>Total： </text><text class="bold">96.00 </text><text style="font-size: 20rpx">CNY</text>
-				</view>
-			</view>
-		</van-submit-bar> -->
 		<view class="submit-bar">
 			<view class="submit-bar-l">
-				<view class="num">Quantity： <text class="bold">{{priceInfo.num}}</text> </view>
+				<view class="num">{{this.$t('index.Quantity')}}： <text class="bold">{{priceInfo.num}}</text> </view>
 				<view class="price">
 					<text>Total： </text><text class="bold">{{priceInfo.sumPrice}}</text><text
 						style="font-size: 20rpx">CNY</text>
@@ -68,7 +53,7 @@
 			</view>
 		</view>
 		<!-- 弹窗 -->
-		<public-dialog v-if="dialogShow" @hideDialog="dialogHide" />
+		<public-dialog v-if="dialogShow" :pageFrom="'submit'" @submit="submit" :tip="tip" @hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -80,25 +65,49 @@
 		},
 		data() {
 			return {
+				tip: this.$t('index.isSubmit'),
 				status: 0, // 状态值
-				btnTxt: "View More", // 按钮文案
-				message: "",
+				btnTxt: this.$t('index.view-more'), // 按钮文案
 				dialogShow: false,
 				priceInfo: {},
-				materialList: []
+				materialList: [],
+				form: {
+					remark: "",
+					storeLarkDeptId: 74,
+					storeName: '广州奥体天河城',
+					priceUnit: "CNY",
+					totalPrice: "",
+					totalQuantity: "",
+					orderItemPos: []
+				}
 			}
 		},
 		onLoad(option) {
 			this.priceInfo = JSON.parse(option.getCarShop)
 			this.materialList = this.$store.state.carShop
+			this.form.totalPrice = this.priceInfo.sumPrice
+			this.form.totalQuantity = this.priceInfo.num
+			this.form.orderItemPos = this.$store.state.carShop
+			this.form.orderItemPos.forEach(item=>{
+				item.supplierSkuCode = item.oriSkuCode
+				item.storeLarkDeptId =74
+				item.storeName='广州奥体天河城'
+			})
 		},
 		methods: {
 			openOrClose() {
 				this.status = this.status == 1 ? 0 : 1;
-				this.btnTxt = this.status == 1 ? "收起内容" : "查看更多";
+				this.btnTxt = this.status == 1 ? this.$t('index.pack-up') : this.$t('index.view-more');
 			},
 			onSubmit() {
 				this.dialogShow = true
+			},
+			submit() {
+				this.$api.districtMaterialAdd(this.form).then(res => {
+					
+				})
+				// this.$api.saMaterialAdd(this.form).then(res => {
+				// })
 			},
 			dialogHide(val) {
 				this.dialogShow = val
@@ -107,7 +116,18 @@
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+	textarea {
+		width: auto;
+		height: 192rpx;
+		background: #F8F8F8;
+		border-radius: 40rpx;
+		font-size: 28rpx;
+		color: #111111;
+		line-height: 38rpx;
+		padding: 40rpx 40rpx 0 40rpx;
+	}
+
 	.article {
 		// max-width: 800px;
 		max-height: 788rpx;

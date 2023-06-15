@@ -1,12 +1,12 @@
 <template>
 	<van-popup :show="true" position="center" custom-style="width: 85%;border-radius: 40rpx;z-index:500,background-color:#f8f8f8" @close="onClose">
 			<view class="dialog flex-vcenter column">
-				<h3 class="title">标题</h3>
-				<view class="color-1DBA00 title2">PO created successful！</view>
-<!-- 				<view class="massage ">
-					{{this.$t('index.clean_up')}}
-				</view> -->
-				<view class="dialog-content">
+				<h3 class="title">CONFIRM</h3>
+				<view class="color-1DBA00 title2" v-if="pageFrom=='myApproval'">PO created successful！</view>
+				<view class="massage "  v-if="pageFrom!='myApproval'">
+					{{tip}}
+				</view>
+				<view class="dialog-content" v-if="pageFrom=='myApproval'">
 					<view class="dialog-content-item">
 						<view class="dialog-content-order flex-vcenter">
 							<view>SO1264543</view>
@@ -70,6 +70,10 @@
 			pageFrom:{
 				type:String,
 				default:''
+			},
+			tip:{
+				type:String,
+				default:''
 			}
 		},
 		data() {
@@ -85,6 +89,9 @@
 				if(this.pageFrom=='clear'){
 					this.$emit('deleteAll')
 					this.$store.commit('deleteCarAll')
+				}
+				if(this.pageFrom=='submit'){
+					this.$emit('submit')
 				}
 				this.$emit('hideDialog', false)
 			}

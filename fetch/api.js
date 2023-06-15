@@ -1,7 +1,7 @@
 import config from './config'
 import md5 from 'js-md5'
-let BASE_URL = config.base_url 
-let secret=config.secret
+let BASE_URL = config.base_url
+let secret = config.secret
 let appId = 'lark-api'
 export function fetchGet(url, params, need_error) {
 	return new Promise((resolve, reject) => {
@@ -9,11 +9,12 @@ export function fetchGet(url, params, need_error) {
 			url: BASE_URL + url,
 			data: params,
 			method: 'GET',
-			header:{
-				'timestamp' : new Date().getTime(),
-				 'appId' : appId,
-				'sign' : md5(new Date().getTime() + secret + appId),
-				'Authorization' : `${uni.getStorageSync("token")}`
+			header: {
+				'timestamp': new Date().getTime(),
+				'appId': appId,
+				'sign': md5(new Date().getTime() + secret + appId),
+				'access_token': `${uni.getStorageSync("token")}`,
+				// 'lang':  uni.getLocale()
 			},
 			timeout: 10000,
 			success(res) {
@@ -45,10 +46,11 @@ export function fetchPost(url, params, need_error) {
 			method: 'POST',
 			header: {
 				'content-type': 'application/json',
-				'timestamp' : new Date().getTime(),
-				 'appId' : appId,
-				'sign' : md5(new Date().getTime() + secret + appId),
-				'Authorization' : `${uni.getStorageSync("token")}`
+				'timestamp': new Date().getTime(),
+				'appId': appId,
+				'sign': md5(new Date().getTime() + secret + appId),
+				'access_token': `${uni.getStorageSync("token")}`,
+				// 'lang': uni.getLocale()
 			},
 			timeout: 10000,
 			success(res) {
@@ -73,20 +75,36 @@ export function fetchPost(url, params, need_error) {
 }
 
 export default {
-// 登录
+	// 登录
 	userLogin(params) {
 		return fetchGet("/ua-material-api/login", params)
 	},
-// 获取物料类型
+	// 获取物料类型
 	getMaterialCategory(data) {
 		return fetchGet(`/ua-material-api/app/material/getMaterialCategory/${data.id}`)
 	},
 	// 获取所有搜索条件列表
-		getAllMaterialCategory(data) {
-			return fetchGet(`/ua-material-api/app/material/getSearchList`)
-		},
+	getAllMaterialCategory(data) {
+		return fetchGet(`/ua-material-api/app/material/getSearchList`)
+	},
 	// 搜索物料列表
 	searchMaterial(params) {
-		return fetchPost("/ua-material-api/app/material/searchMaterial/page",params,true)
+		return fetchPost("/ua-material-api/app/material/searchMaterial/page", params, true)
+	},
+	// 获取店铺列表
+	searchStoreList(params) {
+		return fetchPost("/ua-material-api/app/store/list", params, true)
+	},
+	// 获取店铺列表
+	searchStoreList(params) {
+		return fetchPost("/ua-material-api/app/store/list", params, true)
+	},
+	// sa申请单提交
+	saMaterialAdd(params) {
+		return fetchPost("/ua-material-api/app/apply/add", params, true)
+	},
+	// 区经申请单提交
+	districtMaterialAdd(params) {
+		return fetchPost("/ua-material-api/app/apply/get", params,true)
 	},
 }

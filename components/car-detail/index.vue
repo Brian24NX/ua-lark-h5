@@ -3,11 +3,11 @@
 		<van-popup :show="true" round position="bottom" custom-style="padding-bottom:160rpx" @close="onClose">
 			<view class="clearAll">
 				<view class="clearAll_l">
-					Clear All
+					{{this.$t('index.clear-all')}}
 				</view>
 				<view class="clearAll_r" @click="clearAll">
 					<image src="../../static/delete.png" mode=""></image>
-					Clear All
+					{{this.$t('index.clear-all')}}
 				</view>
 			</view>
 			<view class="conts" v-for="(item,index) in carList" :key="index">
@@ -22,11 +22,12 @@
 					</view>
 					<view class="pro-right">
 						<view class="pro-right-delete" @click="deleteItem(item)">
-							<image src="../../static/delete_active.png" mode=""></image>删除
+							<image src="../../static/delete_active.png" mode=""></image>{{this.$t('index.delete')}}
 						</view>
 						<view class="change-num">
-							<image class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image>
-							<input :value="item.scalar" type="text" />
+							<image v-if="item.scalar>0" class="addcar" src="../../static/minuscar.png"
+								@tap.stop="minusNum(item)"></image>
+							<input v-if="item.scalar>0" :value="item.scalar" type="text" />
 							<image class="addcar" src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)">
 							</image>
 						</view>
@@ -51,12 +52,12 @@
 			vanDivider
 		},
 		data() {
-			return {
-				carList: []
-			}
+			return {}
 		},
-		mounted() {
-			this.carList = this.$store.state.carShop
+		computed: {
+			carList() {
+				return this.$store.state.carShop
+			}
 		},
 		methods: {
 			onClose() {
@@ -66,11 +67,9 @@
 				this.$emit('showDialog', true)
 			},
 			minusNum(item) {
-				item.scalar--
 				this.$emit('minusNum', item)
 			},
 			plusNum(item) {
-				item.scalar++
 				this.$emit("plusNum", item)
 			},
 			deleteItem(item) {
@@ -91,6 +90,7 @@
 		right: 0rpx;
 		display: flex;
 		align-items: center;
+		min-height: 1.4rem;
 
 		.addcar {
 			width: 36rpx;

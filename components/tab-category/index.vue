@@ -20,12 +20,9 @@
 						{{item.retailPrice}} <text>{{item.priceUnit}}</text>
 					</view>
 				</view>
-				<!-- <image class="addcar" src="../../static/addcar.png" @tap.stop="showStep "></image> -->
-				<!-- <van-stepper custom-class="stepper" :value="1" theme="round" button-size="25px" input-class="input"
-					plus-class="add" :disable-minus="false"  minus-class="minus" @change.stop="onChange" /> -->
 				<view class="change-num">
-					<image class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image> <input
-						:value="item.scalar" type="text" />
+					<image v-if="item.scalar>0" class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image> 
+					<input v-if="item.scalar>0" :value="item.scalar" type="text" class="inp" />
 					<image class="addcar" src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)" ></image>
 				</view>
 			</view>
@@ -71,9 +68,6 @@
 				detail: {}
 			}
 		},
-		// mounted() {
-		// 	this.get
-		// },
 		methods: {
 			onChange(val) {
 				console.log(val)
@@ -88,7 +82,7 @@
 				uni.navigateBack()
 			},
 			minusNum(item){
-				console.log(item)
+				if(item.scalar<=0) return
 				this.$emit('minusNum',item)
 			},
 			plusNum(item){
@@ -105,9 +99,6 @@
 		}
 	}
 </script>
-<style>
-
-</style>
 <style lang="scss" scoped>
 	.change-num {
 		position: absolute;
@@ -115,18 +106,18 @@
 		bottom: 30rpx;
 		display: flex;
 		align-items: center;
-
+        min-height: 1.4rem;
 		.addcar {
 			width: 36rpx;
 			height: 36rpx;
 			margin: 0;
 		}
 
-		input {
+		input{
 			width: 20px;
+			height: 36rpx;
 			font-size: 24rpx;
 			color: #111111;
-			line-height: 28rpx;
 			text-align: center;
 		}
 	}
