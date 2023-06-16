@@ -21,21 +21,21 @@
 				</view>
 			</view>
 
-			<tab-category @getMaterial='getMaterial' @minusNum="minusNum" @plusNum="plusNum" @editNum="editNum" :subcurrent="subcurrent"
-				:hideTab="hideTab" :tabslist="tabslist" :contlist="contlist" @showDetail="showDetail"
-				keep-alive></tab-category>
+			<tab-category @getMaterial='getMaterial' @minusNum="minusNum" @plusNum="plusNum" @editNum="editNum"
+				:subcurrent="subcurrent" :hideTab="hideTab" :tabslist="tabslist" :contlist="contlist"
+				@showDetail="showDetail" keep-alive></tab-category>
 
 		</view>
 		<!-- 分类弹窗 -->
-		<category-mask v-if="categoryShow" @searchSubMaterial="toggleTab(arguments)" :current="current" :subcurrent="subcurrent" :supplierList="supplierList"
-			:categoryList="categoryList" :tabslist="tabslist" @getSearchProd="getProd"
-			@closeSearch="closeSearch"></category-mask>
+		<category-mask v-if="categoryShow"  :current="current"
+			:subcurrent="subcurrent" :supplierList="supplierList" :categoryList="categoryList" :tabslist="tabslist"
+			@getSearchProd="getContlist" @closeSearch="closeSearch"></category-mask>
 		<!-- 提交 -->
 		<view class="submit" :style="clearShow?'z-index:100':'z-index:101'">
 			<view class="submit_left">
 				<van-icon name="https://hr-dev.underarmour.cn/upload/img/notification/cover/1686735414489-car.png"
 					:info='getCarShop.num' v-if="getCarShop.num" custom-style="width:60rpx;height:60rpx"
-					@click="showCar" />
+					@click.native="showCar" />
 				<image src="../../static/car.png" mode="" v-else></image>
 				<view class="price">{{getCarShop.sumPrice}} <text class="suffix">CNY</text></view>
 			</view>
@@ -84,7 +84,7 @@
 				// 二级分类
 				tabslist: [],
 				// 供应商列表
-				supplierList:[],
+				supplierList: [],
 				// 二级菜单默认全部
 				subdefault: [{
 					cid: 0,
@@ -93,6 +93,8 @@
 				pageNum: 1,
 				pageSize: 10,
 				param: {
+					categoryId: 0,
+					categoryPath: "",
 					costPrice: 0,
 					createTime: "",
 					image: 0,
@@ -104,7 +106,6 @@
 					retailPrice: 0,
 					shortName: "",
 					specifications: "",
-					status: true,
 					supplierCode: "",
 					supplierName: "",
 					tenantCode: "",
@@ -112,7 +113,7 @@
 					unit: "",
 					updateTime: ""
 				},
-				page:""
+				page: ""
 			}
 		},
 		onLoad(option) {
@@ -132,7 +133,7 @@
 				this.$store.state.carShop.forEach(item => {
 					sumPrice += item.scalar * item.retailPrice
 					num += parseInt(item.scalar),
-					unit=item.priceUnit
+						unit = item.priceUnit
 				})
 				return {
 					sumPrice: sumPrice.toFixed(2),
@@ -155,7 +156,7 @@
 				})
 			},
 			getAllMaterial() {
-				this.$api.getAllMaterialCategory2().then(res => {
+				this.$api.getAllMaterialCategory1().then(res => {
 					let arr = [{
 						cid: 0,
 						categoryName: this.$t('index.all')
@@ -164,7 +165,7 @@
 						cid: 0,
 						nickName: this.$t('index.all')
 					}]
-					this.supplierList =arr1.concat(res.data.supplier)
+					this.supplierList = arr1.concat(res.data.supplier)
 					this.categoryList = arr.concat(res.data.category1)
 					this.tabslist = arr.concat(res.data.category2)
 					this.getContlist(this.tabslist[0].cid)
@@ -174,8 +175,8 @@
 				this.contlist.forEach((item, index) => {
 					if (item.mid == val.mid) {
 						item.scalar--
-						if(item.scalar==0){
-							this.show=false
+						if (item.scalar == 0) {
+							this.show = false
 						}
 						this.$store.commit('minusCar', item)
 					}
@@ -189,14 +190,14 @@
 					}
 				})
 			},
-			editNum(val){
+			editNum(val) {
 				this.contlist.forEach((item, index) => {
 					if (item.mid == val.mid) {
 						item.scalar = val.scalar
 						this.$store.commit('editCar', item)
 					}
 				})
-				
+
 			},
 			showDialog(val) {
 				this.clearShow = val
@@ -219,10 +220,10 @@
 				this.show = true
 			},
 			onSubmit(val) {
-				if(val<=0) return
+				if (val <= 0) return
 				uni.navigateTo({
 					url: "/pages/previewApplication/previewApplication?getCarShop=" + JSON.stringify(this
-						.getCarShop)+"&store="+JSON.stringify(this.store)
+						.getCarShop) + "&store=" + JSON.stringify(this.store)
 				})
 			},
 			hideDetail(val) {
@@ -235,32 +236,21 @@
 				this.categoryShow = true
 			},
 			toggleTab(item) {
-				if(Array.isArray(item)){
-					if(item[1]==1){
-						this.getSubCategory(item[0].cid,1)
-					}else if(item[1]==2){
-						this.getSupplier(item[0].cid)
-					}else if(item[1]==3){
-						this.getContlist(item.cid)
-					}
-				}else{
-					this.current = item.cid
-					this.subcurrent = 0
-					// this.subdefault[0].cid = item.cid
-					this.getSubCategory(item.cid)
-				}
+				this.current = item.cid
+				this.subcurrent = 0
+				this.getSubCategory(item.cid)
 			},
 			closeSearch(val) {
 				this.categoryShow = val
 			},
 			selectStore() {
-				if(!this.page) return
+				if (!this.page) return
 				uni.navigateTo({
 					url: "/pages/storeList/storeList"
 				})
 			},
 			// 获取二级分类列表
-			getSubCategory(id,type) {
+			getSubCategory(id, type) {
 				this.$api.getMaterialCategory({
 					id: id
 				}).then(res => {
@@ -269,37 +259,13 @@
 							item.isChoose = false
 						})
 						this.tabslist = this.subdefault.concat(res.data)
-						if(type ==1){
-							this.getSupplier(id)
-							return
-						}
 						// 获取二级菜单全部
 						this.getContlist(id)
 					}
 
 				})
 			},
-			// 获取供应商
-			getSupplier(id) {
-				this.$api.getMaterialCategory3({
-					id: id
-				}).then(res => {
-					if (res.code == '200') {
-						res.data.supplier.forEach((item, index) => {
-							item.isChoose = false
-						})
-						let arr = [{
-							cid: 0,
-							nickName: this.$t('index.all')
-						}]
-						this.supplierList = arr.concat(res.data.supplier)
-						
-						// 获取供应商下的物料列表
-						this.getContlist(id)
-					}
-			
-				})
-			},
+
 			getMaterial(val) {
 				this.subcurrent = val
 				if (val == 0) {
@@ -307,11 +273,17 @@
 				} else {
 					this.getContlist(val)
 				}
-
-
 			},
 			getContlist(id) {
-				this.param.categoryId = id
+				this.categoryShow = false
+				if(id.constructor === Object){
+					this.current = id.current
+					this.subcurrent = id.subcurrent
+					this.param.categoryId = id.categoryId
+					this.param.supplierCode = id.supplierCode
+				}else{
+					this.param.categoryId = id
+				}
 				let param = {
 					pageNum: this.pageNum,
 					pageSize: this.pageSize,
@@ -423,7 +395,8 @@
 			line-height: 80rpx;
 			text-align: center;
 		}
-		.forbidden{
+
+		.forbidden {
 			background-color: #ccc;
 			color: #fff;
 		}

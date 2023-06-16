@@ -87,10 +87,6 @@ export default {
 	getMaterialCategory3(data) {
 		return fetchGet(`/ua-material-api/app/material/getSearchList3/${data.id}`)
 	},
-	// 获取所有搜索条件列表
-	getAllMaterialCategory(data) {
-		return fetchGet(`/ua-material-api/app/material/getSearchList`)
-	},
 	// 所有搜索条件列表-外面
 	getAllMaterialCategory1(data) {
 		return fetchGet(`/ua-material-api/app/material/getSearchList1`)

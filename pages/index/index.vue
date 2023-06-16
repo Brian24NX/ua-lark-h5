@@ -35,18 +35,18 @@
 		<van-divider customStyle="background-color: #000;; border-color: #000; height:6px;margin:0;margin-top:10rpx" />
 		<!-- sa -->
 		<!-- 		<view class="">
-			<nav-arrow :newApplication="newApplication" :img="addimg" :haveIcon="true" :myApplication="myApplication" @tap="choosePage(3)" ></nav-arrow>
+			<nav-arrow :newApplication="newApplication" :img="addimg" :haveIcon="true" :myApplication="myApplication" @tap.native="choosePage(3)" ></nav-arrow>
 			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
-			<nav-arrow  :haveIcon="false" :myApplication="myApplication" :check="check"  @tap="choosePage(2)" ></nav-arrow>
+			<nav-arrow  :haveIcon="false" :myApplication="myApplication" :check="check"  @tap.native="choosePage(2)" ></nav-arrow>
 		</view> -->
 
 		<!-- ops -->
 		<!-- 		<view class="">
-				<nav-arrow :newApplication="myApproval" :img="ticket" :haveIcon="true" :myApplication="myApplication"  @tap="choosePage(1)" ></nav-arrow>
+				<nav-arrow :newApplication="myApproval" :img="ticket" :haveIcon="true" :myApplication="myApplication"  @tap.native="choosePage(1)" ></nav-arrow>
 				<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
-				<nav-arrow :newApplication="myApplication" :img="edit" :haveIcon="true" :myApplication="myApplication"  @tap="choosePage(2)" ></nav-arrow>
+				<nav-arrow :newApplication="myApplication" :img="edit" :haveIcon="true" :myApplication="myApplication"  @tap.native="choosePage(2)" ></nav-arrow>
 				<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
-				<nav-arrow :haveIcon="false" :myApplication="newApplication" :check="now"  @tap="choosePage(3)" ></nav-arrow>
+				<nav-arrow :haveIcon="false" :myApplication="newApplication" :check="now"  @tap.native="choosePage(3)" ></nav-arrow>
 		</view> -->
 
 		<!-- 区域经理 -->
@@ -147,7 +147,6 @@
 			choosePage(index) {
 				console.log(index)
 				if (index == 3) {
-					console.log('111111111')
 					uni.navigateTo({
 						url: this.url
 					})
