@@ -9,12 +9,21 @@
 					{{item.categoryName}}
 				</view>
 			</view>
-			<view>
+			<view v-if="tabslist.length>0">
 				<view class="instructions" style="margin-top: 40rpx;">{{this.$t('index.sub-category')}}</view>
 				<view class="category-main">
 					<view v-for="(item,index) in tabslist" :key='index' @tap='searchProd(item,index,2)'
 						:class="['category-item',item.cid==subcurrent?'active' :'']">
 						{{item.categoryName}}
+					</view>
+				</view>
+			</view>
+			<view v-if="supplierList.length>0">
+				<view class="instructions" style="margin-top: 40rpx;">{{this.$t('index.sub-category')}}</view>
+				<view class="category-main">
+					<view v-for="(item,index) in supplierList" :key='index' @tap='searchProd(item,index,3)'
+						:class="['category-item',item.cid==subcurrent?'active' :'']">
+						{{item.nickName}}
 					</view>
 				</view>
 			</view>
@@ -56,6 +65,12 @@
 					return []
 				}
 			},
+			supplierList:{
+				type: Array,
+				default () {
+					return []
+				}
+			},
 			current: {
 				type: Number,
 				default: 1
@@ -77,7 +92,11 @@
 			searchProd(item, i, type) {
 				console.log(item, i, type)
 				if (type == 1) {
-					this.$emit('searchSubMaterial', item)
+					this.$emit('searchSubMaterial', item,1)
+				}else if(type ==2){
+					this.$emit('searchSubMaterial', item,2)
+				}else if(type ==3){
+					this.$emit('searchSubMaterial', item,3)
 				}
 			},
 			resert() {

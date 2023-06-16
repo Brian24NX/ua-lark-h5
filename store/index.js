@@ -16,26 +16,27 @@ const store = new Vuex.Store({
 		// 	uni.setStorageSync('token',payload)
 		// },
 		userLogins(state) {
-			tt.login({
-				success(res) {
-					console.log(res.code)
-					api
-						.userLogin({
-							code: res.code
-						})
-						.then(resp => {
-							if (resp.code == '200') {
-								state.token = resp.data
-								uni.setStorageSync('token', resp.data)
-							}
+			if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
+				tt.login({
+					success(res) {
+						console.log(res.code)
+						api
+							.userLogin({
+								code: res.code
+							})
+							.then(resp => {
+								if (resp.code == '200') {
+									state.token = resp.data
+									uni.setStorageSync('token', resp.data)
+								}
 
-						});
-				},
-				fail(res) {
-					console.log(`login fail: ${JSON.stringify(res)}`);
-				}
-			});
-
+							});
+					},
+					fail(res) {
+						console.log(`login fail: ${JSON.stringify(res)}`);
+					}
+				});
+			}
 		},
 		addCar(state, item) {
 			state.carShop = state.carShop.filter((v) => v.mid != item.mid)
@@ -52,7 +53,7 @@ const store = new Vuex.Store({
 			}
 			uni.setStorageSync('carShop', JSON.stringify(state))
 		},
-		editCar(state, item){
+		editCar(state, item) {
 			state.carShop = state.carShop.filter((v) => v.mid != item.mid)
 			state.carShop.push(item)
 			uni.setStorageSync('carShop', JSON.stringify(state))

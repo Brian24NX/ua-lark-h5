@@ -11,28 +11,29 @@
 			<view class="goods-info" v-for="(item,index) in itemList" :key="index">
 				<view class="info-header">
 					<view class="info-header-top">
-						<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" bind:change="onChange">
-							<image class="checkbox" slot="icon" :src="checked ? activeIcon : inactiveIcon" />
+						<van-checkbox use-icon-slot :value="item.choose" custom-class="vancheck"
+							@change="onChange(item,index)">
+							<image class="checkbox" slot="icon" :src="item.choose ? activeIcon : inactiveIcon" />
 						</van-checkbox>
-						<text style="margin-left: 20rpx;">上海太古汇</text>
+						<text style="margin-left: 20rpx;">{{item.storeName}}</text>
 						<image class="unfold" :style="item.open?'transform: rotate(180deg);':'transform: rotate(0deg);'"
 							src="../../static/unfold.png" mode="" @click="changeContent(item,index)">
 						</image>
 					</view>
 					<view class="info-header-bottom">
 						<view class="info-header-bottom-l">
-							<view>Claire Wang</view>
-							<view>2023.06.04 10:54</view>
+							<view>{{item.employeeName}}</view>
+							<view>{{NORMSTARTTIMEfilter(item.applyTime)}}</view>
 						</view>
 						<view class="info-header-bottom-r">
-							<view>Quantity: <text>3</text> </view>
-							<view>Total: <text>65.10CNY</text> </view>
+							<view>Quantity: <text>{{item.totalQuantity}}</text> </view>
+							<view>Total: <text>{{item.totalPrice}}{{item.priceUnit}}</text> </view>
 						</view>
 					</view>
 				</view>
 				<!-- 展开 -->
 				<view class="" v-show="item.open==true">
-					<material-item v-for="item in 2" :key="item"></material-item>
+					<material-item v-for="(val,i) in item.orderItemPos" :key="i" :dataDetail="val"></material-item>
 				</view>
 			</view>
 		</view>
@@ -52,10 +53,10 @@
 		</view>
 		<view class="footer">
 			<view class="footer-l">
-				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" bind:change="onChange">
+				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChange">
 					<image class="checkbox" slot="icon" :src="checked ? selectAll : notAll" />
 				</van-checkbox>
-				<text style="margin-top: 8rpx;">Selected: 2</text>
+				<text style="margin-top: 8rpx;" v-if="selectedList.length">Selected: {{selectedList.length}}</text>
 			</view>
 			<view class="footer-r">
 				<view style="margin-right: 40rpx;">
@@ -66,7 +67,7 @@
 				</view>
 			</view>
 		</view>
-		<!-- 弹窗 -->
+		<!-- 弹窗 ops-->
 		<public-dialog v-if="dialogShow"></public-dialog>
 	</view>
 </template>
@@ -87,7 +88,7 @@
 			return {
 				btnActive: false,
 				dialogShow: false,
-				checked: true,
+				checked: false,
 				activeIcon: '../../static/checkbox-active.png',
 				inactiveIcon: '../../static/checkbox.png',
 				selectAll: '../../static/selectall.png',
@@ -101,19 +102,50 @@
 						show: false
 					}
 				],
+				selectedList:[],
 				level: "2",
-				itemList: [{
-						open: true,
-
-					},
-					{
-						open: true,
-
+				itemList: []
+			}
+		},
+		onShow() {
+			this.getApproveList()
+		},
+		computed: {
+			getApprove() {
+				console.log(this.itemList)
+				this.itemList.forEach(item=>{
+					if(item.choose){
+						this.selectedList.push(item)
 					}
-				]
+				})
 			}
 		},
 		methods: {
+			 NORMSTARTTIMEfilter (val) {
+			      const jsonDate = new Date(val).toJSON()
+			      return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
+			    },
+			getApproveList() {
+				let data={
+						pageNum: 1,
+						pageSize: 10,
+				}
+				this.$api.getAllMyApproval(data).then(res => {
+					if(res.code=='200'){
+						res.data.data.forEach(item => {
+							item.open = true,
+							item.choose = false
+						})
+						this.itemList = res.data.data
+						console.log(this.itemList)
+					}
+					
+				})
+			},
+			onChange(val,index) {
+				this.$set(val, 'choose', true)
+				this.$set(this.itemList, index, val)
+			},
 			selectMenu(val) {
 				this.dataList.forEach(i => {
 					i.show = false;

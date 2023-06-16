@@ -53,7 +53,7 @@
 			</view>
 		</view>
 		<!-- 弹窗 -->
-		<public-dialog v-if="dialogShow" :pageFrom="'submit'" @submit="submit" :tip="tip" @hideDialog="dialogHide" />
+		<public-dialog v-if="dialogShow" :pageFrom="'submit'" :title="'CONFIRM'" @submit="submit" :tip="tip" @hideDialog="dialogHide" />
 	</view>
 </template>
 

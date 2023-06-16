@@ -1,38 +1,43 @@
 <template>
 	<view class="info">
-		<image src="https://picnew12.photophoto.cn/20180412/xiaoqingxindongwushouhuikeaixiaolupng-32400140_1.jpg"
-			mode=""></image>
+		<image :src="dataDetail.image" mode=""></image>
 		<view class="info_r">
 			<view class="info_r_l">
 				<view class="title">
-					定制明兴 M17
+					{{dataDetail.shortName}}
 				</view>
 				<view class="desc">
-					上海齐心共赢
+					{{dataDetail.shortName}}
 				</view>
-				<view class="remark bold">
+				<view class="remark bold" v-if="dataDetail.remark" @click="dialog=true">
 					Remark <image src="../../static/more.png"></image>
 				</view>
 			</view>
 			<view class="info_r_r">
 				<view class="bold">
-					x1
+					x{{dataDetail.applyQuantity}}
 				</view>
 				<view>
-					<text class="bold">32.00</text> <text style="font-size: 16rpx; margin-left: 2rpx;">CNY</text>
+					<text class="bold">{{dataDetail.costPrice}}</text> <text style="font-size: 16rpx; margin-left: 2rpx;">{{dataDetail.unit}}</text>
 				</view>
 			</view>
 		</view>
+		<public-dialog v-if="dialog" :title="'Remark'" :pageFrom="'remark'" :content="dataDetail.remark" @hideDialog="hideDialog"></public-dialog>
 	</view>
 </template>
 
 <script>
+		import publicDialog from "../../components/public-dialog/index.vue"
 	export default {
+		components: {
+			publicDialog
+		},
 		props: {
 			dataDetail: {}
 		},
 		data() {
 			return {
+				dialog:false
 				// keyword:""
 			}
 		},
@@ -40,6 +45,9 @@
 
 		},
 		methods: {
+			hideDialog(val){
+				this.dialog = val
+			}
 			// searchClick(key){
 			// 	this.$emit('searchClick',key)
 			// }

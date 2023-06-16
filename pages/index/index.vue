@@ -51,12 +51,12 @@
 
 		<!-- 区域经理 -->
 		<view class="">
-			<region-nav-arrow :newApplication="myApproval" :haveBtn="true" @tap="choosePage(1)"
+			<region-nav-arrow :newApplication="myApproval" :haveBtn="true" @tap.native="choosePage(1)"
 				:havepending="true"></region-nav-arrow>
 			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
-			<region-nav-arrow :newApplication="myApplication" :haveBtn="true" @tap="choosePage(2)"></region-nav-arrow>
+			<region-nav-arrow :newApplication="myApplication" :haveBtn="true" @tap.native="choosePage(2)"></region-nav-arrow>
 			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
-			<region-nav-arrow :newApplication="newApplication" :haveBtn="false" @tap="choosePage(3)"></region-nav-arrow>
+			<region-nav-arrow :newApplication="newApplication" :haveBtn="false" @tap.native="choosePage(3)"></region-nav-arrow>
 		</view>
 
 	</view>
@@ -73,6 +73,7 @@
 		},
 		data() {
 			return {
+				indicatorDots:true,
 				systemLocale: '',
 				applicationLocale: '',
 				addimg: '../../static/add.png',
@@ -146,6 +147,7 @@
 			choosePage(index) {
 				console.log(index)
 				if (index == 3) {
+					console.log('111111111')
 					uni.navigateTo({
 						url: this.url
 					})

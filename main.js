@@ -1,7 +1,10 @@
 import App from './App'
 import api from './fetch/api.js'
 import store from './store/index.js'
-uni.setLocale('en')
+console.log(uni.getSystemInfoSync())
+if(uni.getSystemInfoSync().uniPlatform=="mp-lark"){
+	uni.setLocale('en')
+}
 import i18n from './locale/index'
 // #ifndef VUE3
 import Vue from 'vue'

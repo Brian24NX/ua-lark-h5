@@ -83,17 +83,25 @@ export default {
 	getMaterialCategory(data) {
 		return fetchGet(`/ua-material-api/app/material/getMaterialCategory/${data.id}`)
 	},
+	// 获取物料类型
+	getMaterialCategory3(data) {
+		return fetchGet(`/ua-material-api/app/material/getSearchList3/${data.id}`)
+	},
 	// 获取所有搜索条件列表
 	getAllMaterialCategory(data) {
 		return fetchGet(`/ua-material-api/app/material/getSearchList`)
 	},
+	// 所有搜索条件列表-外面
+	getAllMaterialCategory1(data) {
+		return fetchGet(`/ua-material-api/app/material/getSearchList1`)
+	},
+	// 所有搜索条件列表-外面
+	getAllMaterialCategory2(data) {
+		return fetchGet(`/ua-material-api/app/material/getSearchList2`)
+	},
 	// 搜索物料列表
 	searchMaterial(params) {
 		return fetchPost("/ua-material-api/app/material/searchMaterial/page", params, true)
-	},
-	// 获取店铺列表
-	searchStoreList(params) {
-		return fetchPost("/ua-material-api/app/store/list", params, true)
 	},
 	// 获取店铺列表
 	searchStoreList(params) {
@@ -106,5 +114,9 @@ export default {
 	// 区经申请单提交
 	districtMaterialAdd(params) {
 		return fetchPost("/ua-material-api/app/apply/get", params,true)
+	},
+	// 获取我的审批列表
+	getAllMyApproval(params) {
+		return fetchPost(`/ua-material-api/app/apply/get`,params,true)
 	},
 }
