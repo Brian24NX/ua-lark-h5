@@ -10,7 +10,7 @@
 			:style="hideTab?'padding-left: 0;width: 100%;padding-right: 0;margin-top:18rpx':'padding-left: 192rpx'">
 			<view class="cont" v-if="contlist.length >0" v-for="(item,index) in contlist" :key="index">
 				<view class="prod-pic" @click.capture="tz(item)">
-					<image :src="item.imageUrl" mode="aspectFit" />
+					<image :src="item.imageUrl?item.imageUrl:'../../static/default.png'" />
 				</view>
 				<view class="prod-info" @click.capture="tz(item)">
 					<view class="prodname">{{item.shortName}}</view>
@@ -264,6 +264,7 @@
 		width: 176rpx;
 		height: 176rpx;
 		margin: 0 16rpx 0 20rpx;
+		border-radius: 24rpx;
 	}
 
 	.classbox {

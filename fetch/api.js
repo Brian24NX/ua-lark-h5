@@ -79,6 +79,10 @@ export default {
 	userLogin(params) {
 		return fetchGet("/ua-material-api/login", params)
 	},
+	// 登录
+	userLogin2(params) {
+		return fetchGet("/ua-material-api/logintest", params)
+	},
 	// 获取物料类型
 	getMaterialCategory(data) {
 		return fetchGet(`/ua-material-api/app/material/getMaterialCategory/${data.id}`)
@@ -87,7 +91,7 @@ export default {
 	getMaterialCategory3(data) {
 		return fetchGet(`/ua-material-api/app/material/getSearchList3/${data.id}`)
 	},
-	// 所有搜索条件列表-外面
+	// 所有搜索条件列表-里面
 	getAllMaterialCategory1(data) {
 		return fetchGet(`/ua-material-api/app/material/getSearchList1`)
 	},
@@ -103,16 +107,17 @@ export default {
 	searchStoreList(params) {
 		return fetchPost("/ua-material-api/app/store/list", params, true)
 	},
-	// sa申请单提交
+	// 申请单提交
 	saMaterialAdd(params) {
 		return fetchPost("/ua-material-api/app/apply/add", params, true)
 	},
-	// 区经申请单提交
-	districtMaterialAdd(params) {
-		return fetchPost("/ua-material-api/app/apply/get", params,true)
-	},
+
 	// 获取我的审批列表
 	getAllMyApproval(params) {
 		return fetchPost(`/ua-material-api/app/apply/get`,params,true)
+	},
+	// 获取我的审批列表
+	updateApply(param) {
+		return fetchPost(`/ua-material-api/app/apply/update/${param.id}`,param.params,true)
 	},
 }

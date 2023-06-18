@@ -6,10 +6,7 @@
 			<!-- :style="show?'display:block':'display:none'" -->
 			<view class="mask" :style="item.show?'display:block':'display:none'" @click="hideMenu">
 				<ul>
-					<li @click="onLiClick(index, $event)">广州太古汇</li>
-					<li @click="onLiClick(index, $event)">深圳京基一百</li>
-					<li @click="onLiClick(index, $event)">上海浦东万达广场</li>
-					<li @click="onLiClick(index, $event)">东莞太一城</li>
+					<li v-for="val in item.list" @click="onLiClick(val,index)">{{val.name}}</li>
 				</ul>
 			</view>
 		</view>
@@ -38,12 +35,19 @@
 		hideMenu(){
 			this.$emit('hideMenu',false)
 		},
-			onLiClick(index) {
-				this.activeIndex = index;
-				this.$emit("change", {
-					index: index,
-					value: this.dataList[index]
-				})
+			onLiClick(item,index) {
+			 console.log(item,index)
+			 if(index==0){
+				 this.$emit("changeStore",item)
+			 }
+			 if(index==1){
+				  this.$emit("changeTime",item)
+			 }
+				// this.activeIndex = index;
+				// this.$emit("change", {
+				// 	index: index,
+				// 	value: this.dataList[index]
+				// })
 			}
 		},
 		computed: {
@@ -111,6 +115,8 @@
 			z-index: 1;
 			border-radius: 0px 0px 40rpx 40rpx;
 			padding: 40rpx 0 0 30rpx;
+			height: 360rpx;
+			overflow-y: scroll;
 
 			li {
 				font-size: 28rpx;

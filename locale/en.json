@@ -45,6 +45,12 @@
 	"index.sub-category": "Sub Category",
 	"index.textarea":"Expect to be delivered as soon as possible",
 	"index.Quantity":"Quantity",
-	"index.isSubmit":"Are you sure to submit the application？"
-	
+	"index.isSubmit":"Are you sure to submit the application？",
+	"index.application-time":"Application Time",
+	"index.this-week":"This Week",
+	"index.this-month":"This Month",
+	"index.three-month":"Three Month",
+	"index.reject-all":"Are you sure to Reject All?",
+	"index.approve-all":"Are you sure to Approve All?",
+	"index.selected":"You have selected："
 }

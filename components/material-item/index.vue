@@ -1,13 +1,13 @@
 <template>
 	<view class="info">
-		<image :src="dataDetail.image" mode=""></image>
+		<image :src="dataDetail.imageUrl" mode=""></image>
 		<view class="info_r">
 			<view class="info_r_l">
 				<view class="title">
-					{{dataDetail.shortName}}
+					{{dataDetail.materialName}}
 				</view>
 				<view class="desc">
-					{{dataDetail.shortName}}
+					{{dataDetail.supplierName}}
 				</view>
 				<view class="remark bold" v-if="dataDetail.remark" @click="dialog=true">
 					Remark <image src="../../static/more.png"></image>
@@ -18,7 +18,7 @@
 					x{{dataDetail.applyQuantity}}
 				</view>
 				<view>
-					<text class="bold">{{dataDetail.costPrice}}</text> <text style="font-size: 16rpx; margin-left: 2rpx;">{{dataDetail.unit}}</text>
+					<text class="bold">{{dataDetail.retailPrice*dataDetail.applyQuantity}}</text> <text style="font-size: 16rpx; margin-left: 2rpx;">{{dataDetail.priceUnit}}</text>
 				</view>
 			</view>
 		</view>

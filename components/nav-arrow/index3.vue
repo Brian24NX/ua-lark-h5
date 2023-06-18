@@ -50,23 +50,22 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 22rpx 30rpx;
+		padding: 40rpx 30rpx;
 
 		.nav-l {
 			display: flex;
 			align-items: center;
 
 			image {
-				width: 112rpx;
-				height: 112rpx;
+				width: 152rpx;
+				height: 152rpx;
 				margin-right: 20rpx;
 			}
 
 			view {
-
-				font-size: 48rpx;
+				font-size: 60rpx;
 				color: #111111;
-				line-height: 48rpx;
+				line-height: 60rpx;
 			}
 
 			.title {
@@ -79,7 +78,7 @@
 			}
 
 			.desc {
-				margin-top: 8rpx;
+				margin-top: 40rpx;
 			}
 		}
 

@@ -3,12 +3,12 @@
 		<view class="searchbar">
 			<!-- 搜索 -->
 			<search-bar @searchClick="searchClick"></search-bar>
-			<!-- 中心区域 -->
-			<drop-down-list :key="item" @selectMenu="selectMenu(arguments)" @hideMenu="hideMenu"
-				:dataList="dataList"></drop-down-list>
+			<!-- 中心区域 :key="item"-->
+			<drop-down-list @selectMenu="selectMenu(arguments)" @changeStore="changeStore" @changeTime="changeTime"
+				@hideMenu="hideMenu" :dataList="dataList"></drop-down-list>
 		</view>
 		<view class="content">
-			<view class="goods-info" v-for="(item,index) in itemList" :key="index">
+			<view class="goods-info" v-for="(item,index) in approveList" :key="index">
 				<view class="info-header">
 					<view class="info-header-top">
 						<van-checkbox use-icon-slot :value="item.choose" custom-class="vancheck"
@@ -39,13 +39,14 @@
 		</view>
 		<view class="operate">
 			<view
-				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']  ">
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
+				@click="controlsAll(3)">
 				Approve All
 			</view>
-
 			<view
-				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']">
-				Approve All
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
+				@click="controlsAll(7)">
+				Reject All
 			</view>
 			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
 				Batch
@@ -53,22 +54,25 @@
 		</view>
 		<view class="footer">
 			<view class="footer-l">
-				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChange">
+				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
 					<image class="checkbox" slot="icon" :src="checked ? selectAll : notAll" />
 				</van-checkbox>
 				<text style="margin-top: 8rpx;" v-if="selectedList.length">Selected: {{selectedList.length}}</text>
 			</view>
 			<view class="footer-r">
-				<view style="margin-right: 40rpx;">
+				<view style="margin-right: 40rpx;" @click="changeStatus(3)">
 					<image class="approve" src="../../static/approve.png" mode=""></image>Approve
 				</view>
-				<view class="">
+				<view class="" @click="changeStatus(7)">
 					<image class="reject" src="../../static/reject.png" mode=""></image>Reject
 				</view>
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
 		<public-dialog v-if="dialogShow"></public-dialog>
+		<!-- 弹窗 -->
+		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="'CONFIRM'" :tip="tip"
+			:num="selectedList.length" @submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -77,6 +81,7 @@
 	import searchBar from "../../components/search-bar/index.vue"
 	import materialItem from "../../components/material-item/index.vue"
 	import publicDialog from "../../components/public-dialog/index.vue"
+	import moment from 'moment';
 	export default {
 		components: {
 			dropDownList,
@@ -86,6 +91,8 @@
 		},
 		data() {
 			return {
+				confirmDialog: false,
+				tip: this.$t('index.reject-all'),
 				btnActive: false,
 				dialogShow: false,
 				checked: false,
@@ -94,57 +101,217 @@
 				selectAll: '../../static/selectall.png',
 				notAll: '../../static/notall.png',
 				dataList: [{
-						name: "Store",
-						show: false
+						name: this.$t('index.store'),
+						show: false,
+						list: []
 					},
 					{
-						name: "Application Time",
-						show: false
+						name: this.$t('index.application-time'),
+						show: false,
+						list: [{
+								label: 'week',
+								name: this.$t('index.this-week')
+							},
+							{
+								label: 'month',
+								name: this.$t('index.this-month')
+							},
+							{
+								label: 'three-month',
+								name: this.$t('index.three-month')
+							}
+						]
 					}
 				],
-				selectedList:[],
+				selectedList: [],
 				level: "2",
-				itemList: []
+				approveList: [],
+				pageNum: 1,
+				pageSize: 10,
+				total: 0,
+				param: {
+					id: 0,
+					params: {
+						status: 0,
+						orderItemPos: []
+					}
+				},
+				forms: {
+					materialCode: "",
+					storeName: "",
+					stm: "",
+					etm: ""
+				}
 			}
 		},
 		onShow() {
 			this.getApproveList()
+			this.getStoreList()
 		},
-		computed: {
-			getApprove() {
-				console.log(this.itemList)
-				this.itemList.forEach(item=>{
-					if(item.choose){
-						this.selectedList.push(item)
-					}
-				})
-			}
+		// computed: {
+		// 	getApprove() {
+		// 		this.approveList.forEach(item => {
+		// 			if (item.choose) {
+		// 				this.selectedList.push(item)
+		// 			}
+		// 		})
+		// 		this.selectedList = Array.from(new Set(this.selectedList))
+		// 		console.log(this.selectedList)
+		// 	}
+		// },
+		onReachBottom() {
+			// 触底的事件
+			if (this.pageNum * this.pageSize >= this.total) return
+			// 让页码值自增+1
+			this.pageNum++
+			this.getApproveList()
+		},
+		// 下拉刷新的事件
+		onPullDownRefresh() {
+			// 1. 重置关键数据
+			this.pageNum = 1
+			this.total = 0
+			this.approveList = []
+			// 2. 重新发起请求
+			this.getApproveList()
 		},
 		methods: {
-			 NORMSTARTTIMEfilter (val) {
-			      const jsonDate = new Date(val).toJSON()
-			      return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
-			    },
-			getApproveList() {
-				let data={
-						pageNum: 1,
-						pageSize: 10,
+			changeTime(val) {
+				if (val.label == 'week') {
+					this.getRecentDay(7)
+				} else if (val.label == 'month') {
+					this.getRecentMonth(1);
+				} else if (val.label == 'three-month') {
+					this.getRecentMonth(3);
 				}
-				this.$api.getAllMyApproval(data).then(res => {
-					if(res.code=='200'){
-						res.data.data.forEach(item => {
-							item.open = true,
-							item.choose = false
-						})
-						this.itemList = res.data.data
-						console.log(this.itemList)
+				this.dataList[1].name = val.name
+				this.getApproveList()
+			},
+			getRecentMonth(n) {
+				let month = moment(new Date()).subtract(n, 'months').format('YYYY-MM-DD HH:mm:ss');
+				let datetime = moment().format('YYYY-MM-DD HH:mm:ss') //24小时制
+				this.forms.stm = month
+				this.forms.etm = datetime
+			},
+			// 近N天 -Moment.js
+			getRecentDay(n) {
+				let day = moment(new Date()).subtract(n, 'days').format('YYYY-MM-DD HH:mm:ss');
+				let datetime = moment().format('YYYY-MM-DD HH:mm:ss') //24小时制
+				this.forms.stm = day
+				this.forms.etm = datetime
+			},
+			changeStore(val) {
+				this.dataList[0].name = val.name
+				this.forms.storeName = val.name
+				this.pageNum = 1
+				this.getApproveList()
+			},
+			getStoreList() {
+				this.$api.searchStoreList().then(res => {
+					console.log(res)
+					if (res.code == '200') {
+						this.dataList[0].list = res.data
 					}
-					
 				})
 			},
-			onChange(val,index) {
-				this.$set(val, 'choose', true)
-				this.$set(this.itemList, index, val)
+			controlsAll(id) {
+				this.param.id = id
+				this.confirmDialog = true
+			},
+			submit() {
+				this.changeStatus(this.param.id, 1)
+			},
+			dialogHide(){
+				this.confirmDialog = false
+			},
+			changeStatus(id, type) {
+				if (this.selectedList.length <= 0) return uni.showToast({
+					title: '请选择审批信息',
+					duration: 2000
+				});
+				this.param.id = id
+				this.param.params.status = type || this.checked ? 1 : 0
+				this.selectedList.forEach(item => {
+					if (item.orderItemPos) {
+						this.param.params.orderItemPos = this.param.params.orderItemPos.concat(item.orderItemPos)
+					}
+				})
+				this.$api.updateApply(this.param).then(res => {
+					if (res.code == '200') {
+						if (id == 3) {
+							uni.showToast({
+								title: 'Reject Success',
+								duration: 2000
+							});
+						} else if (id == 7) {
+							uni.showToast({
+								title: 'Approve Success',
+								duration: 2000
+							});
+						}
+
+						this.pageNum = 1
+						this.getApproveList()
+					}
+				})
+			},
+			NORMSTARTTIMEfilter(val) {
+				const jsonDate = new Date(val).toJSON()
+				return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
+					/\.[\d]{3}Z/, '')
+			},
+			getApproveList() {
+				let data = {
+					pageNum: this.pageNum,
+					pageSize: this.pageSize,
+					param: this.forms
+				}
+				uni.showLoading({
+					title: '加载中'
+				});
+				this.$api.getAllMyApproval(data).then(res => {
+					if (res.code == '200') {
+						uni.hideLoading();
+						res.data.data.forEach(item => {
+							item.open = true,
+								item.choose = false
+						})
+						this.total = res.data.total
+						if (this.pageNum == 1) {
+							this.approveList = res.data.data
+						} else {
+							this.approveList = [...this.approveList, ...res.data.data]
+						}
+						console.log(this.approveList)
+					}
+
+				})
+			},
+			onChange(val, index) {
+				this.checked = false
+				if (val.choose) {
+					this.$set(val, 'choose', false)
+				} else {
+					this.$set(val, 'choose', true)
+				}
+				this.$set(this.approveList, index, val)
+				this.approveList.forEach((item, index) => {
+					if (item.choose) {
+						this.selectedList.push(item)
+					} else {
+						this.selectedList.splice(index, 1)
+					}
+				})
+				this.selectedList = Array.from(new Set(this.selectedList))
+			},
+			onChangeAll() {
+				this.selectedList.length = this.total
+				this.checked = !this.checked
+				if (this.checked) {
+					this.selectedList.length = this.total
+				} else {
+					this.selectedList.length = 0
+				}
 			},
 			selectMenu(val) {
 				this.dataList.forEach(i => {
@@ -158,11 +325,13 @@
 				})
 			},
 			searchClick(key) {
-
+				this.forms.materialCode = key
+				this.pageNum = 1
+				this.getApproveList()
 			},
 			changeContent(item, index) {
-				this.itemList.forEach(i => {
-					if (i.open !== this.itemList[index].open) {
+				this.approveList.forEach(i => {
+					if (i.open !== this.approveList[index].open) {
 						i.open = false;
 					}
 				})

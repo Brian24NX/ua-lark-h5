@@ -2,7 +2,7 @@
 	<view class="container">
 		<view class="nav">
 			<view class="nav-l">
-				<view class="recent">{{this.$t('index.recent')}}</view>
+				<!-- <view class="recent">{{this.$t('index.recent')}}</view> -->
 				<view class="title">
 					{{newApplication}}
 				</view>
@@ -57,7 +57,8 @@
 
 <style lang="scss" scoped>
 	.container {
-		padding-bottom: 40rpx;
+		padding-bottom: 16rpx;
+		position: relative;
 	}
 
 	.btns {
@@ -71,12 +72,12 @@
 
 		.btn {
 			width: 194rpx;
-			height: 70rpx;
+			height: 56rpx;
 			border-radius: 35rpx;
 			border: 2rpx solid #111111;
 			font-size: 28rpx;
 			text-align: center;
-			line-height: 70rpx;
+			line-height: 56rpx;
 			margin-right: 10rpx;
 			position: relative;
 		}
@@ -105,8 +106,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 40rpx 30rpx 0 30rpx;
-
+		padding: 16rpx 30rpx 0 30rpx;
 		.nav-l {
 
 			image {
@@ -116,19 +116,20 @@
 			}
 
 			view {
-				font-size: 60rpx;
+				font-size: 48rpx;
 				color: #111111;
-				line-height: 60rpx;
+
+				line-height: 48rpx;
 			}
 
-			.recent {
-				font-size: 28rpx;
-				color: #666666;
-				line-height: 38rpx;
-			}
+			// .recent {
+			// 	font-size: 28rpx;
+			// 	color: #666666;
+			// 	line-height: 38rpx;
+			// }
 
 			.title {
-				width: 310rpx;
+				// width: 310rpx;
 				font-weight: bold;
 			}
 
@@ -144,6 +145,13 @@
 		.nav-r {
 			width: 60rpx;
 			height: 60rpx;
+			position: absolute;
+			top: 50%;
+			right: 30rpx;
+			transform: translateY(-50%);
 		}
+	}
+	.nav:last-child{
+		padding-top: 36rpx;
 	}
 </style>

@@ -1,51 +1,50 @@
 <template>
-	<view class="container">
 		<van-popup :show="true" round position="bottom" custom-style="padding-bottom:160rpx" @close="onClose">
-			<view class="clearAll">
-				<view class="clearAll_l">
-					{{this.$t('index.clear-all')}}
-				</view>
-				<view class="clearAll_r" @click="clearAll">
-					<image src="../../static/delete.png" mode=""></image>
-					{{this.$t('index.clear-all')}}
-				</view>
-			</view>
-			<view class="conts" v-for="(item,index) in carList" :key="index">
-				<view class="cont">
-					<image src="../../static/xiezi.png" mode="aspectFit" />
-					<view class="prod-info" @click.native="tz(item.id,item.name,item)">
-						<view class="prodname">{{item.shortName}}</view>
-						<view class="prodesc">{{item.supplierName}}</view>
-						<view class="price-nums">
-							{{item.retailPrice}} <text>{{item.priceUnit}}</text>
-						</view>
+			<view class="">
+				<view class="clearAll">
+					<view class="clearAll_l">
+						{{this.$t('index.clear-all')}}
 					</view>
-					<view class="pro-right">
-						<view class="pro-right-delete" @click="deleteItem(item)">
-							<image src="../../static/delete_active.png" mode=""></image>{{this.$t('index.delete')}}
-						</view>
-						<view class="change-num">
-							<image class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image>
-							<input v-model="item.scalar" type="text"  @blur="editNum(item)" />
-						<image class="addcar" v-if="item.scalar>=999"  src="../../static/notadd.png" mode="" ></image>
-						<image class="addcar" v-else src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)" ></image>
-							</image>
-						</view>
+					<view class="clearAll_r" @click="clearAll">
+						<image src="../../static/delete.png" mode=""></image>
+						{{this.$t('index.clear-all')}}
 					</view>
 				</view>
-				<!-- v-if="item.scalar>0&& edit" -->
-				<van-divider customStyle="margin:0;color: #ddd; border-color: #ddd; padding-left:166rpx"
-					v-if="index !=carList.length-1" />
+				<view class="conts" v-for="(item,index) in carList" :key="index">
+					<view class="cont">
+						<image src="../../static/xiezi.png" mode="aspectFit" />
+						<view class="prod-info" @click.native="tz(item.id,item.name,item)">
+							<view class="prodname">{{item.shortName}}</view>
+							<view class="prodesc">{{item.supplierName}}</view>
+							<view class="price-nums">
+								{{item.retailPrice}} <text>{{item.priceUnit}}</text>
+							</view>
+						</view>
+						<view class="pro-right">
+							<view class="pro-right-delete" @click="deleteItem(item)">
+								<image src="../../static/delete_active.png" mode=""></image>{{this.$t('index.delete')}}
+							</view>
+							<view class="change-num">
+								<image class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image>
+								<input v-model="item.scalar" type="text"  @blur="editNum(item)" />
+							<image class="addcar" v-if="item.scalar>=999"  src="../../static/notadd.png" mode="" ></image>
+							<image class="addcar" v-else src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)" ></image>
+								</image>
+							</view>
+						</view>
+					</view>
+					<van-divider customStyle="margin:0;color: #ddd; border-color: #ddd; padding-left:166rpx"
+						v-if="index !=carList.length-1" />
+				</view>
 			</view>
+	
 		</van-popup>
-	</view>
 </template>
 
 <script>
 	import vanPopup from "@/wxcomponents/@vant/weapp/popup/index"
 	import vanStepper from "@/wxcomponents/@vant/weapp/stepper/index"
 	import vanDivider from "@/wxcomponents/@vant/weapp/divider/index"
-
 	export default {
 		components: {
 			vanPopup,
@@ -159,10 +158,14 @@
 		}
 
 		.prod-info {
+			width: 60%;
 			.prodname {
 				font-size: 28rpx;
 				color: #111111;
 				line-height: 38rpx;
+				white-space: nowrap;
+				    overflow: hidden;
+				    text-overflow: ellipsis;
 			}
 
 			.prodesc {
@@ -211,7 +214,7 @@ top: 0;
 				line-height: 32rpx;
 				margin-bottom: 50rpx;
 				display: flex;
-				justify-content: end;
+				justify-content: flex-end;
 				align-items: center;
 
 				image {

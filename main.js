@@ -1,7 +1,6 @@
 import App from './App'
 import api from './fetch/api.js'
 import store from './store/index.js'
-console.log(uni.getSystemInfoSync())
 if(uni.getSystemInfoSync().uniPlatform=="mp-lark"){
 	uni.setLocale('en')
 }
@@ -13,6 +12,7 @@ Vue.prototype.$store = store
 Vue.prototype._i18n = i18n
 Vue.config.productionTip = false
 App.mpType = 'app'
+
 const app = new Vue({
   i18n,
   store,

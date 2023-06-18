@@ -43,5 +43,12 @@
 	"index.sub-category": "二级分类",
 	"index.textarea":"希望能尽快交货",
 	"index.Quantity":"数量",
-	"index.isSubmit":"你确定要提交申请吗?"
+	"index.isSubmit":"你确定要提交申请吗?",
+	"index.application-time":"Application Time",
+	"index.this-week":"这个星期",
+	"index.this-month":"这个月",
+	"index.three-month":"三个月",
+	"index.reject-all":"你确认拒绝所有",
+	"index.approve-all":"你确认批准所有",
+	"index.selected":"你已经选择："
 }

@@ -13,9 +13,6 @@
 				)
 			}
 			// this.$store.commit('userLogins')
-			if (!this.$store.state.token) {
-				this.$store.commit('userLogins')
-			}
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -51,28 +48,28 @@
 				});
 
 			},
-			getUser() {
-				let that = this
-				tt.login({
-					success(res) {
-						that.code = res.code
-						that.$api
-							.userLogin({
-								code: res.code
-							})
-							.then(resp => {
-								if (resp.code == '200') {
-									that.$store.commit('updateToken', resp.data)
-								}
+			// getUser() {
+			// 	let that = this
+			// 	tt.login({
+			// 		success(res) {
+			// 			that.code = res.code
+			// 			that.$api
+			// 				.userLogin({
+			// 					code: res.code
+			// 				})
+			// 				.then(resp => {
+			// 					if (resp.code == '200') {
+			// 						that.$store.commit('updateToken', resp.data)
+			// 					}
 
-							});
-					},
-					fail(res) {
-						console.log(`login fail: ${JSON.stringify(res)}`);
-					}
-				});
+			// 				});
+			// 		},
+			// 		fail(res) {
+			// 			console.log(`login fail: ${JSON.stringify(res)}`);
+			// 		}
+			// 	});
 
-			},
+			// },
 		}
 	}
 </script>

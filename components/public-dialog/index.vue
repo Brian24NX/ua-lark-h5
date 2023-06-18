@@ -7,6 +7,9 @@
 			<view class="massage " v-if="pageFrom=='clear'|| pageFrom=='submit'">
 				{{tip}}
 			</view>
+			<view class="massage " v-if="pageFrom=='approval'">
+				<text>{{this.$t('index.selected')}}<text style="font-weight: bold;color: #111;">{{num}}</text>，</text>  {{tip}}
+			</view>
 			<!-- 备注 -->
 			<textarea :value="content" v-if="pageFrom=='remark'" disabled="true"></textarea>
 			<view class="dialog-content" v-if="pageFrom=='myApproval'">
@@ -85,6 +88,10 @@
 			content: {
 				type: String,
 				default: ''
+			},
+			num:{
+				type:Number,
+				default:0
 			}
 		},
 		data() {
@@ -101,7 +108,7 @@
 					this.$emit('deleteAll')
 					this.$store.commit('deleteCarAll')
 				}
-				if (this.pageFrom == 'submit') {
+				if (this.pageFrom == 'submit' ||this.pageFrom=='approval') {
 					this.$emit('submit')
 				}
 				this.$emit('hideDialog', false)
@@ -208,7 +215,7 @@
 
 		.massage {
 			text-align: center;
-			margin: 30rpx 24rpx 0rpx 22rpx;
+			margin: 30rpx 70rpx 0rpx 70rpx;
 			font-size: 28rpx;
 			color: #999999;
 			line-height: 40rpx;

@@ -73,22 +73,25 @@
     "mp-lark" : {
         "appid" : "cli_a4faccf706f8902f"
     },
-	"h5" : {
-	    // "router" : {
-	    //     "mode" : "hash",
-	    //     "base" : "/ccr-faq/"
-	    // },
-	    "title" : "",
-	    "devServer" : {
-	        "https" : false,
-	        "proxy" : {
-	            "/ua-material-api" : {
-	                "target" : "https://incentive-uat.underarmour.cn",
-	                // "target" : "https://uat-wecom.qdhaiercarrier.com",
-	                "changeOrigin" : true,
-	                "secure" : false
-	            }
-	        }
-	    }
-	}
+    "h5" : {
+        // "router" : {
+        //     "mode" : "hash",
+        //     "base" : "/ccr-faq/"
+        // },
+        "title" : "",
+        "devServer" : {
+            "https" : false,
+            "proxy" : {
+                "/ua-material-api" : {
+                    "target" : "https://incentive-uat.underarmour.cn",
+                    // "target" : "https://uat-wecom.qdhaiercarrier.com",
+                    "changeOrigin" : true,
+                    "secure" : false
+                }
+            }
+        },
+        "router" : {
+            "base" : "/supplies-orderning-h5/"
+        }
+    }
 }

@@ -85,7 +85,8 @@
 		onLoad(option) {
 			if(option.store != 'undefined'){
 				this.form.storeName = JSON.parse(option.store).name
-				this.form.storeLarkDeptId = JSON.parse(option.store).id
+				this.form.storeLarkDeptId = JSON.parse(option.store).larkDeptId
+				this.form.regionLarkDeptId = JSON.parse(option.store).regionLarkDeptId
 			}
 			this.priceInfo = JSON.parse(option.getCarShop)
 			this.materialList = this.$store.state.carShop
@@ -94,9 +95,11 @@
 			this.form.priceUnit = this.priceInfo.unit
 			this.form.orderItemPos = this.$store.state.carShop
 			this.form.orderItemPos.forEach(item=>{
+				item.applyQuantity = item.scalar
 				item.supplierSkuCode = item.oriSkuCode
-				item.storeLarkDeptId =this.form.storeName
-				item.storeName=this.form.storeLarkDeptId
+				item.storeLarkDeptId =this.form.storeLarkDeptId
+				item.regionLarkDeptId = this.form.regionLarkDeptId 
+				item.storeName=this.form.storeName
 			})
 		},
 		methods: {
@@ -105,14 +108,20 @@
 				this.btnTxt = this.status == 1 ? this.$t('index.pack-up') : this.$t('index.view-more');
 			},
 			onSubmit() {
-				this.dialogShow = true
+				console.log('=========')
+				if(uni.getSystemInfoSync().uniPlatform == "mp-lark"){
+						this.dialogShow = true
+				}else{
+					this.submit()
+				}
 			},
 			submit() {
-				this.$api.districtMaterialAdd(this.form).then(res => {
-					
+				this.$api.saMaterialAdd(this.form).then(res => {
+					if(res.code=='200'){
+						this.$store.commit('deleteCarAll')
+						uni.navigateBack()
+					}
 				})
-				// this.$api.saMaterialAdd(this.form).then(res => {
-				// })
 			},
 			dialogHide(val) {
 				this.dialogShow = val

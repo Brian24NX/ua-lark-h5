@@ -11,7 +11,7 @@
 				</view>
 				<search-bar @searchClick="searchClick"></search-bar>
 				<view class="tabs" v-if="!hideTab">
-					<view :class="['tab',item.cid==current?'active' :'']" v-for="(item,index) in categoryList"
+					<view :class="['tab',item.cid==currntObject.current?'active' :'']" v-for="(item,index) in categoryList"
 						:key="index" @click="toggleTab(item)">
 						{{item.categoryName}}
 					</view>
@@ -22,14 +22,13 @@
 			</view>
 
 			<tab-category @getMaterial='getMaterial' @minusNum="minusNum" @plusNum="plusNum" @editNum="editNum"
-				:subcurrent="subcurrent" :hideTab="hideTab" :tabslist="tabslist" :contlist="contlist"
+				:subcurrent="currntObject.subcurrent" :hideTab="hideTab" :tabslist="tabslist" :contlist="contlist"
 				@showDetail="showDetail" keep-alive></tab-category>
 
 		</view>
 		<!-- 分类弹窗 -->
-		<category-mask v-if="categoryShow"  :current="current"
-			:subcurrent="subcurrent" :supplierList="supplierList" :categoryList="categoryList" :tabslist="tabslist"
-			@getSearchProd="getContlist" @closeSearch="closeSearch"></category-mask>
+		
+		<category-mask v-if="categoryShow"  :currntObject="currntObject" @updateCurrent = "updateCurrent" @getSearchProd="getContlist" ></category-mask>
 		<!-- 提交 -->
 		<view class="submit" :style="clearShow?'z-index:100':'z-index:101'">
 			<view class="submit_left">
@@ -45,7 +44,7 @@
 		</view>
 		<!-- 物料车 -->
 		<car-detail v-if="show" @hideDetail="hideDetail" @minusNum="minusNum" @plusNum="plusNum" @editNum="editNum"
-			@deleteItem="deleteItem" @showDialog='showDialog'></car-detail>
+			@deleteItem="deleteItem" @showDialog='showDialog' />
 		<!-- 确认弹窗 -->
 		<public-dialog v-if="clearShow" @deleteAll="deleteAll" :title="'CONFIRM'" :tip="tip" :pageFrom="'clear'"
 			@hideDialog="dialogHide" />
@@ -73,8 +72,11 @@
 				store: {},
 				categoryShow: false,
 				// 一级类型选中
-				current: 0,
-				subcurrent: 0,
+				currntObject:{
+					current: 0,
+					subcurrent: 0,
+					suppliercurrent: 0
+				},
 				catchMove: true,
 				show: false,
 				// 物料列表
@@ -117,12 +119,12 @@
 			}
 		},
 		onLoad(option) {
-			// if(option.store != 'undefined'){
-			// 	this.store = JSON.parse(option.store)
-			// }
-			// if(option.page){
-			// 	this.page = option.page
-			// }
+			if(option.store != 'undefined'){
+				this.store = JSON.parse(option.store)
+			}
+			if(option.page){
+				this.page = option.page
+			}
 			this.getAllMaterial()
 		},
 		computed: {
@@ -142,7 +144,18 @@
 				}
 			}
 		},
+		onReachBottom() {
+			console.log('1111')
+			// 触底的事件
+			if (this.pageNum * this.pageSize >= this.total) return 
+			// 让页码值自增+1
+			this.pageNum++
+			this.getAllMaterial()
+		},
 		methods: {
+			updateCurrent(obj){
+		       	this.currntObject = Object.assign(obj)
+			},
 			deleteItem(val) {
 				this.contlist.forEach(item => {
 					if (item.mid == val.mid) {
@@ -161,11 +174,6 @@
 						cid: 0,
 						categoryName: this.$t('index.all')
 					}]
-					let arr1 = [{
-						cid: 0,
-						nickName: this.$t('index.all')
-					}]
-					this.supplierList = arr1.concat(res.data.supplier)
 					this.categoryList = arr.concat(res.data.category1)
 					this.tabslist = arr.concat(res.data.category2)
 					this.getContlist(this.tabslist[0].cid)
@@ -216,10 +224,12 @@
 				this.getContlist()
 			},
 			showCar() {
+				console.log('=========')
 				if (this.getCarShop.num == 0) return
 				this.show = true
 			},
 			onSubmit(val) {
+				this.show=false
 				if (val <= 0) return
 				uni.navigateTo({
 					url: "/pages/previewApplication/previewApplication?getCarShop=" + JSON.stringify(this
@@ -236,12 +246,9 @@
 				this.categoryShow = true
 			},
 			toggleTab(item) {
-				this.current = item.cid
-				this.subcurrent = 0
+				this.currntObject.current = item.cid
+				this.currntObject.subcurrent = 0
 				this.getSubCategory(item.cid)
-			},
-			closeSearch(val) {
-				this.categoryShow = val
 			},
 			selectStore() {
 				if (!this.page) return
@@ -267,9 +274,10 @@
 			},
 
 			getMaterial(val) {
-				this.subcurrent = val
+				this.pageNum=1
+				this.currntObject.subcurrent = val
 				if (val == 0) {
-					this.getContlist(this.current)
+					this.getContlist(this.currntObject.current)
 				} else {
 					this.getContlist(val)
 				}
@@ -277,8 +285,6 @@
 			getContlist(id) {
 				this.categoryShow = false
 				if(id.constructor === Object){
-					this.current = id.current
-					this.subcurrent = id.subcurrent
 					this.param.categoryId = id.categoryId
 					this.param.supplierCode = id.supplierCode
 				}else{
@@ -294,8 +300,12 @@
 						res.data.data.forEach((item, index) => {
 							item.scalar = 0
 						})
-						this.contlist = res.data.data
-						console.log('------', this.contlist, this.$store.state.carShop)
+						this.total = res.data.total
+						if(this.pageNum == 1){
+							this.contlist = res.data.data
+						}else{
+							this.contlist = [...this.contlist ,...res.data.data] 
+						}
 						this.contlist.forEach(item => {
 							this.$store.state.carShop.forEach(val => {
 								if (item.mid == val.mid) {

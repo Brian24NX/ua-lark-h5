@@ -78,5 +78,8 @@
   },
   "dependencies": {
     "js-md5": "^0.7.3"
+  },
+  "devDependencies": {
+    "moment": "^2.29.4"
   }
 }
