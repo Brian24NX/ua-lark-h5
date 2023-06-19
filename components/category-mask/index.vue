@@ -19,7 +19,7 @@
 					</view>
 				</view>
 				<view v-if="supplierList.length>0">
-					<view class="instructions" style="margin-top: 40rpx;">{{this.$t('index.sub-category')}}</view>
+					<view class="instructions" style="margin-top: 40rpx;">{{this.$t('index.supplier')}}</view>
 					<view class="category-main">
 						<view v-for="(item,index) in supplierList" :key='index' @tap='searchProd(item,index,3)'
 							:class="['category-item',item.employeeNo==currentObj.suppliercurrent?'active' :'']">

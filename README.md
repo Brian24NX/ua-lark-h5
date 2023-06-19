@@ -13,3 +13,4 @@ uni-app 国际化演示
 
 包含 uni-framework、manifest.json、pages.json、tabbar、页面、组件、API
 
+<!-- cli_a4faccf706f8902f -->

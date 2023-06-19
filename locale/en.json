@@ -52,5 +52,6 @@
 	"index.three-month":"Three Month",
 	"index.reject-all":"Are you sure to Reject All?",
 	"index.approve-all":"Are you sure to Approve All?",
-	"index.selected":"You have selected："
+	"index.selected":"You have selected：",
+	"index.supplier":"Supplier"
 }

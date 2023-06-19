@@ -50,5 +50,6 @@
 	"index.three-month":"三个月",
 	"index.reject-all":"你确认拒绝所有",
 	"index.approve-all":"你确认批准所有",
-	"index.selected":"你已经选择："
+	"index.selected":"你已经选择：",
+	"index.supplier":"供应商"
 }
