@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import api from '../fetch/api.js'
+// import api from '../fetch/api.js'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
@@ -10,50 +10,6 @@ const store = new Vuex.Store({
 	},
 	mutations: {
 		//相当于同步的操作
-		userLogins() {
-			let that = this
-			if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
-				that.$api
-					.userLogin2({
-						code: '091267'  //location.href.split('=')[1]
-					})
-					.then(resp => {
-						if (resp.code == '200') {
-							uni.setStorageSync('token', resp.data.token)
-					        that.userInfo= resp.data.user
-							that.getStoreList()
-						}
-					});
-		// 		tt.login({
-		// 			success(res) {
-		// 				console.log(res.code)
-		// 				that.$api
-		// 					.userLogin({
-		// 						code: res.code
-		// 					})
-		// 					.then(resp => {
-		// 						if (resp.code == '200') {
-		// 							uni.setStorageSync('token', resp.data.token)
-		// 							that.getStoreList()
-		// 						}
-		
-		// 					});
-		// 			}
-		// 		});
-			}else{
-				console.log('----------')
-				that.$api
-					.userLogin2({
-						code:location.href.split('=')[1]
-					})
-					.then(resp => {
-						if (resp.code == '200') {
-							uni.setStorageSync('token', resp.data.token)
-							that.getStoreList()
-						}
-					});
-			}
-		},
 		addCar(state, item) {
 			state.carShop = state.carShop.filter((v) => v.mid != item.mid)
 			state.carShop.push(item)

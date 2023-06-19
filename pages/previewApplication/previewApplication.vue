@@ -24,7 +24,7 @@
 							</view>
 						</view>
 						<view class="info_r_r">
-							{{item.retailPrice}} <text>{{item.priceUnit}}</text>
+							{{item.scalar*item.retailPrice}} <text>{{item.priceUnit}}</text>
 						</view>
 					</view>
 				</view>
@@ -109,7 +109,7 @@
 			},
 			onSubmit() {
 				console.log('=========')
-				if(uni.getSystemInfoSync().uniPlatform == "mp-lark"){
+				if(uni.getStorageSync('platform') == "mp-lark"){
 						this.dialogShow = true
 				}else{
 					this.submit()

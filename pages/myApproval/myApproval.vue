@@ -60,19 +60,24 @@
 				<text style="margin-top: 8rpx;" v-if="selectedList.length">Selected: {{selectedList.length}}</text>
 			</view>
 			<view class="footer-r">
-				<view style="margin-right: 40rpx;" @click="changeStatus(3)">
-					<image class="approve" src="../../static/approve.png" mode=""></image>Approve
+				<view style="margin-right: 40rpx;" :class="[selectedList.length<=0?'disabled':'']"
+					@click="changeStatus(3)">
+					<image class="approve"
+						:src="selectedList.length<=0?'../../static/approve-sec.png':'../../static/approve.png'" mode="">
+					</image>Approve
 				</view>
-				<view class="" @click="changeStatus(7)">
-					<image class="reject" src="../../static/reject.png" mode=""></image>Reject
+				<view :class="[selectedList.length<=0?'disabled':'']" @click="changeStatus(7)">
+					<image class="reject"
+						:src="selectedList.length<=0?'../../static/reject-err.png':'../../static/reject.png'" mode="">
+					</image>Reject
 				</view>
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
 		<public-dialog v-if="dialogShow"></public-dialog>
 		<!-- 弹窗 -->
-		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="'CONFIRM'" :tip="tip"
-			:num="selectedList.length" @submit="submit" @hideDialog="dialogHide" />
+		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="'CONFIRM'" :tip="tip" :num="total"
+			@submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -109,6 +114,10 @@
 						name: this.$t('index.application-time'),
 						show: false,
 						list: [{
+								label: 'all',
+								name: this.$t('index.all')
+							},
+							{
 								label: 'week',
 								name: this.$t('index.this-week')
 							},
@@ -148,17 +157,6 @@
 			this.getApproveList()
 			this.getStoreList()
 		},
-		// computed: {
-		// 	getApprove() {
-		// 		this.approveList.forEach(item => {
-		// 			if (item.choose) {
-		// 				this.selectedList.push(item)
-		// 			}
-		// 		})
-		// 		this.selectedList = Array.from(new Set(this.selectedList))
-		// 		console.log(this.selectedList)
-		// 	}
-		// },
 		onReachBottom() {
 			// 触底的事件
 			if (this.pageNum * this.pageSize >= this.total) return
@@ -177,19 +175,26 @@
 		},
 		methods: {
 			changeTime(val) {
+				if(val.label == 'all'){
+					this.forms.stm=""
+					this.forms.etm=""
+					this.dataList[1].name= this.$t('index.application-time')
+				}
 				if (val.label == 'week') {
+					this.dataList[1].name = val.name
 					this.getRecentDay(7)
 				} else if (val.label == 'month') {
+					this.dataList[1].name = val.name
 					this.getRecentMonth(1);
 				} else if (val.label == 'three-month') {
+					this.dataList[1].name = val.name
 					this.getRecentMonth(3);
 				}
-				this.dataList[1].name = val.name
 				this.getApproveList()
 			},
 			getRecentMonth(n) {
 				let month = moment(new Date()).subtract(n, 'months').format('YYYY-MM-DD HH:mm:ss');
-				let datetime = moment().format('YYYY-MM-DD HH:mm:ss') //24小时制
+				let datetime = moment().format('YYYY-MM-DD HH:mm:ss') //24小时制 HH:mm:ss
 				this.forms.stm = month
 				this.forms.etm = datetime
 			},
@@ -201,34 +206,60 @@
 				this.forms.etm = datetime
 			},
 			changeStore(val) {
-				this.dataList[0].name = val.name
-				this.forms.storeName = val.name
+				if(val.id ==0){
+					this.dataList[0].name =this.$t('index.store') 
+					this.forms.storeName =""
+				}else{
+					this.dataList[0].name = val.name
+					this.forms.storeName = val.name
+				}
 				this.pageNum = 1
 				this.getApproveList()
 			},
 			getStoreList() {
-				this.$api.searchStoreList().then(res => {
+				let user = uni.getStorageSync("user")
+				let data = {
+					employeeNo: user.employeeNo,
+					gender: user.gender,
+					id: user.id,
+					mobile: user.mobile,
+					name: user.name,
+					nickname: user.nickname,
+					tenantCode: user.tenantCode
+				}
+				this.$api.searchStoreList(data).then(res => {
 					console.log(res)
 					if (res.code == '200') {
-						this.dataList[0].list = res.data
+						let arr = [{
+							id: 0,
+							name: this.$t('index.all')
+						}]
+						this.dataList[0].list = arr.concat(res.data)
 					}
 				})
 			},
 			controlsAll(id) {
+				if (id == 3) {
+					this.tip = this.$t('index.approve-all')
+				} else if (id == 7) {
+					this.tip = this.$t('index.reject-all')
+				}
 				this.param.id = id
-				this.confirmDialog = true
+				if (uni.getStorageSync('platform') == "mp-lark") {
+					this.confirmDialog = true
+				} else {
+					this.submit()
+				}
+
 			},
 			submit() {
 				this.changeStatus(this.param.id, 1)
 			},
-			dialogHide(){
+			dialogHide() {
 				this.confirmDialog = false
 			},
 			changeStatus(id, type) {
-				if (this.selectedList.length <= 0) return uni.showToast({
-					title: '请选择审批信息',
-					duration: 2000
-				});
+				if (!type && this.selectedList.length <= 0) return;
 				this.param.id = id
 				this.param.params.status = type || this.checked ? 1 : 0
 				this.selectedList.forEach(item => {
@@ -505,7 +536,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0 30rpx 0 12rpx;
+		padding: 0 30rpx 0 30rpx;
 		position: fixed;
 		bottom: 0;
 		left: 0;
@@ -548,5 +579,11 @@
 				margin-right: 12rpx;
 			}
 		}
+	}
+
+	.disabled {
+		background-color: #999999 !important;
+		color: #666666 !important;
+		border-color: #999999 !important;
 	}
 </style>

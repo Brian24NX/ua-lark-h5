@@ -1,17 +1,33 @@
 <template>
 	<view class="container">
-		<van-cell title="Applied Quantity" value="1" />
-		<van-cell title="Approved Quantity" value="1" />
-		<van-cell title="Category" value="物料类/日常店铺物料" />
-		<van-cell title="Specification" value="直径13mm｜高10mm｜100个/包" />
-		<van-cell title="Total Price" value="64.00CNY" />
-		<van-cell title="Total Cost" value="70.00CNY" />
-		<van-cell title="Comment" label="Expect to be delivered as soon as possible" />
-
-		<van-cell title="Reference" label="Store" value="广州太古里" />
-		<van-cell title="PO" value="NHGJ7890" />
-		<van-cell title="Tracking Number" value="YTRY9009" />
-		<van-steps :steps="steps" :active="active" direction="vertical" active-color="#ee0a24" />
+		<view class="material">
+			<van-cell title="Applied Quantity" value="1" />
+			<van-cell title="Approved Quantity" value="1" />
+			<van-cell title="Category" value="物料类/日常店铺物料" />
+			<van-cell title="Specification" value="直径13mm｜高10mm｜100个/包" />
+			<van-cell title="Total Price" value="64.00CNY" />
+			<van-cell title="Total Cost" value="70.00CNY" />
+			<van-cell title="Comment" label="Expect to be delivered as soon as possible" />
+			
+			<van-cell title="Reference" label="Store" value="广州太古里" />
+			<van-cell title="PO" value="NHGJ7890" />
+			<van-cell title="Tracking Number" value="YTRY9009" />
+			<van-steps :steps="steps" :active="active" direction="vertical" active-color="#ee0a24" />
+		</view>
+		<view class="reference">
+			<van-cell title="Applied Quantity" value="1" />
+			<van-cell title="Approved Quantity" value="1" />
+			<van-cell title="Category" value="物料类/日常店铺物料" />
+			<van-cell title="Specification" value="直径13mm｜高10mm｜100个/包" />
+			<van-cell title="Total Price" value="64.00CNY" />
+			<van-cell title="Total Cost" value="70.00CNY" />
+			<van-cell title="Comment" label="Expect to be delivered as soon as possible" />
+			
+			<van-cell title="Reference" label="Store" value="广州太古里" />
+			<van-cell title="PO" value="NHGJ7890" />
+			<van-cell title="Tracking Number" value="YTRY9009" />
+			<van-steps :steps="steps" :active="active" direction="vertical" active-color="#ee0a24" />
+		</view>
 	</view>
 </template>
 
@@ -46,6 +62,16 @@
 	}
 </script>
 
-<style lang="scss">
-
+<style lang="scss" scoped>
+ .container{
+	 margin: 0 30rpx;
+	
+	 .material ,
+	 .reference{
+		 background: #F8F8F8;
+		 border-radius: 40rpx;
+		 margin-bottom: 28rpx;
+		 overflow: hidden;
+	 }
+ }
 </style>

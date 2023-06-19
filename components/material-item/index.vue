@@ -18,7 +18,7 @@
 					x{{dataDetail.applyQuantity}}
 				</view>
 				<view>
-					<text class="bold">{{dataDetail.retailPrice*dataDetail.applyQuantity}}</text> <text style="font-size: 16rpx; margin-left: 2rpx;">{{dataDetail.priceUnit}}</text>
+					<text class="bold">{{(dataDetail.retailPrice*dataDetail.applyQuantity).toFixed(2)}}</text> <text style="font-size: 16rpx; margin-left: 2rpx;">{{dataDetail.priceUnit}}</text>
 				</view>
 			</view>
 		</view>

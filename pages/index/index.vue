@@ -6,7 +6,7 @@
 					<image :src="userInfo.avatarUrl" mode=""></image>
 					<view class="name">
 						<view class="">Hi</view>
-						<view class="">{{userInfo.nickName}} !</view>
+						<view class="">{{userInfo.name}} !</view>
 					</view>
 				</view>
 				<div class="language" @click="changeLanguage">
@@ -112,34 +112,18 @@
 				return this.$t('index.now')
 			}
 		},
-		onShow() {
-			let that = this
-			if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
-				uni.getUserInfo({
-					success(res) {
-						console.log('----', res)
-						that.userInfo = res.userInfo
-					},
-					fail(err) {
-						console.log('----', err)
-					}
-				});
-			}
-			this.userLogins()
-			console.log('当前语言', uni.getLocale())
-		},
 		onLoad() {
-			if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
+			if (uni.getSystemInfoSync().uniPlatform  == "mp-lark") {
 				uni.getSystemInfo({
 					success: res => {
-						console.log('----', res)
 						this.barHeight = res.navigationBarSafeArea.height
 						this.barTop = res.navigationBarSafeArea.top
 						this.barWith = res.navigationBarSafeArea.width
 					}
 				})
 			}
-
+	            this.userLogins()
+			console.log('当前语言', uni.getLocale())
 		},
 		methods: {
 			// 店长 刘亚娟  091267
@@ -147,35 +131,38 @@
 			userLogins() {
 				let that = this
 				if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
-					that.$api
-						.userLogin2({
-							code: '310746'  //location.href.split('=')[1]
-						})
-						.then(resp => {
-							if (resp.code == '200') {
-								uni.setStorageSync('token', resp.data.token)
-								that.storeRole = resp.data.user.storeRole
-								that.getStoreList()
-							}
-						});
-					// uni.login({
-					// 	success(res) {
-					// 		console.log(res.code)
-					// 		that.$api
-					// 			.userLogin({
-					// 				code: res.code
-					// 			})
-					// 			.then(resp => {
-					// 				if (resp.code == '200') {
-					// 					uni.setStorageSync('token', resp.data.token)
-					// 					that.storeRole = resp.data.user.storeRole
-					// 					console.log('juede', that.storeRole)
-					// 					that.getStoreList()
-					// 				}
+					// that.$api
+					// 	.userLogin2({
+					// 		code: '310746'  //location.href.split('=')[1]
+					// 	})
+					// 	.then(resp => {
+					// 		if (resp.code == '200') {
+					// 			uni.setStorageSync('token', resp.data.token)
+					// 			that.userInfo=resp.data.user
+					// 			uni.setStorageSync('user',resp.data.user)
+					// 			that.storeRole = resp.data.user.storeRole
+					// 			that.getStoreList(resp.data.user)
+					// 		}
+					// 	});
+					uni.login({
+						success(res) {
+							console.log(res.code)
+							that.$api
+								.userLogin({
+									code: res.code
+								})
+								.then(resp => {
+									if (resp.code == '200') {
+										uni.setStorageSync('token', resp.data.token)
+										that.storeRole = resp.data.user.storeRole
+					                    that.userInfo=resp.data.user
+				                     	uni.setStorageSync('user',resp.data.user)
+										that.getStoreList(resp.data.user)
+									}
 
-					// 			});
-					// 	}
-					// });
+								});
+						}
+					});
 				} else {
 					that.$api
 						.userLogin2({
@@ -185,14 +172,24 @@
 							if (resp.code == '200') {
 								uni.setStorageSync('token', resp.data.token)
 								that.storeRole = resp.data.user.storeRole
-								console.log('juede', that.storeRole)
-								that.getStoreList()
+								that.userInfo=resp.data.user
+								uni.setStorageSync('user',resp.data.user)
+								that.getStoreList(resp.data.user)
 							}
 						});
 				}
 			},
-			getStoreList() {
-				this.$api.searchStoreList().then(res => {
+			getStoreList(user) {
+				let data={
+					employeeNo: user.employeeNo,
+				     gender: user.gender,
+					id: user.id,
+					mobile: user.mobile,
+					name: user.name,
+					nickname: user.nickname,
+				    tenantCode: user.tenantCode
+				}
+				this.$api.searchStoreList(data).then(res => {
 					console.log(res)
 					if (res.code == '200') {
 						this.storeList = res.data
@@ -239,8 +236,6 @@
 <style lang="scss" scoped>
 	.container {
 		background-color: #F0F0F0;
-		// padding-bottom: 40rpx;
-
 		.navbar {
 			position: sticky;
 			top: 0;

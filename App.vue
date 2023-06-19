@@ -12,7 +12,7 @@
 				)
 				)
 			}
-			// this.$store.commit('userLogins')
+			uni.setStorageSync('platform',uni.getSystemInfoSync().uniPlatform)
 		},
 		onShow: function() {
 			console.log('App Show')

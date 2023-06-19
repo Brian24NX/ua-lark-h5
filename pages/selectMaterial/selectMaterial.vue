@@ -284,7 +284,7 @@
 			},
 			getContlist(id) {
 				this.categoryShow = false
-				if(id.constructor === Object){
+				if(id &&id.constructor === Object){
 					this.param.categoryId = id.categoryId
 					this.param.supplierCode = id.supplierCode
 				}else{
@@ -390,8 +390,6 @@
 					margin-left: 10rpx;
 				}
 			}
-
-
 		}
 
 		.submit_right {
@@ -407,8 +405,8 @@
 		}
 
 		.forbidden {
-			background-color: #ccc;
-			color: #fff;
+			background-color: #999999;
+			color:#666666
 		}
 	}
 

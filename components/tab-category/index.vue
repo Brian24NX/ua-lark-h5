@@ -13,7 +13,7 @@
 					<image :src="item.imageUrl?item.imageUrl:'../../static/default.png'" />
 				</view>
 				<view class="prod-info" @click.capture="tz(item)">
-					<view class="prodname">{{item.shortName}}</view>
+					<view class="prodname">{{item.shortName?item.shortName:item.materialName}}</view>
 					<view class="desc">{{item.specifications}}</view>
 					<view class="desc">{{item.supplierName}}</view>
 					<view class="price-nums">
@@ -21,10 +21,12 @@
 					</view>
 				</view>
 				<view class="change-num">
-					<image v-if="item.scalar>0" class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image> 
+					<image v-if="item.scalar>0" class="addcar" src="../../static/minuscar.png"
+						@tap.stop="minusNum(item)"></image>
 					<input v-if="item.scalar>0" v-model="item.scalar" type="number" class="inp" @blur="editNum(item)" />
-					<image class="addcar" v-if="item.scalar>=999"  src="../../static/notadd.png" mode="" ></image>
-					<image class="addcar" v-else src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)" ></image>
+					<image class="addcar" v-if="item.scalar>=999" src="../../static/notadd.png" mode=""></image>
+					<image class="addcar" v-else src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)">
+					</image>
 				</view>
 			</view>
 			<view class="empty" v-if="contlist.length==0">
@@ -82,18 +84,18 @@
 			back() {
 				uni.navigateBack()
 			},
-			minusNum(item){
-				if(item.scalar<=0) return
-				this.$emit('minusNum',item)
+			minusNum(item) {
+				if (item.scalar <= 0) return
+				this.$emit('minusNum', item)
 			},
-			editNum(item){
-				if(item.scalar>=999){
-					item.scalar=999
+			editNum(item) {
+				if (item.scalar >= 999) {
+					item.scalar = 999
 				}
-				this.$emit("editNum",item)
+				this.$emit("editNum", item)
 			},
-			plusNum(item){
-				this.$emit("plusNum",item)
+			plusNum(item) {
+				this.$emit("plusNum", item)
 			},
 			select(item) {
 				this.$emit('getMaterial', item.cid)
@@ -113,14 +115,15 @@
 		bottom: 30rpx;
 		display: flex;
 		align-items: center;
-        min-height: 1.4rem;
+		min-height: 1.4rem;
+
 		.addcar {
 			width: 36rpx;
 			height: 36rpx;
 			margin: 0;
 		}
 
-		input{
+		input {
 			width: 44rpx;
 			height: 36rpx;
 			font-size: 24rpx;
@@ -230,13 +233,22 @@
 		}
 
 		.prod-info {
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+
 			.prodname {
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 				font-size: 24rpx;
 				color: #111111;
 				line-height: 40rpx;
 			}
-
 			.desc {
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 				font-size: 20rpx;
 				color: #999999;
 				line-height: 28rpx;

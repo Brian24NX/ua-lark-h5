@@ -1,6 +1,6 @@
 <template>
 	<van-popup :show="show" position="center" custom-class="info_detail" @close="onClose">
-		<image :src="detail.imageUrl" mode="" @tap="preview()"></image>
+		<image :src="detail.imageUrl" mode="" @tap="preview(detail.imageUrl)"></image>
 		<view class="info_detail_b">
 			<view class="info_detail_b_l">
 				Name:
@@ -75,10 +75,10 @@
 			}
 		},
 		methods: {
-			preview() {
+			preview(img) {
 				uni.previewImage({
 					urls: [
-						"https://3aportal-public.oss-cn-shenzhen.aliyuncs.com/newSchool/photo/2022/11/28/1669620678526_6hLyexTnJSyA5f64337904892f013b9883fd2f8de34a.jpg"
+						img
 					],
 					success(res) {
 						console.log(res)
