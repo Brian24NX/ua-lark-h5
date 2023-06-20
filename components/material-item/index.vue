@@ -9,8 +9,8 @@
 				<view class="desc">
 					{{dataDetail.supplierName}}
 				</view>
-				<view class="remark bold" v-if="dataDetail.remark" @click="dialog=true">
-					Remark <image src="../../static/more.png"></image>
+				<view class="remark bold" v-if="dataDetail.remark" @tap.native="dialog=true">
+					{{this.$t('index.comment')}} <image src="../../static/more.png"></image>
 				</view>
 			</view>
 			<view class="info_r_r">
@@ -22,7 +22,7 @@
 				</view>
 			</view>
 		</view>
-		<public-dialog v-if="dialog" :title="'Remark'" :pageFrom="'remark'" :content="dataDetail.remark" @hideDialog="hideDialog"></public-dialog>
+		<public-dialog v-if="dialog" :title="this.$t('index.comment')" :pageFrom="'remark'" :content="dataDetail.remark" @hideDialog="hideDialog"></public-dialog>
 	</view>
 </template>
 

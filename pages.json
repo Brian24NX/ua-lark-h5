@@ -1,19 +1,20 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-
+	
 		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationStyle": "custom",
 				"usingComponents": {
-					"van-divider": "/wxcomponents/@vant/weapp/divider/index"
+					"van-divider": "/wxcomponents/@vant/weapp/divider/index",
+					 "van-toast": "/wxcomponents/@vant/weapp/toast/index"
 				}
 			}
 		},
 		{
 			"path": "pages/previewApplication/previewApplication",
 			"style": {
-				"navigationBarTitleText": "%index.previewApplication%",
+				// "navigationBarTitleText": "%index.previewApplication%",
 				"usingComponents": {
 					"van-button": "/wxcomponents/@vant/weapp/button/index",
 					"van-cell": "/wxcomponents/@vant/weapp/cell/index",
@@ -25,7 +26,7 @@
 		{
 			"path": "pages/selectMaterial/selectMaterial",
 			"style": {
-				"navigationBarTitleText": "%index.selectMaterial%",
+				// "navigationBarTitleText": "%index.selectMaterial%",
 				"enablePullDownRefresh": false,
 				"onReachBottomDistance": 150,
 				"usingComponents": {
@@ -43,7 +44,7 @@
 		{
 			"path": "pages/myApplication/myApplication",
 			"style": {
-				"navigationBarTitleText": "%index.myApplication%",
+				// "navigationBarTitleText": "%index.myApplication%",
 				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 150,
 				"usingComponents": {
@@ -56,7 +57,7 @@
 		{
 			"path": "pages/myApproval/myApproval",
 			"style": {
-				"navigationBarTitleText": "%index.myApproval%",
+				// "navigationBarTitleText": "%index.myApproval%",
 				"onReachBottomDistance": 150,
 				"enablePullDownRefresh": true,
 				"usingComponents": {
@@ -67,14 +68,12 @@
 		{
 			"path": "pages/storeList/storeList",
 			"style": {
-				"navigationBarTitleText": "%index.select-store%",
 				"enablePullDownRefresh": false
 			}
 		},
 		{
 			"path": "pages/materialDetails/materialDetails",
 			"style": {
-				"navigationBarTitleText": "%index.itemDetails%",
 				"enablePullDownRefresh": false,
 				"usingComponents": {
 					"van-cell": "/wxcomponents/@vant/weapp/cell/index",
@@ -86,33 +85,17 @@
 		{
 			"path": "pages/chooseLanguage/chooseLanguage",
 			"style": {
-				"navigationBarTitleText": "%index.select-language%",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/pageErr/pageErr",
+			"style": {
 				"enablePullDownRefresh": false
 			}
 		}
 	],
-	// "tabBar": {
-	// 	"color": "#7A7E83",
-	// 	"selectedColor": "#007AFF",
-	// 	"borderStyle": "black",
-	// 	"backgroundColor": "#F8F8F8",
-	// 	"list": [
-	// 		{
-	// 			"pagePath": "pages/index/index",
-	// 			"text": "%index.home%"
-	// 		},
-	// 		{
-	// 			"pagePath": "pages/component/component",
-	// 			"text": "%index.component%"
-	// 		}, {
-	// 			"pagePath": "pages/api/api",
-	// 			"text": "%index.api%"
-	// 		}, {
-	// 			"pagePath": "pages/schema/schema",
-	// 			"text": "%index.schema%"
-	// 		}
-	// 	]
-	// },
+
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

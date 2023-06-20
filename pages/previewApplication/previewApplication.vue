@@ -14,7 +14,7 @@
 					<view class="info_r">
 						<view class="info_r_l">
 							<view class="titles">
-								{{item.shortName}}
+								{{item.shortName?item.shortName:item.materialName}}
 							</view>
 							<view class="desc">
 								{{item.supplierName}}
@@ -38,7 +38,18 @@
 			{{this.$t('index.comment')}}
 		</view>
 		<!-- 备注 -->
-		<textarea v-model="form.remark" name="" id="" :placeholder="this.$t('index.textarea')"></textarea>
+		<!-- <cover-view>
+			<textarea v-model="form.remark" name="" id="" :placeholder="this.$t('index.textarea')"></textarea>
+		</cover-view> -->
+		<van-field type="textarea" :placeholder="this.$t('index.textarea')" autosize
+		 custom-style="height: 192rpx;
+		background: #F8F8F8;
+		border-radius: 40rpx;
+		font-size: 28rpx;
+		color: #111111;
+		line-height: 38rpx;
+		padding: 40rpx 40rpx 0 40rpx;" @change="onChange" />
+
 		<!-- 提交 -->
 		<view class="submit-bar">
 			<view class="submit-bar-l">
@@ -53,7 +64,8 @@
 			</view>
 		</view>
 		<!-- 弹窗 -->
-		<public-dialog v-if="dialogShow" :pageFrom="'submit'" :title="'CONFIRM'" @submit="submit" :tip="tip" @hideDialog="dialogHide" />
+		<public-dialog v-if="dialogShow" :pageFrom="'submit'" :title="this.$t('index.Confirm')"  @submit="submit" :tip="tip"
+			@hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -73,8 +85,8 @@
 				materialList: [],
 				form: {
 					remark: "",
-					storeLarkDeptId: 0 ,//74,
-					storeName: '',    //广州奥体天河城
+					storeLarkDeptId: 0, //74,
+					storeName: '', //广州奥体天河城
 					priceUnit: "",
 					totalPrice: "",
 					totalQuantity: "",
@@ -83,7 +95,10 @@
 			}
 		},
 		onLoad(option) {
-			if(option.store != 'undefined'){
+			uni.setNavigationBarTitle({
+			    title:this.$t("index.previewApplication")
+			});
+			if (option.store != 'undefined') {
 				this.form.storeName = JSON.parse(option.store).name
 				this.form.storeLarkDeptId = JSON.parse(option.store).larkDeptId
 				this.form.regionLarkDeptId = JSON.parse(option.store).regionLarkDeptId
@@ -94,30 +109,32 @@
 			this.form.totalQuantity = this.priceInfo.num
 			this.form.priceUnit = this.priceInfo.unit
 			this.form.orderItemPos = this.$store.state.carShop
-			this.form.orderItemPos.forEach(item=>{
+			this.form.orderItemPos.forEach(item => {
 				item.applyQuantity = item.scalar
 				item.supplierSkuCode = item.oriSkuCode
-				item.storeLarkDeptId =this.form.storeLarkDeptId
-				item.regionLarkDeptId = this.form.regionLarkDeptId 
-				item.storeName=this.form.storeName
+				item.storeLarkDeptId = this.form.storeLarkDeptId
+				item.regionLarkDeptId = this.form.regionLarkDeptId
+				item.storeName = this.form.storeName
 			})
 		},
 		methods: {
+			onChange(key){
+				this.form.remark = key.detail
+			},
 			openOrClose() {
 				this.status = this.status == 1 ? 0 : 1;
 				this.btnTxt = this.status == 1 ? this.$t('index.pack-up') : this.$t('index.view-more');
 			},
 			onSubmit() {
-				console.log('=========')
-				if(uni.getStorageSync('platform') == "mp-lark"){
-						this.dialogShow = true
-				}else{
+				if (uni.getStorageSync('platform') == "mp-lark") {
+					this.dialogShow = true
+				} else {
 					this.submit()
 				}
 			},
 			submit() {
 				this.$api.saMaterialAdd(this.form).then(res => {
-					if(res.code=='200'){
+					if (res.code == '200') {
 						this.$store.commit('deleteCarAll')
 						uni.navigateBack()
 					}
@@ -129,18 +146,23 @@
 		}
 	}
 </script>
-
-<style lang="scss" scoped>
-	textarea {
-		width: auto;
-		height: 192rpx;
-		background: #F8F8F8;
-		border-radius: 40rpx;
-		font-size: 28rpx;
-		color: #111111;
-		line-height: 38rpx;
-		padding: 40rpx 40rpx 0 40rpx;
+<style>
+	.textarea{
+		z-index: -1;
 	}
+</style>
+<style lang="scss" scoped>
+	// textarea {
+	// 	width: auto;
+	// 	height: 192rpx;
+	// 	background: #F8F8F8;
+	// 	border-radius: 40rpx;
+	// 	font-size: 28rpx;
+	// 	color: #111111;
+	// 	line-height: 38rpx;
+	// 	padding: 40rpx 40rpx 0 40rpx;
+	// 	z-index:-1
+	// }
 
 	.article {
 		// max-width: 800px;
@@ -216,8 +238,11 @@
 		border-bottom: 2rpx solid #dddddd;
 
 		image {
-			width: 100px;
-			height: 100px;
+			width: 176rpx;
+			height: 176rpx;
+			background: #F0F0F0;
+			border-radius: 24rpx;
+			margin-right: 16rpx;
 		}
 
 		.info_r {

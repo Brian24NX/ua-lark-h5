@@ -12,9 +12,9 @@
 				</view>
 				<view class="conts" v-for="(item,index) in carList" :key="index">
 					<view class="cont">
-						<image src="../../static/xiezi.png" mode="aspectFit" />
+						<image :src="item.imageUrl" mode="aspectFit" />
 						<view class="prod-info" @click.native="tz(item.id,item.name,item)">
-							<view class="prodname">{{item.shortName}}</view>
+							<view class="prodname">{{item.shortName?item.shortName:item.materialName}}</view>
 							<view class="prodesc">{{item.supplierName}}</view>
 							<view class="price-nums">
 								{{item.retailPrice}} <text>{{item.priceUnit}}</text>
@@ -154,6 +154,7 @@
 		image {
 			width: 116rpx;
 			height: 116rpx;
+			border-radius: 10rpx;
 			margin-right: 20rpx;
 		}
 

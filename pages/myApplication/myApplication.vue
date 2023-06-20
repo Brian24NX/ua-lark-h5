@@ -153,6 +153,11 @@
 				}
 			}
 		},
+		onLoad() {
+			uni.setNavigationBarTitle({
+			    title:this.$t("index.myApplication")
+			});
+		},
 		onShow() {
 			this.getApproveList()
 			this.getStoreList()

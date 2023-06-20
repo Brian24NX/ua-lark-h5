@@ -1,6 +1,6 @@
 <template>
-		<van-popup :show="true" :close-on-click-overlay="false" position="right"
-			custom-style="height: 100%;width:90%; border-radius: 40rpx 0rpx 0rpx 40rpx;z-index:201">
+		<van-popup :show="true"  position="right"
+			custom-style="height: 100%;width:90%; border-radius: 40rpx 0rpx 0rpx 40rpx;z-index:201;background-color: #F0F0F0"  @close="onClose">
 			<view class="category">
 				<view class="instructions">{{this.$t('index.main-category')}}</view>
 				<view class="category-main">
@@ -86,9 +86,13 @@
 		methods: {
 			getAllMaterial2() {
 				this.$api.getAllMaterialCategory2().then(res => {
-					this.supplierList = this.supplierdefault.concat(res.data.supplier)
+					if(res.data.supplier){
+						this.supplierList = this.supplierdefault.concat(res.data.supplier)
+					}
+					if(res.data.category2){
+					   this.tabslist = this.subdefault.concat(res.data.category2)
+					}
 					this.categoryList = this.subdefault.concat(res.data.category1)
-					this.tabslist = this.subdefault.concat(res.data.category2)
 				})
 			},
 			// 获取二级分类列表
@@ -98,15 +102,18 @@
 					id: id
 				}).then(res => {
 					if (res.code == '200') {
-						res.data.category2.forEach((item, index) => {
-							item.isChoose = false
-						})
-						res.data.supplier.forEach((item, index) => {
-							item.isChoose = false
-						})
-
-						this.supplierList = this.supplierdefault.concat(res.data.supplier)
-						this.tabslist = this.subdefault.concat(res.data.category2)
+						if(res.data.category2){
+							res.data.category2.forEach((item, index) => {
+								item.isChoose = false
+							})
+							this.tabslist = this.subdefault.concat(res.data.category2)
+						}
+						if(res.data.supplier){
+							res.data.supplier.forEach((item, index) => {
+								item.isChoose = false
+							})
+							this.supplierList = this.supplierdefault.concat(res.data.supplier)
+						}
 					}
 
 				})
@@ -117,18 +124,16 @@
 					id: id
 				}).then(res => {
 					if (res.code == '200') {
-						res.data.supplier.forEach((item, index) => {
-							item.isChoose = false
-						})
-						this.supplierList = this.supplierdefault.concat(res.data.supplier)
+						if(res.data.supplier){
+							res.data.supplier.forEach((item, index) => {
+								item.isChoose = false
+							})
+							this.supplierList = this.supplierdefault.concat(res.data.supplier)
+						}
+						
 					}
 
 				})
-			},
-			stopMp(type) {
-				if (type == 1) {
-					this.$emit('closeSearch', false)
-				}
 			},
 			searchProd(item, i, type) {
 				if (type == 1) {
@@ -144,7 +149,7 @@
 				} else if (type == 3) {
 					this.currentObj.suppliercurrent = item.employeeNo
 				}
-				this.$emit("updateCurrent",this.currentObj)
+				// this.$emit("updateCurrent",this.currentObj)
 			},
 			resert() {
 				this.getAllMaterial2()
@@ -167,8 +172,12 @@
 				if (this.currentObj.suppliercurrent) {
 					data.supplierCode = this.currentObj.suppliercurrent
 				}
+				this.$emit("updateCurrent",this.currentObj)
 				this.$emit('getSearchProd', data)
 			},
+			onClose(){
+				this.$emit('closeSearch', false)
+			}
 		}
 	}
 </script>

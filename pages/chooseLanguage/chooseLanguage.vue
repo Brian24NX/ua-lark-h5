@@ -38,11 +38,14 @@
 			uni.onLocaleChange((e) => {
 				this.applicationLocale = e.locale;
 			})
+			uni.setNavigationBarTitle({
+				title: this.$t("index.select-language")
+			});
 		},
 		methods: {
 			onLocaleChange(e) {
 				uni.setLocale(e.code);
-				
+
 				this.$i18n.locale = e.code;
 				console.log(this.$i18n.locale)
 				uni.navigateBack()
@@ -89,6 +92,7 @@
 
 		.active {
 			border: 2rpx solid #111111;
+
 			.langItem_l {
 				text {
 					color: #111111;

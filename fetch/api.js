@@ -1,5 +1,6 @@
 import config from './config'
 import md5 from 'js-md5'
+import i18n from '../locale/index'
 let BASE_URL = config.base_url
 let secret = config.secret
 let appId = 'lark-api'
@@ -14,7 +15,7 @@ export function fetchGet(url, params, need_error) {
 				'appId': appId,
 				'sign': md5(new Date().getTime() + secret + appId),
 				'access_token': `${uni.getStorageSync("token")}`,
-				// 'lang':  uni.getLocale()
+				'lang':  i18n.locale
 			},
 			timeout: 10000,
 			success(res) {
@@ -50,7 +51,7 @@ export function fetchPost(url, params, need_error) {
 				'appId': appId,
 				'sign': md5(new Date().getTime() + secret + appId),
 				'access_token': `${uni.getStorageSync("token")}`,
-				// 'lang': uni.getLocale()
+			    'lang': i18n.locale
 			},
 			timeout: 10000,
 			success(res) {

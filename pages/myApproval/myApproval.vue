@@ -26,8 +26,8 @@
 							<view>{{NORMSTARTTIMEfilter(item.applyTime)}}</view>
 						</view>
 						<view class="info-header-bottom-r">
-							<view>Quantity: <text>{{item.totalQuantity}}</text> </view>
-							<view>Total: <text>{{item.totalPrice}}{{item.priceUnit}}</text> </view>
+							<view>{{this.$t('index.Quantity')}}: <text>{{item.totalQuantity}}</text> </view>
+							<view>{{this.$t('index.Total')}}: <text>{{item.totalPrice}}{{item.priceUnit}}</text> </view>
 						</view>
 					</view>
 				</view>
@@ -41,12 +41,12 @@
 			<view
 				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
 				@click="controlsAll(3)">
-				Approve All
+				{{this.$t('index.Approve-All')}}
 			</view>
 			<view
 				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
 				@click="controlsAll(7)">
-				Reject All
+				{{this.$t('index.Reject-All')}}	
 			</view>
 			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
 				Batch
@@ -64,19 +64,19 @@
 					@click="changeStatus(3)">
 					<image class="approve"
 						:src="selectedList.length<=0?'../../static/approve-sec.png':'../../static/approve.png'" mode="">
-					</image>Approve
+					</image>{{this.$t('index.Approve')}}
 				</view>
 				<view :class="[selectedList.length<=0?'disabled':'']" @click="changeStatus(7)">
 					<image class="reject"
 						:src="selectedList.length<=0?'../../static/reject-err.png':'../../static/reject.png'" mode="">
-					</image>Reject
+					</image> {{this.$t('index.Reject')}}
 				</view>
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
 		<public-dialog v-if="dialogShow"></public-dialog>
 		<!-- 弹窗 -->
-		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="'CONFIRM'" :tip="tip" :num="total"
+		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip" :num="total"
 			@submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
@@ -152,6 +152,11 @@
 					etm: ""
 				}
 			}
+		},
+		onLoad() {
+			uni.setNavigationBarTitle({
+			    title:this.$t("index.myApproval")
+			});
 		},
 		onShow() {
 			this.getApproveList()
@@ -483,6 +488,7 @@
 
 	@keyframes enter-x-right {
 		to {
+			width: 220rpx;
 			opacity: 1;
 			transform: translateY(0);
 		}
@@ -500,7 +506,7 @@
 		right: 0;
 
 		.operate-all {
-			width: 220rpx;
+			width: 0;
 			height: 92rpx;
 			border-radius: 92rpx;
 			border: 2rpx solid #111111;

@@ -28,7 +28,7 @@
 		</view>
 		<!-- 分类弹窗 -->
 		
-		<category-mask v-if="categoryShow"  :currntObject="currntObject" @updateCurrent = "updateCurrent" @getSearchProd="getContlist" ></category-mask>
+		<category-mask v-if="categoryShow"  :currntObject="currntObject" @updateCurrent = "updateCurrent" @getSearchProd="getContlist" @closeSearch="closeSearch" ></category-mask>
 		<!-- 提交 -->
 		<view class="submit" :style="clearShow?'z-index:100':'z-index:101'">
 			<view class="submit_left">
@@ -46,7 +46,7 @@
 		<car-detail v-if="show" @hideDetail="hideDetail" @minusNum="minusNum" @plusNum="plusNum" @editNum="editNum"
 			@deleteItem="deleteItem" @showDialog='showDialog' />
 		<!-- 确认弹窗 -->
-		<public-dialog v-if="clearShow" @deleteAll="deleteAll" :title="'CONFIRM'" :tip="tip" :pageFrom="'clear'"
+		<public-dialog v-if="clearShow" @deleteAll="deleteAll" :title="this.$t('index.Confirm')" :tip="tip" :pageFrom="'clear'"
 			@hideDialog="dialogHide" />
 	</view>
 </template>
@@ -119,6 +119,9 @@
 			}
 		},
 		onLoad(option) {
+			uni.setNavigationBarTitle({
+			    title:this.$t("index.selectMaterial")
+			});
 			if(option.store != 'undefined'){
 				this.store = JSON.parse(option.store)
 			}
@@ -281,6 +284,9 @@
 				} else {
 					this.getContlist(val)
 				}
+			},
+			closeSearch(){
+					this.categoryShow = false
 			},
 			getContlist(id) {
 				this.categoryShow = false

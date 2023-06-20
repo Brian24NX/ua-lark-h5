@@ -1,6 +1,6 @@
 <template>
 	<van-popup :show="true" position="center"
-		custom-style="width: 85%;border-radius: 40rpx;z-index:500,background-color:#f8f8f8" @close="onClose">
+		custom-style="width: 85%;border-radius: 40rpx;background-color:#f8f8f8" z-index='900' @close="onClose">
 		<view class="dialog flex-vcenter column">
 			<h3 class="title">{{title}}</h3>
 			<view class="color-1DBA00 title2" v-if="pageFrom=='myApproval'">PO created successful！</view>

@@ -17,6 +17,9 @@
 			}
 		},
 		onLoad() {
+			uni.setNavigationBarTitle({
+			    title:this.$t("index.select-store")
+			});
 			this.getStoreList()
 		},
 		methods: {

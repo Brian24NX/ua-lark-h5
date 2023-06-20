@@ -22,7 +22,7 @@
 				Category:
 			</view>
 			<view class="info_detail_b_r">
-				物料类/日常店铺物料
+				{{detail.categoryPath}}
 			</view>
 		</view>
 		<view class="info_detail_b">
@@ -33,14 +33,14 @@
 				{{detail.specifications}}
 			</view>
 		</view>
-		<view class="info_detail_b">
+	<!-- 	<view class="info_detail_b">
 			<view class="info_detail_b_l">
 				Unit:
 			</view>
 			<view class="info_detail_b_r">
 				{{detail.unit}}
 			</view>
-		</view>
+		</view> -->
 		<view class="info_detail_b">
 			<view class="info_detail_b_l">
 				Supplier:

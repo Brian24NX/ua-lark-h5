@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<view class="navbar">
+		<view class="navbar" v-if="storeRole">
 			<view class="userInfo" :style="{'width':barWith+'px','height':barHeight +'px','padding-top':barTop +'px'}">
 				<view class="info" v-if="userInfo">
 					<image :src="userInfo.avatarUrl" mode=""></image>
@@ -17,7 +17,7 @@
 			</view>
 		</view>
 		<swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="true" indicator-dots="true"
-			style="height: 940rpx;" duration="500">
+			style="height: 940rpx;" duration="500" v-if="storeRole">
 			<swiper-item>
 				<image src="../../static/banner.png" mode="aspectFill" style="width: 100vw;height: 940rpx;!important">
 				</image>
@@ -92,7 +92,8 @@
 				url: "/pages/selectMaterial/selectMaterial",
 				storeList: [],
 				// 1:大区经 2:小区经 3:店长 4:店员 10:OPS',
-				storeRole: 0
+				storeRole: 0,
+				permissionErr:false
 			}
 		},
 		computed: {
@@ -113,6 +114,9 @@
 			}
 		},
 		onLoad() {
+			uni.showLoading({
+				title: '加载中'
+			});
 			if (uni.getSystemInfoSync().uniPlatform  == "mp-lark") {
 				uni.getSystemInfo({
 					success: res => {
@@ -123,7 +127,6 @@
 				})
 			}
 	            this.userLogins()
-			console.log('当前语言', uni.getLocale())
 		},
 		methods: {
 			// 店长 刘亚娟  091267
@@ -133,31 +136,52 @@
 				if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
 					// that.$api
 					// 	.userLogin2({
-					// 		code: '310746'  //location.href.split('=')[1]
+					// 		code: '243022'  //location.href.split('=')[1]
 					// 	})
 					// 	.then(resp => {
 					// 		if (resp.code == '200') {
 					// 			uni.setStorageSync('token', resp.data.token)
-					// 			that.userInfo=resp.data.user
-					// 			uni.setStorageSync('user',resp.data.user)
-					// 			that.storeRole = resp.data.user.storeRole
-					// 			that.getStoreList(resp.data.user)
+					// 			if(resp.data.user && resp.data.user.storeRole){
+					// 				that.userInfo=resp.data.user
+					// 				uni.setStorageSync('user',resp.data.user)
+					// 				that.storeRole = resp.data.user.storeRole
+					// 				that.getStoreList(resp.data.user)
+					// 			}else{
+					// 				uni.navigateTo({
+										// 	url:"/pages/pageErr/pageErr"
+										// })
+					// 			}
+								
 					// 		}
 					// 	});
 					uni.login({
 						success(res) {
-							console.log(res.code)
+							console.log('111',res.code)
 							that.$api
 								.userLogin({
 									code: res.code
 								})
 								.then(resp => {
+									console.log('222',resp.code)
 									if (resp.code == '200') {
+										uni.hideLoading();
 										uni.setStorageSync('token', resp.data.token)
-										that.storeRole = resp.data.user.storeRole
-					                    that.userInfo=resp.data.user
-				                     	uni.setStorageSync('user',resp.data.user)
-										that.getStoreList(resp.data.user)
+										if(resp.data.user&& resp.data.user.storeRole){
+											that.storeRole = resp.data.user.storeRole
+											that.userInfo=resp.data.user
+											uni.setStorageSync('user',resp.data.user)
+											that.getStoreList(resp.data.user)
+										}else{
+											// 无权限
+											uni.navigateTo({
+												url:"/pages/pageErr/pageErr?type=1"
+											})
+										}
+									}else{
+										// 网络异常
+										uni.navigateTo({
+											url:"/pages/pageErr/pageErr?type=2"
+										})
 									}
 
 								});
@@ -171,10 +195,15 @@
 						.then(resp => {
 							if (resp.code == '200') {
 								uni.setStorageSync('token', resp.data.token)
-								that.storeRole = resp.data.user.storeRole
-								that.userInfo=resp.data.user
-								uni.setStorageSync('user',resp.data.user)
-								that.getStoreList(resp.data.user)
+								if(resp.data.user && resp.data.user.storeRole){
+									that.userInfo=resp.data.user
+									uni.setStorageSync('user',resp.data.user)
+									that.storeRole = resp.data.user.storeRole
+									that.getStoreList(resp.data.user)
+								}else{
+									// 无权限
+									that.permissionErr=true
+								}
 							}
 						});
 				}
@@ -236,6 +265,7 @@
 <style lang="scss" scoped>
 	.container {
 		background-color: #F0F0F0;
+		padding-bottom: 30rpx;
 		.navbar {
 			position: sticky;
 			top: 0;

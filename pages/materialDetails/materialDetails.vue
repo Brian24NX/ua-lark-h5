@@ -50,7 +50,9 @@
 		},
 
 		onLoad() {
-
+uni.setNavigationBarTitle({
+			    title:this.$t("index.itemDetails")
+			});
 
 		},
 		mounted() {
