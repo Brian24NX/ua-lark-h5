@@ -32,9 +32,15 @@
 		<!-- 提交 -->
 		<view class="submit" :style="clearShow?'z-index:100':'z-index:101'">
 			<view class="submit_left">
-				<van-icon name="https://hr-dev.underarmour.cn/upload/img/notification/cover/1686735414489-car.png"
+				<!-- <van-icon name="https://hr-dev.underarmour.cn/upload/img/notification/cover/1686735414489-car.png"
 					:info='getCarShop.num' v-if="getCarShop.num" custom-style="width:60rpx;height:60rpx"
-					@click.native="showCar" />
+					@click.native="showCar" /> -->
+				<view class="carinfo" v-if="getCarShop.num" @click.native="showCar">
+					<image src="../../static/car.png" mode=""></image>
+					<view class="num">
+						{{getCarShop.num}}
+					</view>
+				</view>
 				<image src="../../static/car.png" mode="" v-else></image>
 				<view class="price">{{getCarShop.sumPrice}} <text class="suffix">CNY</text></view>
 			</view>
@@ -375,11 +381,26 @@
 		.submit_left {
 			display: flex;
 			align-items: center;
-
+.carinfo{
+	position: relative;
+	.num {
+			width: 18px;
+			height: 18px;
+			background-color: red;
+			color: white;
+			text-align: center;
+			line-height: 18px;
+			font-size: 12px;
+			border-radius: 50%;
+			position: absolute;
+			right: -6rpx;
+			top: -14rpx;
+		}
+}
 			image {
 				width: 60rpx;
 				height: 60rpx;
-				margin-top: -14rpx;
+				// margin-top: -14rpx;
 			}
 
 			.price {

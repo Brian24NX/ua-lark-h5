@@ -144,6 +144,12 @@
 						this.currentObj.suppliercurrent = 0
 					}
 				} else if (type == 2) {
+					if(item.cid==0){
+						this.getSubCategory(this.currentObj.current)
+						this.currentObj.subcurrent = 0
+						this.currentObj.suppliercurrent = 0
+						return
+					}
 					this.currentObj.subcurrent = item.cid
 					this.getSupplier(item.cid)
 				} else if (type == 3) {

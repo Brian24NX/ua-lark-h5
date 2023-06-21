@@ -26,8 +26,8 @@
 							<view>{{NORMSTARTTIMEfilter(item.applyTime)}}</view>
 						</view>
 						<view class="info-header-bottom-r">
-							<view>{{this.$t('index.Quantity')}}: <text>{{item.totalQuantity}}</text> </view>
-							<view>{{this.$t('index.Total')}}: <text>{{item.totalPrice}}{{item.priceUnit}}</text> </view>
+							<view>{{Quantity}}: <text>{{item.totalQuantity}}</text> </view>
+							<view>{{total}}: <text>{{item.totalPrice}}{{item.priceUnit}}</text> </view>
 						</view>
 					</view>
 				</view>
@@ -96,6 +96,8 @@
 		},
 		data() {
 			return {
+				Quantity:this.$t('index.Quantity'),
+				total:this.$t('index.total'),
 				confirmDialog: false,
 				tip: this.$t('index.reject-all'),
 				btnActive: false,
@@ -493,7 +495,6 @@
 			transform: translateY(0);
 		}
 	}
-
 	.operate {
 		// width: -webkit-fill-available;
 		height: 100rpx;
@@ -516,6 +517,7 @@
 			font-family: MicrosoftYaHeiSemibold;
 			transform: translateX(50px);
 			opacity: 0;
+			// visibility: 0;
 		}
 
 		.operate-all::after {

@@ -1,9 +1,9 @@
 <template>
-		<van-popup :show="true" round position="bottom" custom-style="padding-bottom:160rpx" @close="onClose">
+		<van-popup :show="true" round position="bottom" custom-style="padding-bottom:160rpx;max-height:80%;overflow-y: scroll" @close="onClose">
 			<view class="">
 				<view class="clearAll">
 					<view class="clearAll_l">
-						{{this.$t('index.clear-all')}}
+						{{this.$t("index.selectMaterial")}}
 					</view>
 					<view class="clearAll_r" @click="clearAll">
 						<image src="../../static/delete.png" mode=""></image>
@@ -26,7 +26,7 @@
 							</view>
 							<view class="change-num">
 								<image class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image>
-								<input v-model="item.scalar" type="text"  @blur="editNum(item)" />
+								<input v-model="item.scalar" type="number"  @blur="editNum(item)" />
 							<image class="addcar" v-if="item.scalar>=999"  src="../../static/notadd.png" mode="" ></image>
 							<image class="addcar" v-else src="../../static/addcar.png" mode="" @tap.stop="plusNum(item)" ></image>
 								</image>

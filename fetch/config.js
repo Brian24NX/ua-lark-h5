@@ -1,5 +1,5 @@
 export default {
-	base_url: "http://ua-lb-uat-1-72363394.ap-southeast-1.elb.amazonaws.com", //pro
+	base_url: "http://ua-elb-uat-1-996763622.ap-southeast-1.elb.amazonaws.com",
 	secret:'659E3081A2D47D9E4FA2A24F03289935esdd989op71' , //pro
 	// base_url:"http://10.28.82.172:8010", 
 	// base_url:"",

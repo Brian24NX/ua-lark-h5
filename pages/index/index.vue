@@ -5,7 +5,7 @@
 				<view class="info" v-if="userInfo">
 					<image :src="userInfo.avatarUrl" mode=""></image>
 					<view class="name">
-						<view class="">Hi</view>
+						<view class="">{{this.$t('index.hi')}}</view>
 						<view class="">{{userInfo.name}} !</view>
 					</view>
 				</view>
@@ -31,8 +31,8 @@
 				</image>
 			</swiper-item>
 		</swiper>
-		<van-divider customStyle="background-color: #000;; border-color: #000; height:2px;margin:0" />
-		<van-divider customStyle="background-color: #000;; border-color: #000; height:6px;margin:0;margin-top:10rpx" />
+		<van-divider customStyle="background-color: #000;; border-color: #000; height:2px;margin:0" v-if="storeRole" />
+		<van-divider customStyle="background-color: #000;; border-color: #000; height:6px;margin:0;margin-top:10rpx" v-if="storeRole" />
 		<!-- sa -->
 		<view class="" v-if="storeRole==3">
 			<sa-nav-arrow :newApplication="newApplication" :img="addimg" :haveIcon="true" :myApplication="myApplication"
@@ -134,26 +134,6 @@
 			userLogins() {
 				let that = this
 				if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
-					// that.$api
-					// 	.userLogin2({
-					// 		code: '243022'  //location.href.split('=')[1]
-					// 	})
-					// 	.then(resp => {
-					// 		if (resp.code == '200') {
-					// 			uni.setStorageSync('token', resp.data.token)
-					// 			if(resp.data.user && resp.data.user.storeRole){
-					// 				that.userInfo=resp.data.user
-					// 				uni.setStorageSync('user',resp.data.user)
-					// 				that.storeRole = resp.data.user.storeRole
-					// 				that.getStoreList(resp.data.user)
-					// 			}else{
-					// 				uni.navigateTo({
-										// 	url:"/pages/pageErr/pageErr"
-										// })
-					// 			}
-								
-					// 		}
-					// 	});
 					uni.login({
 						success(res) {
 							console.log('111',res.code)
@@ -173,39 +153,62 @@
 											that.getStoreList(resp.data.user)
 										}else{
 											// 无权限
-											uni.navigateTo({
+											uni.redirectTo({
 												url:"/pages/pageErr/pageErr?type=1"
 											})
 										}
 									}else{
+										uni.hideLoading();
 										// 网络异常
-										uni.navigateTo({
+										uni.redirectTo({
 											url:"/pages/pageErr/pageErr?type=2"
 										})
 									}
 
+								}).catch(err=>{
+									uni.hideLoading();
+									// 网络异常
+									uni.redirectTo({
+										url:"/pages/pageErr/pageErr?type=2"
+									})
 								});
 						}
 					});
 				} else {
 					that.$api
 						.userLogin2({
-							code: location.href.split('=')[1]
+							code:location.href.split('=')[1]
 						})
-						.then(resp => {
-							if (resp.code == '200') {
-								uni.setStorageSync('token', resp.data.token)
-								if(resp.data.user && resp.data.user.storeRole){
-									that.userInfo=resp.data.user
-									uni.setStorageSync('user',resp.data.user)
-									that.storeRole = resp.data.user.storeRole
-									that.getStoreList(resp.data.user)
-								}else{
-									// 无权限
-									that.permissionErr=true
-								}
+					.then(resp => {
+						if (resp.code == '200') {
+							uni.hideLoading();
+							uni.setStorageSync('token', resp.data.token)
+							if(resp.data.user&& resp.data.user.storeRole){
+								that.storeRole = resp.data.user.storeRole
+								that.userInfo=resp.data.user
+								uni.setStorageSync('user',resp.data.user)
+								that.getStoreList(resp.data.user)
+							}else{
+								// 无权限
+								uni.redirectTo({
+									url:"/pages/pageErr/pageErr?type=1"
+								})
 							}
-						});
+						}else{
+							uni.hideLoading();
+							// 网络异常
+							uni.redirectTo({
+								url:"/pages/pageErr/pageErr?type=2"
+							})
+						}
+					
+					}).catch(err=>{
+						uni.hideLoading();
+						// 网络异常
+						uni.redirectTo({
+							url:"/pages/pageErr/pageErr?type=2"
+						})
+					});
 				}
 			},
 			getStoreList(user) {

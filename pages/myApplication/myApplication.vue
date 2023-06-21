@@ -8,7 +8,7 @@
 				@hideMenu="hideMenu" :dataList="dataList"></drop-down-list>
 		</view>
 		<view class="content">
-			<view class="goods-info" v-for="(item,index) in approveList" :key="index" @click="toDetail">
+			<view class="goods-info" v-for="(item,index) in approveList" :key="index">
 				<view class="info-header">
 					<view class="info-header-top">
 						<van-checkbox use-icon-slot :value="item.choose" custom-class="vancheck"
@@ -504,7 +504,6 @@
 		justify-content: flex-end;
 		margin-right: 30rpx;
 		right: 0;
-
 		.operate-all {
 			width: 220rpx;
 			height: 92rpx;

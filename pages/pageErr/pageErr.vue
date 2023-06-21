@@ -1,11 +1,11 @@
 <template>
 	<view class="container">
-		<image :src="type?'../../static/permission.png':'../../static/network.png'" mode=""></image>
+		<image :src="type==1?'../../static/permission.png':'../../static/network.png'" mode=""></image>
 		<view class="title">
-			{{type?this.$t("index.permissionErr"):this.$t("index.networkErr")}}
+			{{type==1?this.$t("index.permissionErr"):this.$t("index.networkErr")}}
 		</view>
 		<view class="desc">
-			{{type?this.$t("index.permissionDec"):this.$t("index.networkDec")}}
+			{{type==1?this.$t("index.permissionDec"):this.$t("index.networkDec")}}
 		</view>
 		<view class="retry" @click="retry">
 			{{this.$t("index.Retry")}}

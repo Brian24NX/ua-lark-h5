@@ -11,7 +11,9 @@
 				<text>{{this.$t('index.selected')}}<text style="font-weight: bold;color: #111;">{{num}}</text>，</text>  {{tip}}
 			</view>
 			<!-- 备注 -->
-			<textarea :value="content" v-if="pageFrom=='remark'" disabled="true"></textarea>
+			<view class="textareas" v-if="pageFrom=='remark'">
+				{{content}}
+			</view>
 			<view class="dialog-content" v-if="pageFrom=='myApproval'">
 				<view class="dialog-content-item">
 					<view class="dialog-content-order flex-vcenter">
@@ -117,9 +119,8 @@
 	}
 </script>
 <style lang="scss" scoped>
-	textarea {
+	.textareas {
 		width: -webkit-fill-available;
-		height: 132rpx;
 		background: #F8F8F8;
 		border-radius: 24rpx;
 		border: 2rpx solid #DDDDDD;

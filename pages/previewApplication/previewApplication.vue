@@ -24,7 +24,7 @@
 							</view>
 						</view>
 						<view class="info_r_r">
-							{{item.scalar*item.retailPrice}} <text>{{item.priceUnit}}</text>
+							{{(item.scalar*item.retailPrice).toFixed(2)}} <text>{{item.priceUnit}}</text>
 						</view>
 					</view>
 				</view>
@@ -38,17 +38,12 @@
 			{{this.$t('index.comment')}}
 		</view>
 		<!-- 备注 -->
-		<!-- <cover-view>
-			<textarea v-model="form.remark" name="" id="" :placeholder="this.$t('index.textarea')"></textarea>
-		</cover-view> -->
-		<van-field type="textarea" :placeholder="this.$t('index.textarea')" autosize
-		 custom-style="height: 192rpx;
-		background: #F8F8F8;
-		border-radius: 40rpx;
-		font-size: 28rpx;
-		color: #111111;
-		line-height: 38rpx;
-		padding: 40rpx 40rpx 0 40rpx;" @change="onChange" />
+	      <view class="textarea-wrp">
+			  <view class="" v-if="!focus" @click="focus=true" :style="form.remark?'color: #111;':'color: #999;'">
+			  	{{form.remark || this.$t('index.textarea')}}
+			  </view>
+	        <textarea v-else v-model="form.remark"   auto-height :placeholder="this.$t('index.textarea')" :focus="focus" @blur="focus=false" placeholder-style="color: #999"/>
+	      </view>
 
 		<!-- 提交 -->
 		<view class="submit-bar">
@@ -83,6 +78,7 @@
 				dialogShow: false,
 				priceInfo: {},
 				materialList: [],
+				focus:false,
 				form: {
 					remark: "",
 					storeLarkDeptId: 0, //74,
@@ -118,9 +114,7 @@
 			})
 		},
 		methods: {
-			onChange(key){
-				this.form.remark = key.detail
-			},
+		
 			openOrClose() {
 				this.status = this.status == 1 ? 0 : 1;
 				this.btnTxt = this.status == 1 ? this.$t('index.pack-up') : this.$t('index.view-more');
@@ -146,23 +140,18 @@
 		}
 	}
 </script>
-<style>
-	.textarea{
-		z-index: -1;
-	}
-</style>
 <style lang="scss" scoped>
-	// textarea {
-	// 	width: auto;
-	// 	height: 192rpx;
-	// 	background: #F8F8F8;
-	// 	border-radius: 40rpx;
-	// 	font-size: 28rpx;
-	// 	color: #111111;
-	// 	line-height: 38rpx;
-	// 	padding: 40rpx 40rpx 0 40rpx;
-	// 	z-index:-1
-	// }
+	.textarea-wrp {
+		width: auto;
+		height: 192rpx !important;
+		background: #F8F8F8;
+		border-radius: 40rpx;
+		font-size: 28rpx;
+		color: #111111;
+		line-height: 38rpx;
+		padding: 40rpx 40rpx 0 40rpx;
+	
+	}
 
 	.article {
 		// max-width: 800px;
