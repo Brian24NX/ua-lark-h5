@@ -107,6 +107,7 @@
 			this.form.orderItemPos = this.$store.state.carShop
 			this.form.orderItemPos.forEach(item => {
 				item.applyQuantity = item.scalar
+				item.categoryName=item.categoryPath
 				item.supplierSkuCode = item.oriSkuCode
 				item.storeLarkDeptId = this.form.storeLarkDeptId
 				item.regionLarkDeptId = this.form.regionLarkDeptId
@@ -150,7 +151,7 @@
 		color: #111111;
 		line-height: 38rpx;
 		padding: 40rpx 40rpx 0 40rpx;
-	
+	    overflow-y: scroll;
 	}
 
 	.article {

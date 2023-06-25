@@ -121,4 +121,8 @@ export default {
 	updateApply(param) {
 		return fetchPost(`/ua-material-api/app/apply/update/${param.id}`,param.params,true)
 	},
+	// 获取最新购物车数据
+	getCarList(param) {
+		return fetchPost(`/ua-material-api/app/material/searchMaterial/ids`,param,true)
+	},
 }

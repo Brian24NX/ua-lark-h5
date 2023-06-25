@@ -38,7 +38,7 @@
 			<sa-nav-arrow :newApplication="newApplication" :img="addimg" :haveIcon="true" :myApplication="myApplication"
 				@tap.native="choosePage(3)"></sa-nav-arrow>
 			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
-			<sa-nav-arrow :haveIcon="false" :myApplication="myApplication" :check="check"
+			<sa-nav-arrow :haveIcon="false" :myApplication="myApplication"
 				@tap.native="choosePage(2)"></sa-nav-arrow>
 		</view>
 		<!-- ops -->
@@ -106,9 +106,9 @@
 			myApproval() {
 				return this.$t('index.my-approval')
 			},
-			check() {
-				return this.$t('index.check')
-			},
+			// check() {
+			// 	return this.$t('index.check')
+			// },
 			now() {
 				return this.$t('index.now')
 			}

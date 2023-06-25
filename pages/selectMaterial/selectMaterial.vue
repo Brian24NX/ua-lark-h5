@@ -11,8 +11,8 @@
 				</view>
 				<search-bar @searchClick="searchClick"></search-bar>
 				<view class="tabs" v-if="!hideTab">
-					<view :class="['tab',item.cid==currntObject.current?'active' :'']" v-for="(item,index) in categoryList"
-						:key="index" @click="toggleTab(item)">
+					<view :class="['tab',item.cid==currntObject.current?'active' :'']"
+						v-for="(item,index) in categoryList" :key="index" @click="toggleTab(item)">
 						{{item.categoryName}}
 					</view>
 					<view class="tab" @click="choose">{{this.$t('index.more')}}
@@ -27,14 +27,12 @@
 
 		</view>
 		<!-- 分类弹窗 -->
-		
-		<category-mask v-if="categoryShow"  :currntObject="currntObject" @updateCurrent = "updateCurrent" @getSearchProd="getContlist" @closeSearch="closeSearch" ></category-mask>
+
+		<category-mask v-if="categoryShow" :currntObject="currntObject" @updateCurrent="updateCurrent"
+			@getSearchProd="getContlist" @closeSearch="closeSearch"></category-mask>
 		<!-- 提交 -->
 		<view class="submit" :style="clearShow?'z-index:100':'z-index:101'">
 			<view class="submit_left">
-				<!-- <van-icon name="https://hr-dev.underarmour.cn/upload/img/notification/cover/1686735414489-car.png"
-					:info='getCarShop.num' v-if="getCarShop.num" custom-style="width:60rpx;height:60rpx"
-					@click.native="showCar" /> -->
 				<view class="carinfo" v-if="getCarShop.num" @click.native="showCar">
 					<image src="../../static/car.png" mode=""></image>
 					<view class="num">
@@ -52,8 +50,8 @@
 		<car-detail v-if="show" @hideDetail="hideDetail" @minusNum="minusNum" @plusNum="plusNum" @editNum="editNum"
 			@deleteItem="deleteItem" @showDialog='showDialog' />
 		<!-- 确认弹窗 -->
-		<public-dialog v-if="clearShow" @deleteAll="deleteAll" :title="this.$t('index.Confirm')" :tip="tip" :pageFrom="'clear'"
-			@hideDialog="dialogHide" />
+		<public-dialog v-if="clearShow" @deleteAll="deleteAll" :title="this.$t('index.Confirm')" :tip="tip"
+			:pageFrom="'clear'" @hideDialog="dialogHide" />
 	</view>
 </template>
 <script>
@@ -78,7 +76,7 @@
 				store: {},
 				categoryShow: false,
 				// 一级类型选中
-				currntObject:{
+				currntObject: {
 					current: 0,
 					subcurrent: 0,
 					suppliercurrent: 0
@@ -126,12 +124,12 @@
 		},
 		onLoad(option) {
 			uni.setNavigationBarTitle({
-			    title:this.$t("index.selectMaterial")
+				title: this.$t("index.selectMaterial")
 			});
-			if(option.store != 'undefined'){
+			if (option.store != 'undefined') {
 				this.store = JSON.parse(option.store)
 			}
-			if(option.page){
+			if (option.page) {
 				this.page = option.page
 			}
 			this.getAllMaterial()
@@ -156,14 +154,14 @@
 		onReachBottom() {
 			console.log('1111')
 			// 触底的事件
-			if (this.pageNum * this.pageSize >= this.total) return 
+			if (this.pageNum * this.pageSize >= this.total) return
 			// 让页码值自增+1
 			this.pageNum++
 			this.getAllMaterial()
 		},
 		methods: {
-			updateCurrent(obj){
-		       	this.currntObject = Object.assign(obj)
+			updateCurrent(obj) {
+				this.currntObject = Object.assign(obj)
 			},
 			deleteItem(val) {
 				this.contlist.forEach(item => {
@@ -233,12 +231,16 @@
 				this.getContlist()
 			},
 			showCar() {
-				console.log('=========')
 				if (this.getCarShop.num == 0) return
+			let mids=this.$store.state.carShop.map(item=>item.mid)
+				console.log(this.$store.state.carShop,mids)
+				this.$api.getCarList({mids}).then(res=>{
+					console.log(res)
+				})
 				this.show = true
 			},
 			onSubmit(val) {
-				this.show=false
+				this.show = false
 				if (val <= 0) return
 				uni.navigateTo({
 					url: "/pages/previewApplication/previewApplication?getCarShop=" + JSON.stringify(this
@@ -283,7 +285,7 @@
 			},
 
 			getMaterial(val) {
-				this.pageNum=1
+				this.pageNum = 1
 				this.currntObject.subcurrent = val
 				if (val == 0) {
 					this.getContlist(this.currntObject.current)
@@ -291,15 +293,15 @@
 					this.getContlist(val)
 				}
 			},
-			closeSearch(){
-					this.categoryShow = false
+			closeSearch() {
+				this.categoryShow = false
 			},
 			getContlist(id) {
 				this.categoryShow = false
-				if(id &&id.constructor === Object){
+				if (id && id.constructor === Object) {
 					this.param.categoryId = id.categoryId
 					this.param.supplierCode = id.supplierCode
-				}else{
+				} else {
 					this.param.categoryId = id
 				}
 				let param = {
@@ -313,10 +315,10 @@
 							item.scalar = 0
 						})
 						this.total = res.data.total
-						if(this.pageNum == 1){
+						if (this.pageNum == 1) {
 							this.contlist = res.data.data
-						}else{
-							this.contlist = [...this.contlist ,...res.data.data] 
+						} else {
+							this.contlist = [...this.contlist, ...res.data.data]
 						}
 						this.contlist.forEach(item => {
 							this.$store.state.carShop.forEach(val => {
@@ -381,22 +383,25 @@
 		.submit_left {
 			display: flex;
 			align-items: center;
-.carinfo{
-	position: relative;
-	.num {
-			width: 18px;
-			height: 18px;
-			background-color: red;
-			color: white;
-			text-align: center;
-			line-height: 18px;
-			font-size: 12px;
-			border-radius: 50%;
-			position: absolute;
-			right: -6rpx;
-			top: -14rpx;
-		}
-}
+
+			.carinfo {
+				position: relative;
+
+				.num {
+					width: 18px;
+					height: 18px;
+					background-color: red;
+					color: white;
+					text-align: center;
+					line-height: 18px;
+					font-size: 12px;
+					border-radius: 50%;
+					position: absolute;
+					right: -6rpx;
+					top: -14rpx;
+				}
+			}
+
 			image {
 				width: 60rpx;
 				height: 60rpx;
@@ -433,7 +438,7 @@
 
 		.forbidden {
 			background-color: #999999;
-			color:#666666
+			color: #666666
 		}
 	}
 
