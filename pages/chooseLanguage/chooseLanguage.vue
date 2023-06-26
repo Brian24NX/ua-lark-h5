@@ -29,6 +29,16 @@
 						text: this.$t('locale.zh-hans'),
 						code: 'zh-Hans',
 						img: "../../static/zh.png"
+					},
+					{
+						text: this.$t('locale.tai'),
+						code: 'tai',
+						img: "../../static/tai.png"
+					},
+					{
+						text: this.$t('locale.han'),
+						code: 'han',
+						img: "../../static/han.png"
 					}
 				]
 			}

@@ -37,6 +37,17 @@ const store = new Vuex.Store({
 		deleteCarAll(state) {
 			state.carShop = []
 			uni.setStorageSync('carShop', JSON.stringify(state))
+		},
+		replaceCar(state,list){
+			state.carShop.forEach(item=>{
+				list.forEach(val=>{
+					if(item.mid == val.mid){
+						val.scalar = item.scalar
+					}
+				})
+			})
+			state.carShop = list
+			uni.setStorageSync('carShop', JSON.stringify(state))
 		}
 	},
 	actions: {

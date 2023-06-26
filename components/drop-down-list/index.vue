@@ -3,10 +3,9 @@
 		<view class="zq-drop-list"
 			v-for="(item, index) in dataList" :key="index">
 			<view :class="['title',item.show?'activemenu':'']" @click="menuShow(item,index)">{{item.name}}</view>
-			<!-- :style="show?'display:block':'display:none'" -->
 			<view class="mask" :style="item.show?'display:block':'display:none'" @click="hideMenu">
 				<ul>
-					<li v-for="val in item.list" @click="onLiClick(val,index)">{{val.name}}</li>
+					<li v-for="(val,i) in item.list" :style="i==0?'color:#C54646':''" @click="onLiClick(val,index)">{{val.name}}</li>
 				</ul>
 			</view>
 		</view>

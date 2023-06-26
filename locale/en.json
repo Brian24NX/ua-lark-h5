@@ -1,6 +1,8 @@
 {
 	"locale.en": "English",
-	"locale.zh-hans": "zh-hans",
+	"locale.zh-hans": "中文",
+	"locale.tai":"ภาษาไทย",
+	"locale.han":"한국어",
 	"index.home": "Home",
 	"index.hi": "Hi",
 	"index.select-material": "Select Material",
@@ -52,7 +54,9 @@
 	"index.selected": "You have selected：",
 	"index.supplier": "Supplier",
 	"index.Approve": "Approve",
-	"index.Approve-All": "Approve All",
+	"index.Reject": "Reject",
+	"index.Dispatch-All": "Dispatch All",
+	"index.Dispatch":"Dispatch",
 	"index.Reject-All": "Reject All",
 	"index.total": "Total",
 	"index.permissionErr": "Permission Acquisition Failed",
@@ -64,5 +68,7 @@
 	"index.SKUCode": "SKU Code",
 	"index.Category": "Category",
 	"index.Specification": "Specification",
-	"index.Price": "Price"
+	"index.Price": "Price",
+	"index.Receipt":"Confirm Receipt",
+	"index.Receive":"Receive All"
 }

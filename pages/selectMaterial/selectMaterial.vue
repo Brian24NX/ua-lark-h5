@@ -142,7 +142,7 @@
 				this.$store.state.carShop.forEach(item => {
 					sumPrice += item.scalar * item.retailPrice
 					num += parseInt(item.scalar),
-						unit = item.priceUnit
+					unit = item.priceUnit
 				})
 				return {
 					sumPrice: sumPrice.toFixed(2),
@@ -232,10 +232,15 @@
 			},
 			showCar() {
 				if (this.getCarShop.num == 0) return
-			let mids=this.$store.state.carShop.map(item=>item.mid)
-				console.log(this.$store.state.carShop,mids)
-				this.$api.getCarList({mids}).then(res=>{
-					console.log(res)
+				let mids = this.$store.state.carShop.map(item => item.mid)
+				console.log(this.$store.state.carShop, mids)
+				this.$api.getCarList({
+					mids
+				}).then(res => {
+					if(res.code=='200'){
+						this.$store.commit('replaceCar', res.data)
+					}
+					
 				})
 				this.show = true
 			},
@@ -299,6 +304,7 @@
 			getContlist(id) {
 				this.categoryShow = false
 				if (id && id.constructor === Object) {
+					this.pageNum = 1
 					this.param.categoryId = id.categoryId
 					this.param.supplierCode = id.supplierCode
 				} else {

@@ -114,9 +114,6 @@
 			}
 		},
 		onLoad() {
-			uni.showLoading({
-				title: '加载中'
-			});
 			if (uni.getSystemInfoSync().uniPlatform  == "mp-lark") {
 				uni.getSystemInfo({
 					success: res => {
@@ -126,12 +123,24 @@
 					}
 				})
 			}
-	            this.userLogins()
+			if(uni.getStorageSync('token')){
+				if(uni.getStorageSync('user') &&uni.getStorageSync('user').storeRole){
+					this.storeRole =uni.getStorageSync('user').storeRole
+					this.userInfo=uni.getStorageSync('user')
+					this.getStoreList(uni.getStorageSync('user'))
+				}
+			}else{
+				this.userLogins()
+			}
+	          
 		},
 		methods: {
 			// 店长 刘亚娟  091267
 			// 小区经 Joyce Li  310746
 			userLogins() {
+				uni.showLoading({
+					title: '加载中'
+				});
 				let that = this
 				if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
 					uni.login({
@@ -142,7 +151,6 @@
 									code: res.code
 								})
 								.then(resp => {
-									console.log('222',resp.code)
 									if (resp.code == '200') {
 										uni.hideLoading();
 										uni.setStorageSync('token', resp.data.token)

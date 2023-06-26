@@ -102,18 +102,23 @@
 					id: id
 				}).then(res => {
 					if (res.code == '200') {
-						if(res.data.category2){
-							res.data.category2.forEach((item, index) => {
-								item.isChoose = false
-							})
-							this.tabslist = this.subdefault.concat(res.data.category2)
-						}
 						if(res.data.supplier){
 							res.data.supplier.forEach((item, index) => {
 								item.isChoose = false
 							})
 							this.supplierList = this.supplierdefault.concat(res.data.supplier)
+						}else{
+							this.supplierList=[]
 						}
+						if(res.data.category2){
+							res.data.category2.forEach((item, index) => {
+								item.isChoose = false
+							})
+							this.tabslist = this.subdefault.concat(res.data.category2)
+						}else{
+							this.tabslist=[]
+						}
+					
 					}
 
 				})
@@ -129,6 +134,8 @@
 								item.isChoose = false
 							})
 							this.supplierList = this.supplierdefault.concat(res.data.supplier)
+						}else{
+							this.supplierList=[]
 						}
 						
 					}
@@ -140,11 +147,17 @@
 					this.getSubCategory(item.cid)
 					if (item.cid == 0) {
 						this.getAllMaterial2()
-						this.currentObj.subcurrent = 0
-						this.currentObj.suppliercurrent = 0
 					}
+					this.currentObj.subcurrent = 0
+					this.currentObj.suppliercurrent = 0
 				} else if (type == 2) {
-					if(item.cid==0){
+					if(this.currentObj.current==0 && item.cid==0){
+					this.currentObj.subcurrent = 0
+					this.currentObj.suppliercurrent = 0
+						this.getAllMaterial2()
+						return
+					}
+					if(this.currentObj.current!=0 &&item.cid==0){
 						this.getSubCategory(this.currentObj.current)
 						this.currentObj.subcurrent = 0
 						this.currentObj.suppliercurrent = 0

@@ -6,58 +6,39 @@
 				<view class="title">
 					{{dataDetail.materialName}}
 				</view>
-				<view class="bold">
-					x{{dataDetail.applyQuantity}}
-					<input class="uni-input" type="number" maxlength="3" v-if="storeRole==10"/>
-				</view>
-			</view>
-			<view class="info_r_c">
-				<view class="desc">
-					{{dataDetail.supplierName}}
-				</view>
-				<view style="flex-direction: column;align-items: end;" v-if="storeRole==10">
-					<view>
-						<text class="bold"
-							style="color: #C54646;">{{(dataDetail.retailPrice*dataDetail.applyQuantity).toFixed(2)}}</text>
-						<text style="font-size: 16rpx; margin-left: 2rpx;">{{dataDetail.priceUnit}}</text>
-					</view>
-					<text class="cost">Cost 50.00CNY</text>
-				</view>
-				
-			</view>
-			<view class="info_r_b" v-if="storeRole==1||storeRole==2 ">
-				<view class="remark bold" v-if="dataDetail.remark" @tap.native="dialog=true">
-					{{this.$t('index.comment')}}
-					<image src="../../static/more.png"></image>
-				</view>
 				<view>
 					<text class="bold"
 						style="color: #C54646;">{{(dataDetail.retailPrice*dataDetail.applyQuantity).toFixed(2)}}</text>
 					<text style="font-size: 16rpx; margin-left: 2rpx;">{{dataDetail.priceUnit}}</text>
 				</view>
 			</view>
-				<view class="info_r_b" v-if="storeRole==10">
-					<view class="">
-						{{NORMSTARTTIMEfilter(dataDetail.applyTime)}}
-					</view>
-					<view class="remark bold" v-if="dataDetail.remark" @tap.native="dialog=true">
-						{{this.$t('index.comment')}}
-						<image src="../../static/more.png"></image>
-					</view>
-					
+			<view class="info_r_c">
+				<view class="desc">
+					{{dataDetail.supplierName}}
 				</view>
+			</view>
+			<view class="info_r_b">
+				<view class="bold">
+					x{{dataDetail.applyQuantity}}
+				</view>
+			<view>
+				<text class="bold"
+					style="color: #C54646;">Waiting for Approval</text>
+				
+			</view>
+			</view>
 		</view>
-		<public-dialog v-if="dialog" :title="this.$t('index.comment')" :pageFrom="'remark'" :content="dataDetail.remark"
-			@hideDialog="hideDialog"></public-dialog>
+	<!-- 	<public-dialog v-if="dialog" :title="this.$t('index.comment')" :pageFrom="'remark'" :content="dataDetail.remark"
+			@hideDialog="hideDialog"></public-dialog> -->
 	</view>
 </template>
 
 <script>
-	import publicDialog from "../../components/public-dialog/index.vue"
+	// import publicDialog from "../../components/public-dialog/index.vue"
 	export default {
-		components: {
-			publicDialog
-		},
+		// components: {
+		// 	publicDialog
+		// },
 		props: {
 			dataDetail: {}
 		},

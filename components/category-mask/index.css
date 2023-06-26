@@ -9,7 +9,7 @@
 
 .category {
 	width: 90vw;
-	height: 80%;
+	height: calc(100vh - 190rpx);
 	position: fixed;
 	right: 0;
 	top: 0;

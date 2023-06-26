@@ -132,6 +132,12 @@
 					if (res.code == '200') {
 						this.$store.commit('deleteCarAll')
 						uni.navigateBack()
+					}else{
+						uni.showToast({
+							title: res.message,
+							duration: 2000
+						});
+
 					}
 				})
 			},

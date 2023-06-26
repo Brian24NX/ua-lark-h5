@@ -20,14 +20,14 @@
 							src="../../static/unfold.png" mode="" @click="changeContent(item,index)">
 						</image>
 					</view>
-					<view class="info-header-bottom">
+					<view class="info-header-bottom" v-if="storeRole==1 || storeRole==2">
 						<view class="info-header-bottom-l">
 							<view>{{item.employeeName}}</view>
 							<view>{{NORMSTARTTIMEfilter(item.applyTime)}}</view>
 						</view>
 						<view class="info-header-bottom-r">
-							<view>Quantity: <text>{{item.totalQuantity}}</text> </view>
-							<view>Total: <text>{{item.totalPrice}}{{item.priceUnit}}</text> </view>
+							<view>{{Quantity}}: <text>{{item.totalQuantity}}</text> </view>
+							<view>{{Total}}: <text>{{item.totalPrice}}{{item.priceUnit}}</text> </view>
 						</view>
 					</view>
 				</view>
@@ -37,26 +37,11 @@
 				</view>
 			</view>
 		</view>
-		<view class="operate">
-			<view
-				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
-				@click="controlsAll(3)">
-				Approve All
-			</view>
-			<view
-				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
-				@click="controlsAll(7)">
-				Reject All
-			</view>
-			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
-				Batch
-			</view>
-		</view>
 		<view class="footer">
 			<view class="footer-l">
-				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
+			<!-- 	<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
 					<image class="checkbox" slot="icon" :src="checked ? selectAll : notAll" />
-				</van-checkbox>
+				</van-checkbox> -->
 				<text style="margin-top: 8rpx;" v-if="selectedList.length">Selected: {{selectedList.length}}</text>
 			</view>
 			<view class="footer-r">
@@ -64,27 +49,28 @@
 					@click="changeStatus(3)">
 					<image class="approve"
 						:src="selectedList.length<=0?'../../static/approve-sec.png':'../../static/approve.png'" mode="">
-					</image>Approve
+					</image>{{this.$t('index.Receipt')}}
 				</view>
-				<view :class="[selectedList.length<=0?'disabled':'']" @click="changeStatus(7)">
+				<view  @click="changeStatus(7)">
 					<image class="reject"
-						:src="selectedList.length<=0?'../../static/reject-err.png':'../../static/reject.png'" mode="">
-					</image>Reject
+						src="../../static/reject.png" mode="">
+					</image> {{this.$t('index.Receive')}}
 				</view>
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
 		<public-dialog v-if="dialogShow"></public-dialog>
 		<!-- 弹窗 -->
-		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="'CONFIRM'" :tip="tip" :num="total"
+		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip" :num="total"
 			@submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
 
 <script>
+	
 	import dropDownList from "../../components/drop-down-list/index.vue"
 	import searchBar from "../../components/search-bar/index.vue"
-	import materialItem from "../../components/material-item/index.vue"
+	import materialItem from "../../components/material-item/index2.vue"
 	import publicDialog from "../../components/public-dialog/index.vue"
 	import moment from 'moment';
 	export default {
@@ -96,6 +82,8 @@
 		},
 		data() {
 			return {
+				Quantity:this.$t('index.Quantity'),
+				Total:this.$t('index.total'),
 				confirmDialog: false,
 				tip: this.$t('index.reject-all'),
 				btnActive: false,
@@ -133,7 +121,6 @@
 					}
 				],
 				selectedList: [],
-				level: "2",
 				approveList: [],
 				pageNum: 1,
 				pageSize: 10,
@@ -150,12 +137,14 @@
 					storeName: "",
 					stm: "",
 					etm: ""
-				}
+				},
+			// 1:大区经 2:小区经 3:店长 4:店员 10:OPS',
+				storeRole: uni.getStorageSync('user').storeRole
 			}
 		},
 		onLoad() {
 			uni.setNavigationBarTitle({
-			    title:this.$t("index.myApplication")
+			    title:this.$t("index.myApproval")
 			});
 		},
 		onShow() {
@@ -179,7 +168,6 @@
 			this.getApproveList()
 		},
 		methods: {
-				toDetail(){				uni.navigateTo({					url:"/pages/materialDetails/materialDetails"				})			},
 			changeTime(val) {
 				if(val.label == 'all'){
 					this.forms.stm=""
@@ -244,20 +232,20 @@
 					}
 				})
 			},
-			controlsAll(id) {
-				if (id == 3) {
-					this.tip = this.$t('index.approve-all')
-				} else if (id == 7) {
-					this.tip = this.$t('index.reject-all')
-				}
-				this.param.id = id
-				if (uni.getStorageSync('platform') == "mp-lark") {
-					this.confirmDialog = true
-				} else {
-					this.submit()
-				}
+			// controlsAll(id) {
+			// 	if (id == 3) {
+			// 		this.tip = this.$t('index.approve-all')
+			// 	} else if (id == 7) {
+			// 		this.tip = this.$t('index.reject-all')
+			// 	}
+			// 	this.param.id = id
+			// 	if (uni.getStorageSync('platform') == "mp-lark") {
+			// 		this.confirmDialog = true
+			// 	} else {
+			// 		this.submit()
+			// 	}
 
-			},
+			// },
 			submit() {
 				this.changeStatus(this.param.id, 1)
 			},
@@ -413,6 +401,7 @@
 				margin-bottom: 28rpx;
 
 				.info-header {
+					padding-bottom: 20rpx;
 					.info-header-top {
 						display: flex;
 						align-items: center;
@@ -437,7 +426,6 @@
 						line-height: 32rpx;
 						display: flex;
 						margin-left: 52rpx;
-						margin-bottom: 24rpx;
 
 						.info-header-bottom-l {
 							margin-right: 60rpx;
@@ -489,11 +477,11 @@
 
 	@keyframes enter-x-right {
 		to {
+			width: 220rpx;
 			opacity: 1;
 			transform: translateY(0);
 		}
 	}
-
 	.operate {
 		// width: -webkit-fill-available;
 		height: 100rpx;
@@ -504,8 +492,9 @@
 		justify-content: flex-end;
 		margin-right: 30rpx;
 		right: 0;
+
 		.operate-all {
-			width: 220rpx;
+			width: 0;
 			height: 92rpx;
 			border-radius: 92rpx;
 			border: 2rpx solid #111111;

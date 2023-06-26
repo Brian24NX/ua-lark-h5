@@ -20,14 +20,14 @@
 							src="../../static/unfold.png" mode="" @click="changeContent(item,index)">
 						</image>
 					</view>
-					<view class="info-header-bottom">
+					<view class="info-header-bottom" v-if="storeRole==1 || storeRole==2">
 						<view class="info-header-bottom-l">
 							<view>{{item.employeeName}}</view>
 							<view>{{NORMSTARTTIMEfilter(item.applyTime)}}</view>
 						</view>
 						<view class="info-header-bottom-r">
 							<view>{{Quantity}}: <text>{{item.totalQuantity}}</text> </view>
-							<view>{{total}}: <text>{{item.totalPrice}}{{item.priceUnit}}</text> </view>
+							<view>{{Total}}: <text>{{item.totalPrice}}{{item.priceUnit}}</text> </view>
 						</view>
 					</view>
 				</view>
@@ -37,11 +37,11 @@
 				</view>
 			</view>
 		</view>
-		<view class="operate">
+		<view class="operate" v-if="storeRole==10">
 			<view
 				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
 				@click="controlsAll(3)">
-				{{this.$t('index.Approve-All')}}
+				{{this.$t('index.Dispatch-All')}}
 			</view>
 			<view
 				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
@@ -64,7 +64,7 @@
 					@click="changeStatus(3)">
 					<image class="approve"
 						:src="selectedList.length<=0?'../../static/approve-sec.png':'../../static/approve.png'" mode="">
-					</image>{{this.$t('index.Approve')}}
+					</image>{{storeRole==10?this.$t('index.Dispatch'):this.$t('index.Approve')}}
 				</view>
 				<view :class="[selectedList.length<=0?'disabled':'']" @click="changeStatus(7)">
 					<image class="reject"
@@ -97,7 +97,7 @@
 		data() {
 			return {
 				Quantity:this.$t('index.Quantity'),
-				total:this.$t('index.total'),
+				Total:this.$t('index.total'),
 				confirmDialog: false,
 				tip: this.$t('index.reject-all'),
 				btnActive: false,
@@ -135,7 +135,6 @@
 					}
 				],
 				selectedList: [],
-				level: "2",
 				approveList: [],
 				pageNum: 1,
 				pageSize: 10,
@@ -152,7 +151,9 @@
 					storeName: "",
 					stm: "",
 					etm: ""
-				}
+				},
+			// 1:大区经 2:小区经 3:店长 4:店员 10:OPS',
+				storeRole: uni.getStorageSync('user').storeRole
 			}
 		},
 		onLoad() {
@@ -245,20 +246,20 @@
 					}
 				})
 			},
-			controlsAll(id) {
-				if (id == 3) {
-					this.tip = this.$t('index.approve-all')
-				} else if (id == 7) {
-					this.tip = this.$t('index.reject-all')
-				}
-				this.param.id = id
-				if (uni.getStorageSync('platform') == "mp-lark") {
-					this.confirmDialog = true
-				} else {
-					this.submit()
-				}
+			// controlsAll(id) {
+			// 	if (id == 3) {
+			// 		this.tip = this.$t('index.approve-all')
+			// 	} else if (id == 7) {
+			// 		this.tip = this.$t('index.reject-all')
+			// 	}
+			// 	this.param.id = id
+			// 	if (uni.getStorageSync('platform') == "mp-lark") {
+			// 		this.confirmDialog = true
+			// 	} else {
+			// 		this.submit()
+			// 	}
 
-			},
+			// },
 			submit() {
 				this.changeStatus(this.param.id, 1)
 			},
@@ -414,6 +415,7 @@
 				margin-bottom: 28rpx;
 
 				.info-header {
+					padding-bottom: 20rpx;
 					.info-header-top {
 						display: flex;
 						align-items: center;
@@ -438,7 +440,6 @@
 						line-height: 32rpx;
 						display: flex;
 						margin-left: 52rpx;
-						margin-bottom: 24rpx;
 
 						.info-header-bottom-l {
 							margin-right: 60rpx;
@@ -517,7 +518,6 @@
 			font-family: MicrosoftYaHeiSemibold;
 			transform: translateX(50px);
 			opacity: 0;
-			// visibility: 0;
 		}
 
 		.operate-all::after {
