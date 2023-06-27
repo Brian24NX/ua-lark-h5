@@ -4,8 +4,7 @@
 			<!-- 搜索 -->
 			<search-bar @searchClick="searchClick"></search-bar>
 			<!-- 中心区域 :key="item"-->
-			<drop-down-list @selectMenu="selectMenu(arguments)" @changeStore="changeStore" @changeTime="changeTime"
-				@hideMenu="hideMenu" :dataList="dataList"></drop-down-list>
+			<drop-down-list @selectMenu="selectMenu(arguments)" @changeStore="changeStore" @changeTime="changeTime" @hideMenu="hideMenu" :dataList="dataList"></drop-down-list>
 		</view>
 		<view class="content">
 			<view class="goods-info" v-for="(item,index) in approveList" :key="index">
@@ -20,14 +19,14 @@
 							src="../../static/unfold.png" mode="" @click="changeContent(item,index)">
 						</image>
 					</view>
-					<view class="info-header-bottom" v-if="storeRole==1 || storeRole==2">
+					<view class="info-header-bottom">
 						<view class="info-header-bottom-l">
+							<view>{{Quantity}}:{{item.totalQuantity}} </view>
 							<view>{{item.employeeName}}</view>
-							<view>{{NORMSTARTTIMEfilter(item.applyTime)}}</view>
 						</view>
 						<view class="info-header-bottom-r">
-							<view>{{Quantity}}: <text>{{item.totalQuantity}}</text> </view>
-							<view>{{Total}}: <text>{{item.totalPrice}}{{item.priceUnit}}</text> </view>
+							<view>{{Total}}:{{item.totalPrice}}{{item.priceUnit}}</view>
+							<view>{{NORMSTARTTIMEfilter(item.applyTime)}}</view>
 						</view>
 					</view>
 				</view>
@@ -37,21 +36,21 @@
 				</view>
 			</view>
 		</view>
-		<view class="operate" v-if="storeRole==10">
+		<!-- 	<view class="operate" v-if="storeRole==10">
 			<view
 				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
-				@click="controlsAll(3)">
+				@click="controlsAll(4)">
 				{{this.$t('index.Dispatch-All')}}
 			</view>
 			<view
 				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
 				@click="controlsAll(7)">
-				{{this.$t('index.Reject-All')}}	
+				{{this.$t('index.Reject-All')}}
 			</view>
 			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
 				Batch
 			</view>
-		</view>
+		</view> -->
 		<view class="footer">
 			<view class="footer-l">
 				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
@@ -64,7 +63,7 @@
 					@click="changeStatus(3)">
 					<image class="approve"
 						:src="selectedList.length<=0?'../../static/approve-sec.png':'../../static/approve.png'" mode="">
-					</image>{{storeRole==10?this.$t('index.Dispatch'):this.$t('index.Approve')}}
+					</image>{{this.$t('index.Approve')}}
 				</view>
 				<view :class="[selectedList.length<=0?'disabled':'']" @click="changeStatus(7)">
 					<image class="reject"
@@ -74,10 +73,11 @@
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
-		<public-dialog v-if="dialogShow"></public-dialog>
+<!-- 		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="this.$t('index.PurchaseOrder')"
+			@submit="submit" @hideDialog="dialogHide"></public-dialog> -->
 		<!-- 弹窗 -->
-		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip" :num="total"
-			@submit="submit" @hideDialog="dialogHide" />
+		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip"
+			:num="total" @submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -96,8 +96,8 @@
 		},
 		data() {
 			return {
-				Quantity:this.$t('index.Quantity'),
-				Total:this.$t('index.total'),
+				Quantity: this.$t('index.Quantity'),
+				Total: this.$t('index.total'),
 				confirmDialog: false,
 				tip: this.$t('index.reject-all'),
 				btnActive: false,
@@ -110,11 +110,19 @@
 				dataList: [{
 						name: this.$t('index.store'),
 						show: false,
+						type: 'store',
 						list: []
 					},
+					// {
+					// 	name: this.$t('index.supplier'),
+					// 	show: false,
+					// 	type: 'supplier',
+					// 	list: []
+					// },
 					{
 						name: this.$t('index.application-time'),
 						show: false,
+						type: 'time',
 						list: [{
 								label: 'all',
 								name: this.$t('index.all')
@@ -152,18 +160,21 @@
 					stm: "",
 					etm: ""
 				},
-			// 1:大区经 2:小区经 3:店长 4:店员 10:OPS',
-				storeRole: uni.getStorageSync('user').storeRole
+				// 1:大区经 2:小区经 3:店长 4:店员 10:OPS',
+				storeRole: 10 // uni.getStorageSync('user').storeRole
 			}
 		},
 		onLoad() {
 			uni.setNavigationBarTitle({
-			    title:this.$t("index.myApproval")
+				title: this.$t("index.myApproval")
 			});
 		},
 		onShow() {
 			this.getApproveList()
 			this.getStoreList()
+			// if (this.storeRole == 10) {
+			// 	this.getSupplier()
+			// }
 		},
 		onReachBottom() {
 			// 触底的事件
@@ -182,20 +193,35 @@
 			this.getApproveList()
 		},
 		methods: {
+			// getSupplier() {
+			// 	this.$api.getAllMaterialCategory2().then(res => {
+			// 		let arr = [{
+			// 			id: 0,
+			// 			name: this.$t('index.all')
+			// 		}]
+			// 		if (res.data.supplier) {
+			// 			res.data.supplier.forEach(item => {
+			// 				item.name = item.nickName
+			// 			})
+			// 			this.dataList[1].list = arr.concat(res.data.supplier)
+			// 		}
+			// 	})
+			// },
 			changeTime(val) {
-				if(val.label == 'all'){
-					this.forms.stm=""
-					this.forms.etm=""
-					this.dataList[1].name= this.$t('index.application-time')
+				if (val.label == 'all') {
+					this.forms.stm = ""
+					this.forms.etm = ""
+					this.dataList[1].name = this.$t('index.application-time')
 				}
+				this.dataList[1].name = val.name
 				if (val.label == 'week') {
-					this.dataList[1].name = val.name
 					this.getRecentDay(7)
 				} else if (val.label == 'month') {
-					this.dataList[1].name = val.name
+
+					// this.dataList[1].name = val.name
 					this.getRecentMonth(1);
 				} else if (val.label == 'three-month') {
-					this.dataList[1].name = val.name
+					// this.dataList[1].name = val.name
 					this.getRecentMonth(3);
 				}
 				this.getApproveList()
@@ -214,16 +240,27 @@
 				this.forms.etm = datetime
 			},
 			changeStore(val) {
-				if(val.id ==0){
-					this.dataList[0].name =this.$t('index.store') 
-					this.forms.storeName =""
-				}else{
+				if (val.id == 0) {
+					this.dataList[0].name = this.$t('index.store')
+					this.forms.storeName = ""
+				} else {
 					this.dataList[0].name = val.name
 					this.forms.storeName = val.name
 				}
 				this.pageNum = 1
 				this.getApproveList()
 			},
+			// searchSupplier(val) {
+			// 	if (val.id == 0) {
+			// 		this.dataList[1].name = this.$t('index.supplier')
+			// 		this.forms.supplierName = ""
+			// 	} else {
+			// 		this.dataList[1].name = val.name
+			// 		this.forms.supplierName = val.name
+			// 	}
+			// 	this.pageNum = 1
+			// 	this.getApproveList()
+			// },
 			getStoreList() {
 				let user = uni.getStorageSync("user")
 				let data = {
@@ -247,17 +284,18 @@
 				})
 			},
 			// controlsAll(id) {
-			// 	if (id == 3) {
-			// 		this.tip = this.$t('index.approve-all')
-			// 	} else if (id == 7) {
-			// 		this.tip = this.$t('index.reject-all')
-			// 	}
-			// 	this.param.id = id
-			// 	if (uni.getStorageSync('platform') == "mp-lark") {
-			// 		this.confirmDialog = true
-			// 	} else {
-			// 		this.submit()
-			// 	}
+			// this.dialogShow=true
+			// 	// if (id == 3) {
+			// 	// 	this.tip = this.$t('index.approve-all')
+			// 	// } else if (id == 7) {
+			// 	// 	this.tip = this.$t('index.reject-all')
+			// 	// }
+			// 	// this.param.id = id
+			// 	// if (uni.getStorageSync('platform') == "mp-lark") {
+			// 	// 	this.confirmDialog = true
+			// 	// } else {
+			// 	// 	this.submit()
+			// 	// }
 
 			// },
 			submit() {
@@ -279,15 +317,21 @@
 					if (res.code == '200') {
 						if (id == 3) {
 							uni.showToast({
-								title: 'Reject Success',
+								title: this.$t('index.RejectSuccess'),
 								duration: 2000
 							});
 						} else if (id == 7) {
 							uni.showToast({
-								title: 'Approve Success',
+								title: this.$t('index.ApproveSuccess'),
 								duration: 2000
 							});
 						}
+						// else if(id == 4){
+						// 	uni.showToast({
+						// 		title: this.$t('index.DispatchSuccess'),
+						// 		duration: 2000
+						// 	});
+						// }
 
 						this.pageNum = 1
 						this.getApproveList()
@@ -312,8 +356,8 @@
 					if (res.code == '200') {
 						uni.hideLoading();
 						res.data.data.forEach(item => {
-							item.open = true,
-								item.choose = false
+							item.open = true
+							item.choose = true
 						})
 						this.total = res.data.total
 						if (this.pageNum == 1) {
@@ -416,6 +460,7 @@
 
 				.info-header {
 					padding-bottom: 20rpx;
+
 					.info-header-top {
 						display: flex;
 						align-items: center;
@@ -439,15 +484,14 @@
 						color: #999999;
 						line-height: 32rpx;
 						display: flex;
-						margin-left: 52rpx;
-
-						.info-header-bottom-l {
-							margin-right: 60rpx;
-						}
+						margin: 12rpx 0 0 52rpx;
+						margin-top: 12rpx;
+						flex-direction: column;
 
 						.info-header-bottom-l,
 						.info-header-bottom-r {
-							margin-top: 12rpx;
+							display: flex;
+							justify-content: space-between;
 
 							text {
 								color: #111111;
@@ -496,6 +540,7 @@
 			transform: translateY(0);
 		}
 	}
+
 	.operate {
 		// width: -webkit-fill-available;
 		height: 100rpx;
@@ -506,6 +551,7 @@
 		justify-content: flex-end;
 		margin-right: 30rpx;
 		right: 0;
+		z-index: 22;
 
 		.operate-all {
 			width: 0;
@@ -548,6 +594,7 @@
 		position: fixed;
 		bottom: 0;
 		left: 0;
+		z-index: 22;
 
 		.footer-l {
 			font-size: 24rpx;

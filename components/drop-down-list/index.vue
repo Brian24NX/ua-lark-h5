@@ -5,7 +5,7 @@
 			<view :class="['title',item.show?'activemenu':'']" @click="menuShow(item,index)">{{item.name}}</view>
 			<view class="mask" :style="item.show?'display:block':'display:none'" @click="hideMenu">
 				<ul>
-					<li v-for="(val,i) in item.list" :style="i==0?'color:#C54646':''" @click="onLiClick(val,index)">{{val.name}}</li>
+					<li v-for="(val,i) in item.list" @click="onLiClick(val,index,item)">{{val.name}}</li>
 				</ul>
 			</view>
 		</view>
@@ -18,7 +18,7 @@
 		name: "DropDownList",
 		data() {
 			return {
-				activeIndex: 0,
+				// active: '',
 			}
 		},
 		props: {
@@ -34,26 +34,33 @@
 		hideMenu(){
 			this.$emit('hideMenu',false)
 		},
-			onLiClick(item,index) {
-			 console.log(item,index)
-			 if(index==0){
-				 this.$emit("changeStore",item)
-			 }
-			 if(index==1){
+			onLiClick(item,index,val) {
+			 switch(val.type){
+				 case 'store':
+				  this.$emit("changeStore",item)
+				  break;
+				  case 'time':
 				  this.$emit("changeTime",item)
+				  break;
+				  case 'status':
+				  this.$emit("searchStatus",item)
+				  break;
+				  case 'supplier':
+				  this.$emit("searchSupplier",item)
+				  break;
 			 }
-				// this.activeIndex = index;
+				// this.active = item.label;
 				// this.$emit("change", {
 				// 	index: index,
 				// 	value: this.dataList[index]
 				// })
 			}
 		},
-		computed: {
-			dplLable() {
-				return this.dataList[this.activeIndex][this.labelProperty]
-			}
-		}
+		// computed: {
+		// 	dplLable() {
+		// 		return this.dataList[this.activeIndex][this.labelProperty]
+		// 	}
+		// }
 	}
 </script>
 

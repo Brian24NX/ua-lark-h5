@@ -56,7 +56,7 @@ export function fetchPost(url, params, need_error) {
 			timeout: 10000,
 			success(res) {
 				if (res.statusCode === 200) {
-					if (res.data.code === '200') {
+					if (res.data.code === '200'|| res.data.code === 200) {
 						resolve(res.data)
 					} else {
 						uni.showToast({
@@ -116,6 +116,10 @@ export default {
 	// 获取我的审批列表
 	getAllMyApproval(params) {
 		return fetchPost(`/ua-material-api/app/apply/get`,params,true)
+	},
+	// 获取我的审批列表
+	getOpsMyApproval(params) {
+		return fetchPost(`/ua-lark-admin-api/admin/ops/get`,params,true)
 	},
 	// 获取我的审批列表
 	updateApply(param) {

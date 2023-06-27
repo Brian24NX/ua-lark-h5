@@ -70,5 +70,14 @@
 	"index.Specification": "Specification",
 	"index.Price": "Price",
 	"index.Receipt":"Confirm Receipt",
-	"index.Receive":"Receive All"
+	"index.Receive":"Receive All",
+	"index.WaitingApproval":"Waiting for Approval",
+	"index.Approved":"Approved",
+	"index.Dispatched":"Dispatched",
+	"index.ApproveSuccess":"Approve Success",
+	"index.RejectSuccess":"Reject Success",
+	"index.DispatchSuccess":"Dispatch Success",
+	"index.Status":"Status",
+	"index.PurchaseOrder":"Purchase Order"
+	
 }

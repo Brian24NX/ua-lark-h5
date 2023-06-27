@@ -68,5 +68,13 @@
 	"index.Specification": "规范",
 	"index.Price": "价格",
 	"index.Receipt":"确认收到",
-	"index.Receive":"收到所有"
+	"index.Receive":"收到所有",
+	"index.WaitingApproval":"待审核",
+		"index.Approved":"待派单",
+		"index.Dispatched":"待发货",
+		"index.ApproveSuccess":"批准成功",
+			"index.RejectSuccess":"拒绝成功",
+			"index.DispatchSuccess":"分配成功",
+			"index.Status":"状态",
+			"index.PurchaseOrder":"采购订单"
 }

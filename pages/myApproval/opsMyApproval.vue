@@ -5,61 +5,85 @@
 			<search-bar @searchClick="searchClick"></search-bar>
 			<!-- 中心区域 :key="item"-->
 			<drop-down-list @selectMenu="selectMenu(arguments)" @changeStore="changeStore" @changeTime="changeTime"
-				@searchStatus="searchStatus" @hideMenu="hideMenu" :dataList="dataList"></drop-down-list>
+				@searchSupplier="searchSupplier" @hideMenu="hideMenu" :dataList="dataList"></drop-down-list>
 		</view>
 		<view class="content">
 			<view class="goods-info" v-for="(item,index) in approveList" :key="index">
 				<view class="info-header">
 					<view class="info-header-top">
 						<van-checkbox use-icon-slot :value="item.choose" custom-class="vancheck"
-							@change="onChange(item,index)" v-if="showCheckbox">
+							@change="onChange(item,index)">
 							<image class="checkbox" slot="icon" :src="item.choose ? activeIcon : inactiveIcon" />
 						</van-checkbox>
-						<text style="margin-left: 20rpx;">{{item.storeName}}</text>
+						<text style="margin-left: 20rpx;">{{item.name}}</text>
 						<image class="unfold" :style="item.open?'transform: rotate(180deg);':'transform: rotate(0deg);'"
 							src="../../static/unfold.png" mode="" @click="changeContent(item,index)">
 						</image>
 					</view>
-					<view class="info-header-bottom" v-if="storeRole==1 || storeRole==2">
-						<view class="info-header-bottom-l">
-							<view>{{Quantity}}: {{item.totalQuantity}}</view>
-							<view>{{item.employeeName}}</view>
-
-						</view>
-						<view class="info-header-bottom-r">
-							<view>{{Total}}:{{item.totalPrice}}{{item.priceUnit}}</view>
-							<view>{{NORMSTARTTIMEfilter(item.applyTime)}}</view>
-						</view>
-					</view>
 				</view>
 				<!-- 展开 -->
 				<view class="" v-show="item.open==true">
-					<material-item v-for="(val,i) in item.orderItemPos" :key="i" :dataDetail="val"></material-item>
+					<!-- <material-item v-for="(val,i) in item.orderItemPos" :key="i" :dataDetail="val"></material-item> -->
+					<view class="goods-info" v-for="(val,i) in item.list" :key="i">
+						<view class="info-header">
+							<view class="info-header-top">
+								<van-checkbox use-icon-slot :value="val.choose" custom-class="vancheck"
+									@change="onChange(val,i)">
+									<image class="checkbox" slot="icon" :src="val.choose ? activeIcon : inactiveIcon" />
+								</van-checkbox>
+								<text style="margin-left: 20rpx;">{{val.name}}</text>
+								<image class="unfold" :style="val.open?'transform: rotate(180deg);':'transform: rotate(0deg);'"
+									src="../../static/unfold.png" mode="" @click="changeContent(val,i)">
+								</image>
+							</view>
+						</view>
+						<!-- 展开 -->
+						<view class="" v-show="val.open==true">
+							<material-item v-for="(vals,is) in val.list" :key="is" :dataDetail="vals"></material-item>
+						</view>
+					</view>
 				</view>
+			</view>
+		</view>
+		<view class="operate">
+			<view
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
+				@click="controlsAll(4)">
+				{{this.$t('index.Dispatch-All')}}
+			</view>
+			<view
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
+				@click="controlsAll(7)">
+				{{this.$t('index.Reject-All')}}
+			</view>
+			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
+				Batch
 			</view>
 		</view>
 		<view class="footer">
 			<view class="footer-l">
-				<!-- 	<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
+				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
 					<image class="checkbox" slot="icon" :src="checked ? selectAll : notAll" />
-				</van-checkbox> -->
+				</van-checkbox>
 				<text style="margin-top: 8rpx;" v-if="selectedList.length">Selected: {{selectedList.length}}</text>
 			</view>
 			<view class="footer-r">
 				<view style="margin-right: 40rpx;" :class="[selectedList.length<=0?'disabled':'']"
-					@click="changeStatus(6)">
+					@click="changeStatus(4)">
 					<image class="approve"
 						:src="selectedList.length<=0?'../../static/approve-sec.png':'../../static/approve.png'" mode="">
-					</image>{{this.$t('index.Receipt')}}
+					</image>{{this.$t('index.Dispatch')}}
 				</view>
-				<view @click="changeStatus(6,1)">
-					<image class="reject" src="../../static/reject.png" mode="">
-					</image> {{this.$t('index.Receive')}}
+				<view :class="[selectedList.length<=0?'disabled':'']" @click="changeStatus(7)">
+					<image class="reject"
+						:src="selectedList.length<=0?'../../static/reject-err.png':'../../static/reject.png'" mode="">
+					</image> {{this.$t('index.Reject')}}
 				</view>
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
-		<public-dialog v-if="dialogShow"></public-dialog>
+		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="this.$t('index.PurchaseOrder')"
+			 @submit="submit" @hideDialog="dialogHide" ></public-dialog>
 		<!-- 弹窗 -->
 		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip"
 			:num="total" @submit="submit" @hideDialog="dialogHide" />
@@ -69,7 +93,7 @@
 <script>
 	import dropDownList from "../../components/drop-down-list/index.vue"
 	import searchBar from "../../components/search-bar/index.vue"
-	import materialItem from "../../components/material-item/index2.vue"
+	import materialItem from "../../components/material-item/index.vue"
 	import publicDialog from "../../components/public-dialog/index.vue"
 	import moment from 'moment';
 	export default {
@@ -99,45 +123,10 @@
 						list: []
 					},
 					{
-						name: this.$t('index.Status'),
+						name: this.$t('index.supplier'),
 						show: false,
-						type: 'status',
-						list: [{
-								label: 'all',
-								name: this.$t('index.all'),
-								value: 0
-							},
-							{
-								label: 'WaitingApproval',
-								name: this.$t('index.WaitingApproval'),
-								value: 2
-							},
-							{
-								label: 'Approved',
-								name: this.$t('index.Approved'),
-								value: 3
-							},
-							{
-								label: 'Dispatched',
-								name: this.$t('index.Dispatched'),
-								value: 4
-							},
-							{
-								label: 'delivered',
-								name: this.$t('index.delivered'),
-								value: 5
-							},
-							{
-								label: 'received',
-								name: this.$t('index.received'),
-								value: 6
-							},
-							{
-								label: 'rejected',
-								name: this.$t('index.rejected'),
-								value: 7
-							},
-						]
+						type: 'supplier',
+						list: []
 					},
 					{
 						name: this.$t('index.application-time'),
@@ -181,29 +170,18 @@
 					etm: ""
 				},
 				// 1:大区经 2:小区经 3:店长 4:店员 10:OPS',
-				storeRole: uni.getStorageSync('user').storeRole
-			}
-		},
-		computed: {
-			showCheckbox() {
-				console.log(this.approveList)
-				this.approveList.forEach(item => {
-					item.orderItemPos.forEach(val => {
-						if (val.itemStatus == 5) {
-							return true
-						}
-					})
-				})
+				storeRole: 10 // uni.getStorageSync('user').storeRole
 			}
 		},
 		onLoad() {
 			uni.setNavigationBarTitle({
-				title: this.$t("index.my-application")
+				title: this.$t("index.myApproval")
 			});
 		},
 		onShow() {
 			this.getApproveList()
 			this.getStoreList()
+			this.getSupplier()
 		},
 		onReachBottom() {
 			// 触底的事件
@@ -222,30 +200,36 @@
 			this.getApproveList()
 		},
 		methods: {
-			searchStatus(val) {
-				if (val.label == 'all') {
-					this.dataList[1].name = this.$t('index.Status')
-					this.forms.itemStatus = ""
-				} else {
-					this.dataList[1].name = val.name
-					this.forms.itemStatus = val.value
-				}
-				this.getApproveList()
+			getSupplier() {
+				this.$api.getAllMaterialCategory2().then(res => {
+					let arr = [{
+						id: 0,
+						name: this.$t('index.all')
+					}]
+					if (res.data.supplier) {
+						res.data.supplier.forEach(item => {
+							item.name = item.nickName
+						})
+						this.dataList[1].list = arr.concat(res.data.supplier)
+					}
+				})
 			},
 			changeTime(val) {
 				if (val.label == 'all') {
 					this.forms.stm = ""
 					this.forms.etm = ""
-					this.dataList[2].name = this.$t('index.application-time')
+				this.dataList[2].name = this.$t('index.application-time')
+
 				}
+			this.dataList[2].name = val.name
 				if (val.label == 'week') {
-					this.dataList[2].name = val.name
 					this.getRecentDay(7)
 				} else if (val.label == 'month') {
-					this.dataList[2].name = val.name
+
+					// this.dataList[1].name = val.name
 					this.getRecentMonth(1);
 				} else if (val.label == 'three-month') {
-					this.dataList[2].name = val.name
+					// this.dataList[1].name = val.name
 					this.getRecentMonth(3);
 				}
 				this.getApproveList()
@@ -274,6 +258,17 @@
 				this.pageNum = 1
 				this.getApproveList()
 			},
+			searchSupplier(val) {
+				if (val.id == 0) {
+					this.dataList[1].name = this.$t('index.supplier')
+					this.forms.supplierName = ""
+				} else {
+					this.dataList[1].name = val.name
+					this.forms.supplierName = val.name
+				}
+				this.pageNum = 1
+				this.getApproveList()
+			},
 			getStoreList() {
 				let user = uni.getStorageSync("user")
 				let data = {
@@ -296,30 +291,31 @@
 					}
 				})
 			},
-			// controlsAll(id) {
-			// 	if (id == 3) {
-			// 		this.tip = this.$t('index.approve-all')
-			// 	} else if (id == 7) {
-			// 		this.tip = this.$t('index.reject-all')
-			// 	}
-			// 	this.param.id = id
-			// 	if (uni.getStorageSync('platform') == "mp-lark") {
-			// 		this.confirmDialog = true
-			// 	} else {
-			// 		this.submit()
-			// 	}
+			controlsAll(id) {
+			this.dialogShow=true
+				// if (id == 3) {
+				// 	this.tip = this.$t('index.approve-all')
+				// } else if (id == 7) {
+				// 	this.tip = this.$t('index.reject-all')
+				// }
+				// this.param.id = id
+				// if (uni.getStorageSync('platform') == "mp-lark") {
+				// 	this.confirmDialog = true
+				// } else {
+				// 	this.submit()
+				// }
 
-			// },
-			// submit() {
-			// 	this.changeStatus(this.param.id, 1)
-			// },
+			},
+			submit() {
+				this.changeStatus(this.param.id, 1)
+			},
 			dialogHide() {
 				this.confirmDialog = false
 			},
 			changeStatus(id, type) {
 				if (!type && this.selectedList.length <= 0) return;
 				this.param.id = id
-				this.param.params.status = type ? 1 : 0
+				this.param.params.status = type || this.checked ? 1 : 0
 				this.selectedList.forEach(item => {
 					if (item.orderItemPos) {
 						this.param.params.orderItemPos = this.param.params.orderItemPos.concat(item.orderItemPos)
@@ -327,7 +323,23 @@
 				})
 				this.$api.updateApply(this.param).then(res => {
 					if (res.code == '200') {
-						this.selectedList = []
+						if (id == 3) {
+							uni.showToast({
+								title: this.$t('index.RejectSuccess'),
+								duration: 2000
+							});
+						} else if (id == 7) {
+							uni.showToast({
+								title: this.$t('index.ApproveSuccess'),
+								duration: 2000
+							});
+						}else if(id == 4){
+							uni.showToast({
+								title: this.$t('index.DispatchSuccess'),
+								duration: 2000
+							});
+						}
+
 						this.pageNum = 1
 						this.getApproveList()
 					}
@@ -347,18 +359,22 @@
 				uni.showLoading({
 					title: '加载中'
 				});
-				this.$api.getAllMyApproval(data).then(res => {
-					if (res.code == '200') {
+				this.$api.getOpsMyApproval(data).then(res => {
+					if (res.code == 200) {
 						uni.hideLoading();
-						res.data.data.forEach(item => {
-							item.open = true,
-								item.choose = false
+						res.data.list.forEach(item => {
+							item.open = true
+						    item.choose = true
+							item.list.forEach(val=>{
+								val.open = true
+								val.choose = true
+							})
 						})
-						this.total = res.data.total
+						// this.total = res.data.total
 						if (this.pageNum == 1) {
-							this.approveList = res.data.data
+							this.approveList = res.data.list
 						} else {
-							this.approveList = [...this.approveList, ...res.data.data]
+							this.approveList = [...this.approveList, ...res.data.list]
 						}
 						console.log(this.approveList)
 					}
@@ -408,6 +424,7 @@
 				this.getApproveList()
 			},
 			changeContent(item, index) {
+				console.log(item, index)
 				this.approveList.forEach(i => {
 					if (i.open !== this.approveList[index].open) {
 						i.open = false;
@@ -479,7 +496,8 @@
 						color: #999999;
 						line-height: 32rpx;
 						display: flex;
-						margin: 12rpx 0 0 20rpx;
+						margin: 12rpx 0 0 52rpx;
+						margin-top: 12rpx;
 						flex-direction: column;
 
 						.info-header-bottom-l,
@@ -545,7 +563,7 @@
 		justify-content: flex-end;
 		margin-right: 30rpx;
 		right: 0;
-
+z-index: 22;
 		.operate-all {
 			width: 0;
 			height: 92rpx;
@@ -587,7 +605,7 @@
 		position: fixed;
 		bottom: 0;
 		left: 0;
-
+z-index: 22;
 		.footer-l {
 			font-size: 24rpx;
 			color: #FFFFFF;

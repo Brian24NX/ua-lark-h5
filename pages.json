@@ -1,7 +1,7 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-	{
-			"path": "pages/myApproval/myApproval",
+		{
+			"path": "pages/myApproval/opsMyApproval",
 			"style": {
 				"onReachBottomDistance": 150,
 				"enablePullDownRefresh": true,
@@ -63,6 +63,16 @@
 		},
 		{
 			"path": "pages/myApproval/myApproval",
+			"style": {
+				"onReachBottomDistance": 150,
+				"enablePullDownRefresh": true,
+				"usingComponents": {
+					"van-checkbox": "/wxcomponents/@vant/weapp/checkbox/index"
+				}
+			}
+		},
+		{
+			"path": "pages/myApproval/opsMyApproval",
 			"style": {
 				"onReachBottomDistance": 150,
 				"enablePullDownRefresh": true,

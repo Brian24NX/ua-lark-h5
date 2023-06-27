@@ -132,7 +132,7 @@
 			}else{
 				this.userLogins()
 			}
-	          
+	          // this.userLogins()
 		},
 		methods: {
 			// 店长 刘亚娟  091267

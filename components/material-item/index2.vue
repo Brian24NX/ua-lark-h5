@@ -23,7 +23,7 @@
 				</view>
 			<view>
 				<text class="bold"
-					style="color: #C54646;">Waiting for Approval</text>
+					style="color: #C54646;">{{getStatus}}</text>
 				
 			</view>
 			</view>
@@ -41,6 +41,31 @@
 		// },
 		props: {
 			dataDetail: {}
+		},
+		computed:{
+			// 2. Waiting for Approval - 待审核 3. Approved - 待派单 - 区经已审核 4. Dispatched - 待发货 - 已派单  5. Delivered - 待收货 - 已发货 6. Received - 已收货（已完成） 7. Rejected - 已驳回
+			getStatus(){
+				switch(this.dataDetail.itemStatus){
+					case 2:
+					return this.$t('index.WaitingApproval')
+					break;
+					case 3:
+					return this.$t('index.Approved')
+					break;
+					case 4:
+					return this.$t('index.Dispatched')
+					break;
+					case 5:
+					return this.$t('index.delivered')
+					break;
+					case 6:
+					return this.$t('index.received')
+					break;
+					case 7:
+					return this.$t('index.rejected')
+					break;
+				}
+			}
 		},
 		data() {
 			return {

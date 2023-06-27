@@ -8,7 +8,7 @@
 				</view>
 				<view class="bold">
 					x{{dataDetail.applyQuantity}}
-					<input class="uni-input" type="number" maxlength="3" v-if="storeRole==10"/>
+					<input class="uni-input" v-model="applyNum" type="number" maxlength="3" v-if="storeRole==10"/>
 				</view>
 			</view>
 			<view class="info_r_c">
@@ -64,7 +64,13 @@
 		data() {
 			return {
 				dialog: false,
-				storeRole:uni.getStorageSync('user').storeRole
+				// applyNum:3,
+				storeRole:10 //uni.getStorageSync('user').storeRole
+			}
+		},
+		computed:{
+			applyNum(){
+				return this.dataDetail.applyQuantity
 			}
 		},
 		onLoad() {
@@ -156,6 +162,7 @@
 				border-radius: 6rpx;
 				border: 1rpx solid #999999;
 				margin-left: 16rpx;
+				text-align: center;
 			}
 		}
 	}
