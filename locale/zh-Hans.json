@@ -76,5 +76,9 @@
 			"index.RejectSuccess":"拒绝成功",
 			"index.DispatchSuccess":"分配成功",
 			"index.Status":"状态",
-			"index.PurchaseOrder":"采购订单"
+			"index.PurchaseOrder":"采购订单",
+			"index.loading":"加载中",
+			"index.PO":"订单创建成功!",
+				"index.Order":"订单",
+					"index.TotalCost":"总成本"
 }

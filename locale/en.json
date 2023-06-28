@@ -78,6 +78,9 @@
 	"index.RejectSuccess":"Reject Success",
 	"index.DispatchSuccess":"Dispatch Success",
 	"index.Status":"Status",
-	"index.PurchaseOrder":"Purchase Order"
-	
+	"index.PurchaseOrder":"Purchase Order",
+	"index.loading":"loading",
+	"index.PO":"PO created successful！",
+	"index.Order":"Order",
+	"index.TotalCost":"Total Cost"
 }

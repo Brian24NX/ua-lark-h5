@@ -3,7 +3,7 @@
 		custom-style="width: 85%;border-radius: 40rpx;background-color:#f8f8f8" z-index='900' @close="onClose">
 		<view class="dialog flex-vcenter column">
 			<h3 class="title">{{title}}</h3>
-			<view class="color-1DBA00 title2" v-if="pageFrom=='myApproval'">PO created successful！</view>
+			<view class="color-1DBA00 title2" v-if="pageFrom=='myApproval'&&isOk">{{this.$t('index.PO')}}</view>
 			<view class="massage " v-if="pageFrom=='clear'|| pageFrom=='submit'">
 				{{tip}}
 			</view>
@@ -17,44 +17,25 @@
 			<view class="dialog-content" v-if="pageFrom=='myApproval'">
 				<view class="dialog-content-item" v-for="(item, i) in orderList">
 					<view class="dialog-content-order flex-vcenter">
-						<view>SO1264543</view>
+						<view v-if="item.purchaseOrderNo">{{item.purchaseOrderNo}}</view>
+						<view v-else>{{Order}}{{i+1}}</view>
 						<view>{{item.nameChild}}</view>
 					</view>
 					<view class="dialog-content-details ">
 						<view class="dialog-content-details-item flex-vcenter">
-							<view class="width-150 color-999">Store：</view>
+							<view class="width-150 color-999">{{store}}：</view>
 							<view>{{item.store}}</view>
 						</view>
 						<view class="dialog-content-details-item flex-vcenter">
-							<view class="width-150 color-999">Total Cost：</view>
-							<view>{{item.totalCost}}CNY</view>
+							<view class="width-150 color-999">{{totalCost}}：</view>
+							<view>{{item.totalCost}}{{item.priceUnit}}</view>
 						</view>
 						<view class="dialog-content-details-item flex-vcenter">
-							<view class="width-150 color-999">Quantity：</view>
+							<view class="width-150 color-999">{{Quantity}}：</view>
 							<view>{{item.quantity}}</view>
 						</view>
 					</view>
 				</view>
-		<!-- 		<view class="dialog-content-item">
-					<view class="dialog-content-order flex-vcenter">
-						<view>SO1264543</view>
-						<view>上海齐心共赢</view>
-					</view>
-					<view class="dialog-content-details ">
-						<view class="dialog-content-details-item flex-vcenter">
-							<view class="width-150 color-999">Store：</view>
-							<view>广州太古汇</view>
-						</view>
-						<view class="dialog-content-details-item flex-vcenter">
-							<view class="width-150 color-999">Total Cost：</view>
-							<view>800CNY</view>
-						</view>
-						<view class="dialog-content-details-item flex-vcenter">
-							<view class="width-150 color-999">Quantity：</view>
-							<view>2</view>
-						</view>
-					</view>
-				</view> -->
 			</view>
 			<view class="btn">
 				<view class="cancle" @click="onClose" v-if="pageFrom !='remark'">
@@ -98,11 +79,16 @@
 			orderList:{
 				type:Array,
 				default:[]
-			}
+			},
+			isOk:false
 		},
 		data() {
 			return {
-				current: 1
+				current: 1,
+				store:this.$t('index.store'),
+				totalCost:this.$t('index.TotalCost'),
+				Quantity:this.$t('index.Quantity'),
+				Order:this.$t('index.Order')
 			}
 		},
 		methods: {
@@ -113,11 +99,16 @@
 				if (this.pageFrom == 'clear') {
 					this.$emit('deleteAll')
 					this.$store.commit('deleteCarAll')
-				}
-				if (this.pageFrom == 'submit' ||this.pageFrom=='approval') {
+					this.$emit('hideDialog', false)
+				}else if (this.pageFrom == 'submit' ||this.pageFrom=='approval') {
 					this.$emit('submit')
+					this.$emit('hideDialog', false)
+				}else if(this.pageFrom == 'myApproval'&& !this.isOk){
+					this.$emit('createOrder')
+				}else if(this.pageFrom == 'myApproval' && this.isOk){
+					this.$emit('hideDialog', 'reload')
 				}
-				this.$emit('hideDialog', false)
+				
 			}
 		}
 	}
@@ -177,7 +168,8 @@
 			width: 100%;
 			padding: 0rpx 40rpx;
 			box-sizing: border-box;
-
+            max-height: 700rpx;
+			overflow-y: scroll;
 			.dialog-content-item {
 				margin-top: 32rpx;
 				width: 100%;

@@ -50,12 +50,12 @@
 		</view>
 		<view class="operate">
 			<view
-				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'',selectedList.length<=0?'disabled':'']"
 				@click="controlsAll(4)">
 				{{this.$t('index.Dispatch-All')}}
 			</view>
 			<view
-				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'',selectedList.length<=0?'disabled':'']"
 				@click="controlsAll(7)">
 				{{this.$t('index.Reject-All')}}
 			</view>
@@ -85,11 +85,8 @@
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
-		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="this.$t('index.PurchaseOrder')" :orderList="orderList"
-			@submit="submit" @hideDialog="dialogHide"></public-dialog>
-		<!-- 弹窗 -->
-		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip"
-			:num="total" @submit="submit" @hideDialog="dialogHide" />
+		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="this.$t('index.PurchaseOrder')"
+			:orderList="orderList" :isOk="isOk" @submit="submit" @hideDialog="dialogHide" @createOrder= "createOrder"></public-dialog>
 	</view>
 </template>
 
@@ -110,7 +107,8 @@
 			return {
 				Quantity: this.$t('index.Quantity'),
 				Total: this.$t('index.total'),
-				confirmDialog: false,
+				// confirmDialog: false,
+				isOk:false,
 				tip: this.$t('index.reject-all'),
 				btnActive: false,
 				dialogShow: false,
@@ -296,6 +294,7 @@
 				})
 			},
 			controlsAll(id) {
+				if(this.selectedList.length<=0) return
 				this.getActiveList()
 				this.dialogShow = true
 			},
@@ -309,14 +308,16 @@
 								if (itemChild.list.length) {
 
 									let dialogActive = []
-
+									let priceUnit=''
 									let totalQuantity = null
 									itemChild.list.forEach((itemChildChild) => {
 										if (itemChildChild.selecte) {
+											priceUnit=itemChildChild.priceUnit
 											itemChildChild.name = item.name + ',' + itemChild.name
-											itemChildChild.totalAmount =
-												20 //this.numMulti(itemChildChild.approvedQuantity, itemChildChild.costPrice)
-											totalQuantity += itemChildChild.approvedQuantity
+											itemChildChild.totalAmount = this.numMulti(
+												itemChildChild.applyQuantity, itemChildChild
+												.costPrice)
+											totalQuantity += itemChildChild.applyQuantity
 											// activeArr.push(itemChildChild)
 											dialogActive.push(itemChildChild)
 										}
@@ -326,10 +327,10 @@
 										let totalNumber = 0
 										if (dialogActive.length > 1) {
 											dialogActive.forEach((item) => {
-												totalNumber += item.totalAmount
+												totalNumber += item.costPrice
 											})
 										} else {
-											totalNumber = dialogActive[0].totalAmount
+											totalNumber = dialogActive[0].costPrice
 										}
 
 										dialogArr.push({
@@ -337,6 +338,7 @@
 											nameChild: itemChild.name,
 											list: dialogActive,
 											quantity: totalQuantity,
+											priceUnit:priceUnit,
 											totalCost: totalNumber
 										})
 									}
@@ -344,31 +346,57 @@
 							})
 						}
 					})
-					console.log('dialogArr', dialogArr)
 					this.orderList = dialogArr
+					console.log(this.orderList)
 				}
 			},
 			// 乘法运算，避免精度丢失
-			//      numMulti(num1, num2) {
-			// console.log(num1, num2)
+			numMulti(num1, num2) {
+				let baseNum = 0
+				try {
+					baseNum += num1.toString().split('.')[1].length
+				} catch (e) {}
+				try {
+					baseNum += num2.toString().split('.')[1].length
+				} catch (e) {}
+				return (Number(num1.toString().replace('.', '')) * Number(num2.toString().replace('.', ''))) / Math.pow(10,
+					baseNum)
+			},
+			createOrder(){
+				let arr =[]
+				// this.isOk = true
+				this.orderList.forEach(item=>{
+					// item.purchaseOrderNo="SO2023062800002"
+					arr = arr.concat(item.list)
+				})
+			console.log(arr)
 			// return
-			//        let baseNum = 0
-			//        try {
-			//          baseNum += num1.toString().split('.')[1].length
-			//        } catch (e) {
-			//        }
-			//        try {
-			//          baseNum += num2.toString().split('.')[1].length
-			//        } catch (e) {
-			//        }
-			//        return (Number(num1.toString().replace('.', '')) * Number(num2.toString().replace('.', ''))) / Math.pow(10, baseNum)
-			//      },
+				this.$api.buildOrder(arr).then(res=>{
+					console.log(res)
+					if(res.code ==200){
+						this.isOk = true
+						res.data.forEach(item=>{
+							this.orderList.forEach(val=>{
+								if(item.supplierName==val.nameChild && item.store==val.storeName){
+									val.purchaseOrderNo = item.purchaseOrderNo
+								}
+							})
+						})
+						
+					}
+				})
+			},
 			submit() {
 				this.changeStatus(this.param.id, 1)
 			},
-			dialogHide() {
-				this.confirmDialog = false
+			dialogHide(val) {
 				this.dialogShow = false
+				if(val=='reload'){
+					this.isOk=false
+					this.selectedList=[]
+						this.getApproveList()
+				}
+				
 			},
 			changeStatus(id, type) {
 				if (!type && this.selectedList.length <= 0) return;
@@ -415,7 +443,7 @@
 					param: this.forms
 				}
 				uni.showLoading({
-					title: '加载中'
+					title: this.$t('index.loading')
 				});
 				this.$api.getOpsMyApproval(data).then(res => {
 					if (res.code == 200) {
@@ -439,22 +467,21 @@
 
 				})
 			},
-			defaultValue(obj){
+			defaultValue(obj) {
 				this.approveList.forEach(item => {
 					if (item.list) {
 						item.list.forEach(item2 => {
 							if (item2.list) {
 								item2.list.forEach(item3 => {
 									if (item3.orderItemId == obj[0].orderItemId) {
-										item3.applyQuantity ='88' //obj[1]
-										console.log('======',item3)
+										item3.applyQuantity = obj[1]
 									}
 								})
 							}
 						})
 					}
 				})
-		
+
 			},
 			selectOrder(obj) {
 				this.approveList.forEach(item => {
@@ -648,7 +675,6 @@
 
 	@keyframes enter-x-right {
 		to {
-			width: 220rpx;
 			opacity: 1;
 			transform: translateY(0);
 		}
@@ -667,7 +693,7 @@
 		z-index: 22;
 
 		.operate-all {
-			width: 0;
+			width: 220rpx;
 			height: 92rpx;
 			border-radius: 92rpx;
 			border: 2rpx solid #111111;

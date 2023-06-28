@@ -13,11 +13,11 @@
 				</view>
 				<view class="bold">
 					x{{dataDetail.applyQuantity}}
-					<!-- <view class="uni-input"  v-if="storeRole==10">
+					<view class="uni-input" @click="focus=true" v-if="storeRole==10 &&!focus">
 						{{dataDetail.applyQuantity}}
-					</view> -->
+					</view>
 					<input class="uni-input" v-model="dataDetail.applyQuantity" type="number"
-						@blur="handleInput(dataDetail.applyQuantity)" v-if="storeRole==10" />
+						@blur="handleInput(dataDetail.applyQuantity)" v-if="storeRole==10 && focus" />
 				</view>
 			</view>
 			<view class="info_r_c">
@@ -26,7 +26,6 @@
 				</view>
 				<view style="flex-direction: column;align-items: end;" v-if="storeRole==10">
 					<view>
-						<!-- {{(dataDetail.retailPrice*dataDetail.applyQuantity).toFixed(2)}} -->
 						<text class="bold"
 							style="color: #C54646;">{{numMulti(dataDetail.applyQuantity || 1, dataDetail.retailPrice)}}</text>
 						<text style="font-size: 16rpx; margin-left: 2rpx;">{{dataDetail.priceUnit}}</text>
@@ -72,29 +71,34 @@
 		},
 		props: {
 			dataDetail: {}
+	
 		},
 		data() {
 			return {
 				activeIcon: '../../static/checkbox-active.png',
 				inactiveIcon: '../../static/checkbox.png',
 				dialog: false,
+				focus:false,
 				storeRole: 10 //uni.getStorageSync('user').storeRole
 			}
 		},
 
 		methods: {
 			handleInput(val) {
-				console.log(val)
-				if (val >= 999) {
+				this.focus=false
+				if (Number(val) >= 999) {
 					console.log(val)
 					// this.$set(this.dataDetail, 'applyQuantity', 999)
 						this.$emit("defaultValue",this.dataDetail, 999)
-				} else if (val <= 0) {
+				} else if (Number(val) <= 0) {
 					console.log(val)
 					this.$emit("defaultValue", this.dataDetail,1)
 					
 					// this.$set(this.dataDetail, 'applyQuantity', 1)
+				}else{
+					this.$emit("defaultValue", this.dataDetail,Number(val))
 				}
+				
 				// this.$emit("defaultValue", this.dataDetail)
 			},
 			// 乘法运算，避免精度丢失
@@ -133,7 +137,6 @@
 </script>
 
 <style lang="scss">
-	
 	.vancheck {
 		width: 32rpx;
 		height: 32rpx;
@@ -213,18 +216,15 @@
 
 			.uni-input {
 				width: 72rpx;
-				line-height: 40rpx; 
-				min-height: 40rpx;
-				max-height: 40rpx;
+				line-height: 1.4rem; 
+				min-height: 1.4rem; 
+				max-height: 1.4rem; 
 				border-radius: 6rpx;
 				border: 1rpx solid #999999;
 				margin-left: 16rpx;
 				text-align: center;
 				    align-items: center;
 				    justify-content: center;
-					/deep/ input{
-							min-height: 40rpx;
-					}
 				
 			}
 		}

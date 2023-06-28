@@ -55,7 +55,6 @@
 <style lang="scss">
 	/*每个页面公共css */
 	@import '/wxcomponents/@vant/weapp/common/index.wxss';
-
 	page {
 		background-color: #F0F0F0;
 		font-family: MicrosoftYaHeiLight;
