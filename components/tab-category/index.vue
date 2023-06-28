@@ -1,10 +1,13 @@
 <template>
 	<view class="classbox">
 		<!-- 左侧 -->
-		<view class="sub-tabs" v-if="!hideTab">
-			<view :class="['sub-tab',item.cid==subcurrent?'navActive' :'']" v-for="(item,index) in tabslist"
-				:key="item.cid" @click="select(item)">{{item.categoryName}}</view>
+		<view class="tabs">
+			<view class="sub-tabs" v-if="!hideTab">
+				<view :class="['sub-tab',item.cid==subcurrent?'navActive' :'']" v-for="(item,index) in tabslist"
+					:key="item.cid" @click="select(item)">{{item.categoryName}}</view>
+			</view>
 		</view>
+	
 		<!-- 右侧 -->
 		<view class="conts"
 			:style="hideTab?'padding-left: 0;width: 100%;padding-right: 0;margin-top:18rpx':'padding-left: 192rpx'">
@@ -132,17 +135,18 @@
 		}
 	}
 
-
+.tabs{
+	position: fixed;
+	height: 100vh;
+	width: 192rpx;
+	background: #f8f8f8;
+	left: 0px;
+			border-radius: 0rpx 30rpx 30rpx 0rpx;
 	.sub-tabs {
-		position: fixed;
-		height: 100%;
-		width: 192rpx;
-		background: #f8f8f8;
-		left: 0px;
+	    // height: calc(100vh - 150rpx);
+		height: 70%;
 		overflow-y: scroll;
 		text-align: center;
-		border-radius: 0rpx 30rpx 30rpx 0rpx;
-
 		.sub-tab {
 			width: 100%;
 			font-size: 24rpx;
@@ -152,6 +156,8 @@
 			padding: 28rpx 0;
 		}
 	}
+}
+
 
 	.conts {
 		width: -webkit-fill-available;

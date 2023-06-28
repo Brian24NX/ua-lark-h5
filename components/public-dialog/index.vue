@@ -15,7 +15,27 @@
 				{{content}}
 			</view>
 			<view class="dialog-content" v-if="pageFrom=='myApproval'">
-				<view class="dialog-content-item">
+				<view class="dialog-content-item" v-for="(item, i) in orderList">
+					<view class="dialog-content-order flex-vcenter">
+						<view>SO1264543</view>
+						<view>{{item.nameChild}}</view>
+					</view>
+					<view class="dialog-content-details ">
+						<view class="dialog-content-details-item flex-vcenter">
+							<view class="width-150 color-999">Store：</view>
+							<view>{{item.store}}</view>
+						</view>
+						<view class="dialog-content-details-item flex-vcenter">
+							<view class="width-150 color-999">Total Cost：</view>
+							<view>{{item.totalCost}}CNY</view>
+						</view>
+						<view class="dialog-content-details-item flex-vcenter">
+							<view class="width-150 color-999">Quantity：</view>
+							<view>{{item.quantity}}</view>
+						</view>
+					</view>
+				</view>
+		<!-- 		<view class="dialog-content-item">
 					<view class="dialog-content-order flex-vcenter">
 						<view>SO1264543</view>
 						<view>上海齐心共赢</view>
@@ -34,27 +54,7 @@
 							<view>2</view>
 						</view>
 					</view>
-				</view>
-				<view class="dialog-content-item">
-					<view class="dialog-content-order flex-vcenter">
-						<view>SO1264543</view>
-						<view>上海齐心共赢</view>
-					</view>
-					<view class="dialog-content-details ">
-						<view class="dialog-content-details-item flex-vcenter">
-							<view class="width-150 color-999">Store：</view>
-							<view>广州太古汇</view>
-						</view>
-						<view class="dialog-content-details-item flex-vcenter">
-							<view class="width-150 color-999">Total Cost：</view>
-							<view>800CNY</view>
-						</view>
-						<view class="dialog-content-details-item flex-vcenter">
-							<view class="width-150 color-999">Quantity：</view>
-							<view>2</view>
-						</view>
-					</view>
-				</view>
+				</view> -->
 			</view>
 			<view class="btn">
 				<view class="cancle" @click="onClose" v-if="pageFrom !='remark'">
@@ -94,6 +94,10 @@
 			num:{
 				type:Number,
 				default:0
+			},
+			orderList:{
+				type:Array,
+				default:[]
 			}
 		},
 		data() {

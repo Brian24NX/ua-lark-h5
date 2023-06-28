@@ -11,35 +11,38 @@
 			<view class="goods-info" v-for="(item,index) in approveList" :key="index">
 				<view class="info-header">
 					<view class="info-header-top">
-						<van-checkbox use-icon-slot :value="item.choose" custom-class="vancheck"
-							@change="onChange(item,index)">
-							<image class="checkbox" slot="icon" :src="item.choose ? activeIcon : inactiveIcon" />
+						<van-checkbox use-icon-slot :value="item.selecte" custom-class="vancheck"
+							@change="onChange(item,index,1)">
+							<image class="checkbox" slot="icon" :src="item.selecte ? activeIcon : inactiveIcon" />
 						</van-checkbox>
 						<text style="margin-left: 20rpx;">{{item.name}}</text>
-						<image class="unfold" :style="item.open?'transform: rotate(180deg);':'transform: rotate(0deg);'"
+						<image class="unfold"
+							:style="item.isOpen?'transform: rotate(180deg);':'transform: rotate(0deg);'"
 							src="../../static/unfold.png" mode="" @click="changeContent(item,index)">
 						</image>
 					</view>
 				</view>
 				<!-- 展开 -->
-				<view class="" v-show="item.open==true">
-					<!-- <material-item v-for="(val,i) in item.orderItemPos" :key="i" :dataDetail="val"></material-item> -->
-					<view class="goods-info" v-for="(val,i) in item.list" :key="i">
+				<view class="" v-show="item.isOpen==true">
+					<view v-for="(val,i) in item.list" :key="i">
 						<view class="info-header">
 							<view class="info-header-top">
-								<van-checkbox use-icon-slot :value="val.choose" custom-class="vancheck"
-									@change="onChange(val,i)">
-									<image class="checkbox" slot="icon" :src="val.choose ? activeIcon : inactiveIcon" />
+								<van-checkbox use-icon-slot :value="val.selecte" custom-class="vancheck"
+									@change="onChange(val,index,2)">
+									<image class="checkbox" slot="icon"
+										:src="val.selecte ? activeIcon : inactiveIcon" />
 								</van-checkbox>
 								<text style="margin-left: 20rpx;">{{val.name}}</text>
-								<image class="unfold" :style="val.open?'transform: rotate(180deg);':'transform: rotate(0deg);'"
+								<image class="unfold"
+									:style="val.isOpen?'transform: rotate(180deg);':'transform: rotate(0deg);'"
 									src="../../static/unfold.png" mode="" @click="changeContent(val,i)">
 								</image>
 							</view>
 						</view>
 						<!-- 展开 -->
-						<view class="" v-show="val.open==true">
-							<material-item v-for="(vals,is) in val.list" :key="is" :dataDetail="vals"></material-item>
+						<view class="" v-show="val.isOpen==true">
+							<material-item v-for="(vals,is) in val.list" :key="is" :dataDetail="vals"
+								@selectOrder="selectOrder" @defaultValue="defaultValue(arguments)"></material-item>
 						</view>
 					</view>
 				</view>
@@ -82,8 +85,8 @@
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
-		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="this.$t('index.PurchaseOrder')"
-			 @submit="submit" @hideDialog="dialogHide" ></public-dialog>
+		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="this.$t('index.PurchaseOrder')" :orderList="orderList"
+			@submit="submit" @hideDialog="dialogHide"></public-dialog>
 		<!-- 弹窗 -->
 		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip"
 			:num="total" @submit="submit" @hideDialog="dialogHide" />
@@ -153,6 +156,7 @@
 				],
 				selectedList: [],
 				approveList: [],
+				orderList: [],
 				pageNum: 1,
 				pageSize: 10,
 				total: 0,
@@ -218,10 +222,10 @@
 				if (val.label == 'all') {
 					this.forms.stm = ""
 					this.forms.etm = ""
-				this.dataList[2].name = this.$t('index.application-time')
+					this.dataList[2].name = this.$t('index.application-time')
 
 				}
-			this.dataList[2].name = val.name
+				this.dataList[2].name = val.name
 				if (val.label == 'week') {
 					this.getRecentDay(7)
 				} else if (val.label == 'month') {
@@ -292,25 +296,79 @@
 				})
 			},
 			controlsAll(id) {
-			this.dialogShow=true
-				// if (id == 3) {
-				// 	this.tip = this.$t('index.approve-all')
-				// } else if (id == 7) {
-				// 	this.tip = this.$t('index.reject-all')
-				// }
-				// this.param.id = id
-				// if (uni.getStorageSync('platform') == "mp-lark") {
-				// 	this.confirmDialog = true
-				// } else {
-				// 	this.submit()
-				// }
-
+				this.getActiveList()
+				this.dialogShow = true
 			},
+			getActiveList() {
+				if (this.approveList.length) {
+					let dialogArr = []
+					this.approveList.forEach((item) => {
+						if (item.list.length) {
+							item.list.forEach((itemChild) => {
+
+								if (itemChild.list.length) {
+
+									let dialogActive = []
+
+									let totalQuantity = null
+									itemChild.list.forEach((itemChildChild) => {
+										if (itemChildChild.selecte) {
+											itemChildChild.name = item.name + ',' + itemChild.name
+											itemChildChild.totalAmount =
+												20 //this.numMulti(itemChildChild.approvedQuantity, itemChildChild.costPrice)
+											totalQuantity += itemChildChild.approvedQuantity
+											// activeArr.push(itemChildChild)
+											dialogActive.push(itemChildChild)
+										}
+									})
+
+									if (dialogActive.length > 0) {
+										let totalNumber = 0
+										if (dialogActive.length > 1) {
+											dialogActive.forEach((item) => {
+												totalNumber += item.totalAmount
+											})
+										} else {
+											totalNumber = dialogActive[0].totalAmount
+										}
+
+										dialogArr.push({
+											store: item.name,
+											nameChild: itemChild.name,
+											list: dialogActive,
+											quantity: totalQuantity,
+											totalCost: totalNumber
+										})
+									}
+								}
+							})
+						}
+					})
+					console.log('dialogArr', dialogArr)
+					this.orderList = dialogArr
+				}
+			},
+			// 乘法运算，避免精度丢失
+			//      numMulti(num1, num2) {
+			// console.log(num1, num2)
+			// return
+			//        let baseNum = 0
+			//        try {
+			//          baseNum += num1.toString().split('.')[1].length
+			//        } catch (e) {
+			//        }
+			//        try {
+			//          baseNum += num2.toString().split('.')[1].length
+			//        } catch (e) {
+			//        }
+			//        return (Number(num1.toString().replace('.', '')) * Number(num2.toString().replace('.', ''))) / Math.pow(10, baseNum)
+			//      },
 			submit() {
 				this.changeStatus(this.param.id, 1)
 			},
 			dialogHide() {
 				this.confirmDialog = false
+				this.dialogShow = false
 			},
 			changeStatus(id, type) {
 				if (!type && this.selectedList.length <= 0) return;
@@ -333,7 +391,7 @@
 								title: this.$t('index.ApproveSuccess'),
 								duration: 2000
 							});
-						}else if(id == 4){
+						} else if (id == 4) {
 							uni.showToast({
 								title: this.$t('index.DispatchSuccess'),
 								duration: 2000
@@ -363,11 +421,11 @@
 					if (res.code == 200) {
 						uni.hideLoading();
 						res.data.list.forEach(item => {
-							item.open = true
-						    item.choose = true
-							item.list.forEach(val=>{
-								val.open = true
-								val.choose = true
+							item.isOpen = true
+							item.selecte = false
+							item.list.forEach(val => {
+								val.isOpen = true
+								val.selecte = false
 							})
 						})
 						// this.total = res.data.total
@@ -381,22 +439,71 @@
 
 				})
 			},
-			onChange(val, index) {
-				this.checked = false
-				if (val.choose) {
-					this.$set(val, 'choose', false)
-				} else {
-					this.$set(val, 'choose', true)
-				}
-				this.$set(this.approveList, index, val)
-				this.approveList.forEach((item, index) => {
-					if (item.choose) {
-						this.selectedList.push(item)
-					} else {
-						this.selectedList.splice(index, 1)
+			defaultValue(obj){
+				this.approveList.forEach(item => {
+					if (item.list) {
+						item.list.forEach(item2 => {
+							if (item2.list) {
+								item2.list.forEach(item3 => {
+									if (item3.orderItemId == obj[0].orderItemId) {
+										item3.applyQuantity ='88' //obj[1]
+										console.log('======',item3)
+									}
+								})
+							}
+						})
 					}
 				})
-				this.selectedList = Array.from(new Set(this.selectedList))
+		
+			},
+			selectOrder(obj) {
+				this.approveList.forEach(item => {
+					if (item.list) {
+						item.list.forEach(item2 => {
+							if (item2.list) {
+								item2.list.forEach(item3 => {
+									if (item3.orderItemId == obj.orderItemId && obj.selecte) {
+										item3.selecte = true
+									} else if (item3.orderItemId == obj.orderItemId && !obj
+										.selecte) {
+										item3.selecte = false
+									}
+								})
+							}
+						})
+					}
+				})
+				if (obj.selecte) {
+					this.selectedList.push(obj)
+				} else {
+					let index = this.selectedList.findIndex(val => val.orderItemId == obj.orderItemId)
+					this.selectedList.splice(index, 1)
+				}
+			},
+			onChange(val, index, type) {
+				if (val.selecte) {
+					this.approveList[index].selecte = false
+					this.approveList[index].list.forEach(item1 => {
+						item1.selecte = false
+						if (item1.list) {
+							item1.list.forEach((item2, i) => {
+								item2.selecte = false
+								this.selectedList = this.selectedList.filter(val => val.selecte != false)
+							})
+						}
+					})
+				} else {
+					this.approveList[index].selecte = true
+					this.approveList[index].list.forEach(item1 => {
+						item1.selecte = true
+						if (item1.list) {
+							item1.list.forEach(item2 => {
+								item2.selecte = true
+								this.selectedList.push(item2)
+							})
+						}
+					})
+				}
 			},
 			onChangeAll() {
 				this.selectedList.length = this.total
@@ -424,13 +531,7 @@
 				this.getApproveList()
 			},
 			changeContent(item, index) {
-				console.log(item, index)
-				this.approveList.forEach(i => {
-					if (i.open !== this.approveList[index].open) {
-						i.open = false;
-					}
-				})
-				item.open = !item.open
+				item.isOpen = !item.isOpen
 			}
 		}
 	}
@@ -563,7 +664,8 @@
 		justify-content: flex-end;
 		margin-right: 30rpx;
 		right: 0;
-z-index: 22;
+		z-index: 22;
+
 		.operate-all {
 			width: 0;
 			height: 92rpx;
@@ -605,7 +707,8 @@ z-index: 22;
 		position: fixed;
 		bottom: 0;
 		left: 0;
-z-index: 22;
+		z-index: 22;
+
 		.footer-l {
 			font-size: 24rpx;
 			color: #FFFFFF;

@@ -188,11 +188,14 @@
 			showCheckbox() {
 				console.log(this.approveList)
 				this.approveList.forEach(item => {
-					item.orderItemPos.forEach(val => {
-						if (val.itemStatus == 5) {
-							return true
-						}
-					})
+					if(item.orderItemPos){
+						item.orderItemPos.forEach(val => {
+							if (val.itemStatus == 5) {
+								return true
+							}
+						})
+					}
+					
 				})
 			}
 		},
@@ -601,7 +604,7 @@
 			display: flex;
 
 			view {
-				width: 220rpx;
+				// width: 220rpx;
 				height: 80rpx;
 				background: #FFFFFF;
 				border-radius: 45rpx;
@@ -612,6 +615,7 @@
 				font-weight: bold;
 				color: #111111;
 				line-height: 42rpx;
+				padding: 0 24rpx;
 			}
 
 			image.reject {

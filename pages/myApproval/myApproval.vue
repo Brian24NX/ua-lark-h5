@@ -357,7 +357,7 @@
 						uni.hideLoading();
 						res.data.data.forEach(item => {
 							item.open = true
-							item.choose = true
+							item.choose = false
 						})
 						this.total = res.data.total
 						if (this.pageNum == 1) {

@@ -1,3 +1,4 @@
+<!-- 申请单 -->
 <template>
 	<view class="info">
 		<image :src="dataDetail.imageUrl" mode=""></image>
