@@ -125,9 +125,9 @@ export default {
 	updateApply(param) {
 		return fetchPost(`/ua-material-api/app/apply/update/${param.id}`,param.params,true)
 	},
-	// 获取我的审批列表
+	// 创建ops申请单
 	buildOrder(param) {
-		return fetchPost(`/ua-lark-admin-api/admin/ops/add`,param,true)
+		return fetchPost(`/ua-material-api/app/apply/ops/add`,param,true)
 	},
 	// 获取最新购物车数据
 	getCarList(param) {

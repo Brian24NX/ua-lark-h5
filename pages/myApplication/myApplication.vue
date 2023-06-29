@@ -16,11 +16,14 @@
 							<image class="checkbox" slot="icon" :src="item.choose ? activeIcon : inactiveIcon" />
 						</van-checkbox>
 						<text style="margin-left: 20rpx;">{{item.storeName}}</text>
+						<!-- <view class="tocar" @click="toCar(item)">
+							{{this.$t('index.CopytoCart')}}
+						</view> -->
 						<image class="unfold" :style="item.open?'transform: rotate(180deg);':'transform: rotate(0deg);'"
 							src="../../static/unfold.png" mode="" @click="changeContent(item,index)">
 						</image>
 					</view>
-					<view class="info-header-bottom" v-if="storeRole==1 || storeRole==2">
+					<view class="info-header-bottom" >
 						<view class="info-header-bottom-l">
 							<view>{{Quantity}}: {{item.totalQuantity}}</view>
 							<view>{{item.employeeName}}</view>
@@ -38,11 +41,8 @@
 				</view>
 			</view>
 		</view>
-		<view class="footer">
+		<view class="footer" v-if="storeRole==3">
 			<view class="footer-l">
-				<!-- 	<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
-					<image class="checkbox" slot="icon" :src="checked ? selectAll : notAll" />
-				</van-checkbox> -->
 				<text style="margin-top: 8rpx;" v-if="selectedList.length">Selected: {{selectedList.length}}</text>
 			</view>
 			<view class="footer-r">
@@ -175,6 +175,7 @@
 					}
 				},
 				forms: {
+					orderStatus:1,
 					materialCode: "",
 					storeName: "",
 					stm: "",
@@ -225,6 +226,18 @@
 			this.getApproveList()
 		},
 		methods: {
+			toCar(item){
+				this.$store.commit('copytocart',item.orderItemPos)
+				let store={}
+				this.dataList[0].list.forEach(val=>{
+					if(val.larkDeptId == item.storeLarkDeptId){
+						store = val
+					}
+				})
+				uni.navigateTo({
+					url:"/pages/selectMaterial/selectMaterial?store="+JSON.stringify(store)
+				})
+			},
 			searchStatus(val) {
 				if (val.label == 'all') {
 					this.dataList[1].name = this.$t('index.Status')
@@ -463,7 +476,15 @@
 						display: flex;
 						align-items: center;
 						position: relative;
-
+.tocar{
+	font-size: 24rpx;
+	color: #40A1FF;
+	line-height: 32rpx;
+	padding: 4px 12rpx;
+border-radius: 20rpx;
+border: 1rpx solid #40A1FF;
+margin-left: 12rpx;
+}
 
 						.unfold {
 							width: 58rpx;

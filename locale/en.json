@@ -82,5 +82,7 @@
 	"index.loading":"loading",
 	"index.PO":"PO created successful！",
 	"index.Order":"Order",
-	"index.TotalCost":"Total Cost"
+	"index.TotalCost":"Total Cost",
+	"index.CopytoCart":"Copy to Cart",
+	"index.dispatchAll": "，Are you sure to Dispath All?"
 }

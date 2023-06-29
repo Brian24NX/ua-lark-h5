@@ -48,6 +48,13 @@ const store = new Vuex.Store({
 			})
 			state.carShop = list
 			uni.setStorageSync('carShop', JSON.stringify(state))
+		},
+		copytocart(state,orderItemPos){
+			orderItemPos.forEach(item=>{
+				item.scalar = item.applyQuantity
+			})
+			state.carShop = orderItemPos
+			uni.setStorageSync('carShop', JSON.stringify(state))
 		}
 	},
 	actions: {

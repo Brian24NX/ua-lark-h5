@@ -88,7 +88,7 @@
 			uni.setNavigationBarTitle({
 				title: this.$t("index.itemDetails")
 			});
-
+console.log(this.$store.state.carShop[0])
 		},
 		mounted() {
 

@@ -36,21 +36,6 @@
 				</view>
 			</view>
 		</view>
-		<!-- 	<view class="operate" v-if="storeRole==10">
-			<view
-				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
-				@click="controlsAll(4)">
-				{{this.$t('index.Dispatch-All')}}
-			</view>
-			<view
-				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
-				@click="controlsAll(7)">
-				{{this.$t('index.Reject-All')}}
-			</view>
-			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
-				Batch
-			</view>
-		</view> -->
 		<view class="footer">
 			<view class="footer-l">
 				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
@@ -72,12 +57,6 @@
 				</view>
 			</view>
 		</view>
-		<!-- 弹窗 ops-->
-<!-- 		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="this.$t('index.PurchaseOrder')"
-			@submit="submit" @hideDialog="dialogHide"></public-dialog> -->
-		<!-- 弹窗 -->
-		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip"
-			:num="total" @submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -113,12 +92,6 @@
 						type: 'store',
 						list: []
 					},
-					// {
-					// 	name: this.$t('index.supplier'),
-					// 	show: false,
-					// 	type: 'supplier',
-					// 	list: []
-					// },
 					{
 						name: this.$t('index.application-time'),
 						show: false,
@@ -155,6 +128,7 @@
 					}
 				},
 				forms: {
+					orderStatus:2,
 					materialCode: "",
 					storeName: "",
 					stm: "",
@@ -172,9 +146,6 @@
 		onShow() {
 			this.getApproveList()
 			this.getStoreList()
-			// if (this.storeRole == 10) {
-			// 	this.getSupplier()
-			// }
 		},
 		onReachBottom() {
 			// 触底的事件
@@ -193,20 +164,6 @@
 			this.getApproveList()
 		},
 		methods: {
-			// getSupplier() {
-			// 	this.$api.getAllMaterialCategory2().then(res => {
-			// 		let arr = [{
-			// 			id: 0,
-			// 			name: this.$t('index.all')
-			// 		}]
-			// 		if (res.data.supplier) {
-			// 			res.data.supplier.forEach(item => {
-			// 				item.name = item.nickName
-			// 			})
-			// 			this.dataList[1].list = arr.concat(res.data.supplier)
-			// 		}
-			// 	})
-			// },
 			changeTime(val) {
 				if (val.label == 'all') {
 					this.forms.stm = ""
@@ -250,17 +207,6 @@
 				this.pageNum = 1
 				this.getApproveList()
 			},
-			// searchSupplier(val) {
-			// 	if (val.id == 0) {
-			// 		this.dataList[1].name = this.$t('index.supplier')
-			// 		this.forms.supplierName = ""
-			// 	} else {
-			// 		this.dataList[1].name = val.name
-			// 		this.forms.supplierName = val.name
-			// 	}
-			// 	this.pageNum = 1
-			// 	this.getApproveList()
-			// },
 			getStoreList() {
 				let user = uni.getStorageSync("user")
 				let data = {
@@ -283,21 +229,6 @@
 					}
 				})
 			},
-			// controlsAll(id) {
-			// this.dialogShow=true
-			// 	// if (id == 3) {
-			// 	// 	this.tip = this.$t('index.approve-all')
-			// 	// } else if (id == 7) {
-			// 	// 	this.tip = this.$t('index.reject-all')
-			// 	// }
-			// 	// this.param.id = id
-			// 	// if (uni.getStorageSync('platform') == "mp-lark") {
-			// 	// 	this.confirmDialog = true
-			// 	// } else {
-			// 	// 	this.submit()
-			// 	// }
-
-			// },
 			submit() {
 				this.changeStatus(this.param.id, 1)
 			},
@@ -317,22 +248,15 @@
 					if (res.code == '200') {
 						if (id == 3) {
 							uni.showToast({
-								title: this.$t('index.RejectSuccess'),
+								title: this.$t('index.ApproveSuccess'),
 								duration: 2000
 							});
 						} else if (id == 7) {
 							uni.showToast({
-								title: this.$t('index.ApproveSuccess'),
+								title: this.$t('index.RejectSuccess'),
 								duration: 2000
 							});
 						}
-						// else if(id == 4){
-						// 	uni.showToast({
-						// 		title: this.$t('index.DispatchSuccess'),
-						// 		duration: 2000
-						// 	});
-						// }
-
 						this.pageNum = 1
 						this.getApproveList()
 					}

@@ -14,10 +14,10 @@
 				<view class="bold">
 					x{{dataDetail.applyQuantity}}
 					<view class="uni-input" @click="focus=true" v-if="storeRole==10 &&!focus">
-						{{dataDetail.applyQuantity}}
+						{{dataDetail.approvedQuantity}}
 					</view>
-					<input class="uni-input" v-model="dataDetail.applyQuantity" type="number"
-						@blur="handleInput(dataDetail.applyQuantity)" v-if="storeRole==10 && focus" />
+					<input class="uni-input" v-model="dataDetail.approvedQuantity" type="number"
+						@blur="handleInput(dataDetail.approvedQuantity)" v-if="storeRole==10 && focus" />
 				</view>
 			</view>
 			<view class="info_r_c">
@@ -27,10 +27,10 @@
 				<view style="flex-direction: column;align-items: end;" v-if="storeRole==10">
 					<view>
 						<text class="bold"
-							style="color: #C54646;">{{numMulti(dataDetail.applyQuantity || 1, dataDetail.retailPrice)}}</text>
+							style="color: #C54646;">{{numMulti(dataDetail.approvedQuantity || 1, dataDetail.retailPrice)}}</text>
 						<text style="font-size: 16rpx; margin-left: 2rpx;">{{dataDetail.priceUnit}}</text>
 					</view>
-					<text class="cost">Cost {{numMulti(dataDetail.applyQuantity || 1, dataDetail.costPrice)}}CNY</text>
+					<text class="cost">Cost {{numMulti(dataDetail.approvedQuantity || 1, dataDetail.costPrice)}}CNY</text>
 				</view>
 
 			</view>
@@ -71,34 +71,34 @@
 		},
 		props: {
 			dataDetail: {}
-	
+
 		},
 		data() {
 			return {
 				activeIcon: '../../static/checkbox-active.png',
 				inactiveIcon: '../../static/checkbox.png',
 				dialog: false,
-				focus:false,
-				storeRole: 10 //uni.getStorageSync('user').storeRole
+				focus: false,
+				storeRole: uni.getStorageSync('user').storeRole
 			}
 		},
 
 		methods: {
 			handleInput(val) {
-				this.focus=false
+				this.focus = false
 				if (Number(val) >= 999) {
 					console.log(val)
 					// this.$set(this.dataDetail, 'applyQuantity', 999)
-						this.$emit("defaultValue",this.dataDetail, 999)
+					this.$emit("defaultValue", this.dataDetail, 999)
 				} else if (Number(val) <= 0) {
 					console.log(val)
-					this.$emit("defaultValue", this.dataDetail,1)
-					
+					this.$emit("defaultValue", this.dataDetail, 1)
+
 					// this.$set(this.dataDetail, 'applyQuantity', 1)
-				}else{
-					this.$emit("defaultValue", this.dataDetail,Number(val))
+				} else {
+					this.$emit("defaultValue", this.dataDetail, Number(val))
 				}
-				
+
 				// this.$emit("defaultValue", this.dataDetail)
 			},
 			// 乘法运算，避免精度丢失
@@ -216,16 +216,16 @@
 
 			.uni-input {
 				width: 72rpx;
-				line-height: 1.4rem; 
-				min-height: 1.4rem; 
-				max-height: 1.4rem; 
+				line-height: 1.4rem;
+				min-height: 1.4rem;
+				max-height: 1.4rem;
 				border-radius: 6rpx;
 				border: 1rpx solid #999999;
 				margin-left: 16rpx;
 				text-align: center;
-				    align-items: center;
-				    justify-content: center;
-				
+				align-items: center;
+				justify-content: center;
+
 			}
 		}
 	}

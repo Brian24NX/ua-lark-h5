@@ -136,11 +136,12 @@
 		},
 		computed: {
 			getCarShop() {
+				console.log(this.$store.state.carShop,'---------')
 				var sumPrice = 0;
 				var num = 0;
 				var unit = ''
 				this.$store.state.carShop.forEach(item => {
-					sumPrice += item.scalar * item.retailPrice
+					sumPrice +=item.scalar * item.retailPrice
 					num += parseInt(item.scalar),
 					unit = item.priceUnit
 				})

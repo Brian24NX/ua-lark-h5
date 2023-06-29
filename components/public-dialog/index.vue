@@ -1,6 +1,6 @@
 <template>
-	<van-popup :show="true" position="center"
-		custom-style="width: 85%;border-radius: 40rpx;background-color:#f8f8f8" z-index='900' @close="onClose">
+	<van-popup :show="true" position="center" custom-style="width: 85%;border-radius: 40rpx;background-color:#f8f8f8"
+		z-index='900' @close="onClose">
 		<view class="dialog flex-vcenter column">
 			<h3 class="title">{{title}}</h3>
 			<view class="color-1DBA00 title2" v-if="pageFrom=='myApproval'&&isOk">{{this.$t('index.PO')}}</view>
@@ -8,7 +8,8 @@
 				{{tip}}
 			</view>
 			<view class="massage " v-if="pageFrom=='approval'">
-				<text>{{this.$t('index.selected')}}<text style="font-weight: bold;color: #111;">{{num}}</text>，</text>  {{tip}}
+				<text>{{this.$t('index.selected')}}<text style="font-weight: bold;color: #111;">{{num}}</text>，</text>
+				{{tip}}
 			</view>
 			<!-- 备注 -->
 			<view class="textareas" v-if="pageFrom=='remark'">
@@ -72,27 +73,31 @@
 				type: String,
 				default: ''
 			},
-			num:{
-				type:Number,
-				default:0
+			num: {
+				type: Number,
+				default: 0
 			},
-			orderList:{
-				type:Array,
-				default:[]
+			orderList: {
+				type: Array,
+				default: []
 			},
-			isOk:false
+			isOk: false
 		},
 		data() {
 			return {
 				current: 1,
-				store:this.$t('index.store'),
-				totalCost:this.$t('index.TotalCost'),
-				Quantity:this.$t('index.Quantity'),
-				Order:this.$t('index.Order')
+				store: this.$t('index.store'),
+				totalCost: this.$t('index.TotalCost'),
+				Quantity: this.$t('index.Quantity'),
+				Order: this.$t('index.Order')
 			}
 		},
 		methods: {
 			onClose() {
+				if(this.pageFrom == 'myApproval' && this.isOk){
+					this.$emit('hideDialog', 'reload')
+					return
+				}
 				this.$emit('hideDialog', false)
 			},
 			confirm() {
@@ -100,15 +105,17 @@
 					this.$emit('deleteAll')
 					this.$store.commit('deleteCarAll')
 					this.$emit('hideDialog', false)
-				}else if (this.pageFrom == 'submit' ||this.pageFrom=='approval') {
+				} else if (this.pageFrom == 'submit' || this.pageFrom == 'approval') {
 					this.$emit('submit')
 					this.$emit('hideDialog', false)
-				}else if(this.pageFrom == 'myApproval'&& !this.isOk){
+				} else if (this.pageFrom == 'myApproval' && !this.isOk) {
 					this.$emit('createOrder')
-				}else if(this.pageFrom == 'myApproval' && this.isOk){
+				} else if (this.pageFrom == 'myApproval' && this.isOk) {
 					this.$emit('hideDialog', 'reload')
+				}else{
+					this.$emit('hideDialog', false)
 				}
-				
+
 			}
 		}
 	}
@@ -168,8 +175,9 @@
 			width: 100%;
 			padding: 0rpx 40rpx;
 			box-sizing: border-box;
-            max-height: 700rpx;
+			max-height: 700rpx;
 			overflow-y: scroll;
+
 			.dialog-content-item {
 				margin-top: 32rpx;
 				width: 100%;

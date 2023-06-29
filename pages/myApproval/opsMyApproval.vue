@@ -50,12 +50,12 @@
 		</view>
 		<view class="operate">
 			<view
-				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'',selectedList.length<=0?'disabled':'']"
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
 				@click="controlsAll(4)">
 				{{this.$t('index.Dispatch-All')}}
 			</view>
 			<view
-				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'',selectedList.length<=0?'disabled':'']"
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
 				@click="controlsAll(7)">
 				{{this.$t('index.Reject-All')}}
 			</view>
@@ -86,7 +86,10 @@
 		</view>
 		<!-- 弹窗 ops-->
 		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="this.$t('index.PurchaseOrder')"
-			:orderList="orderList" :isOk="isOk" @submit="submit" @hideDialog="dialogHide" @createOrder= "createOrder"></public-dialog>
+			:orderList="orderList" :isOk="isOk" @submit="submit" @hideDialog="dialogHide"
+			@createOrder="createOrder"></public-dialog>
+			<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip"
+				:num="total" @submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -107,9 +110,9 @@
 			return {
 				Quantity: this.$t('index.Quantity'),
 				Total: this.$t('index.total'),
-				// confirmDialog: false,
-				isOk:false,
-				tip: this.$t('index.reject-all'),
+				confirmDialog: false,
+				isOk: false,
+				tip: "",
 				btnActive: false,
 				dialogShow: false,
 				checked: false,
@@ -166,6 +169,7 @@
 					}
 				},
 				forms: {
+						orderStatus:2,
 					materialCode: "",
 					storeName: "",
 					stm: "",
@@ -294,9 +298,13 @@
 				})
 			},
 			controlsAll(id) {
-				if(this.selectedList.length<=0) return
-				this.getActiveList()
-				this.dialogShow = true
+				this.param.id =id
+				if(id==4){
+					this.tip=this.$t('index.dispatchAll')
+				}else if(id==7){
+					this.tip=this.$t('index.reject-all')
+				}
+				this.confirmDialog = true
 			},
 			getActiveList() {
 				if (this.approveList.length) {
@@ -308,16 +316,16 @@
 								if (itemChild.list.length) {
 
 									let dialogActive = []
-									let priceUnit=''
+									let priceUnit = ''
 									let totalQuantity = null
 									itemChild.list.forEach((itemChildChild) => {
 										if (itemChildChild.selecte) {
-											priceUnit=itemChildChild.priceUnit
+											priceUnit = itemChildChild.priceUnit
 											itemChildChild.name = item.name + ',' + itemChild.name
 											itemChildChild.totalAmount = this.numMulti(
-												itemChildChild.applyQuantity, itemChildChild
+												itemChildChild.approvedQuantity, itemChildChild
 												.costPrice)
-											totalQuantity += itemChildChild.applyQuantity
+											totalQuantity += itemChildChild.approvedQuantity
 											// activeArr.push(itemChildChild)
 											dialogActive.push(itemChildChild)
 										}
@@ -338,7 +346,7 @@
 											nameChild: itemChild.name,
 											list: dialogActive,
 											quantity: totalQuantity,
-											priceUnit:priceUnit,
+											priceUnit: priceUnit,
 											totalCost: totalNumber
 										})
 									}
@@ -362,27 +370,24 @@
 				return (Number(num1.toString().replace('.', '')) * Number(num2.toString().replace('.', ''))) / Math.pow(10,
 					baseNum)
 			},
-			createOrder(){
-				let arr =[]
-				// this.isOk = true
-				this.orderList.forEach(item=>{
-					// item.purchaseOrderNo="SO2023062800002"
+			createOrder() {
+				let arr = []
+				this.orderList.forEach(item => {
 					arr = arr.concat(item.list)
 				})
-			console.log(arr)
-			// return
-				this.$api.buildOrder(arr).then(res=>{
+				this.$api.buildOrder(arr).then(res => {
 					console.log(res)
-					if(res.code ==200){
+					if (res.code == 200) {
 						this.isOk = true
-						res.data.forEach(item=>{
-							this.orderList.forEach(val=>{
-								if(item.supplierName==val.nameChild && item.store==val.storeName){
+						res.data.forEach(item => {
+							this.orderList.forEach(val => {
+								if (item.supplierName == val.nameChild && item.store == val
+									.storeName) {
 									val.purchaseOrderNo = item.purchaseOrderNo
 								}
 							})
 						})
-						
+
 					}
 				})
 			},
@@ -391,32 +396,32 @@
 			},
 			dialogHide(val) {
 				this.dialogShow = false
-				if(val=='reload'){
-					this.isOk=false
-					this.selectedList=[]
-						this.getApproveList()
+				this.confirmDialog = false
+				if (val == 'reload') {
+					this.isOk = false
+					this.selectedList = []
+					this.getApproveList()
 				}
-				
+
 			},
 			changeStatus(id, type) {
+				if (id == 4 && !type) {
+					if (this.selectedList.length <= 0) return
+					this.getActiveList()
+					this.dialogShow = true
+					return
+				}
 				if (!type && this.selectedList.length <= 0) return;
 				this.param.id = id
 				this.param.params.status = type || this.checked ? 1 : 0
-				this.selectedList.forEach(item => {
-					if (item.orderItemPos) {
-						this.param.params.orderItemPos = this.param.params.orderItemPos.concat(item.orderItemPos)
-					}
-				})
+				this.param.params.orderItemPos = this.param.params.orderItemPos.concat(this.selectedList)
+				console.log(this.selectedList,this.param)
+				// return
 				this.$api.updateApply(this.param).then(res => {
 					if (res.code == '200') {
-						if (id == 3) {
+					if (id == 7) {
 							uni.showToast({
 								title: this.$t('index.RejectSuccess'),
-								duration: 2000
-							});
-						} else if (id == 7) {
-							uni.showToast({
-								title: this.$t('index.ApproveSuccess'),
 								duration: 2000
 							});
 						} else if (id == 4) {
@@ -454,6 +459,9 @@
 							item.list.forEach(val => {
 								val.isOpen = true
 								val.selecte = false
+								val.list.forEach(va => {
+									va.approvedQuantity = 1
+								})
 							})
 						})
 						// this.total = res.data.total
@@ -474,7 +482,7 @@
 							if (item2.list) {
 								item2.list.forEach(item3 => {
 									if (item3.orderItemId == obj[0].orderItemId) {
-										item3.applyQuantity = obj[1]
+										item3.approvedQuantity = obj[1]
 									}
 								})
 							}
