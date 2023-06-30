@@ -32,14 +32,14 @@
 			</swiper-item>
 		</swiper>
 		<van-divider customStyle="background-color: #000;; border-color: #000; height:2px;margin:0" v-if="storeRole" />
-		<van-divider customStyle="background-color: #000;; border-color: #000; height:6px;margin:0;margin-top:10rpx" v-if="storeRole" />
+		<van-divider customStyle="background-color: #000;; border-color: #000; height:6px;margin:0;margin-top:10rpx"
+			v-if="storeRole" />
 		<!-- sa -->
 		<view class="" v-if="storeRole==3">
 			<sa-nav-arrow :newApplication="newApplication" :img="addimg" :haveIcon="true" :myApplication="myApplication"
 				@tap.native="choosePage(3)"></sa-nav-arrow>
 			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
-			<sa-nav-arrow :haveIcon="false" :myApplication="myApplication"
-				@tap.native="choosePage(2)"></sa-nav-arrow>
+			<sa-nav-arrow :haveIcon="false" :myApplication="myApplication" @tap.native="choosePage(2)"></sa-nav-arrow>
 		</view>
 		<!-- ops -->
 		<view class="" v-if="storeRole==10">
@@ -49,8 +49,7 @@
 			<nav-arrow :newApplication="myApplication" :img="edit" :haveIcon="true" :myApplication="myApplication"
 				@tap.native="choosePage(2)"></nav-arrow>
 			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
-			<nav-arrow :haveIcon="false" :myApplication="newApplication" :check="now"
-				@tap.native="choosePage(3)"></nav-arrow>
+			<nav-arrow :haveIcon="false" :myApplication="newApplication" @tap.native="choosePage(3)"></nav-arrow>
 		</view>
 		<!-- 区域经理 -->
 		<view class="" v-if="storeRole==1 ||storeRole==2">
@@ -93,7 +92,7 @@
 				storeList: [],
 				// 1:大区经 2:小区经 3:店长 4:店员 10:OPS',
 				storeRole: 0,
-				permissionErr:false
+				permissionErr: false
 			}
 		},
 		computed: {
@@ -105,13 +104,10 @@
 			},
 			myApproval() {
 				return this.$t('index.my-approval')
-			},
-			now() {
-				return this.$t('index.now')
 			}
 		},
 		onLoad() {
-			if (uni.getSystemInfoSync().uniPlatform  == "mp-lark") {
+			if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
 				uni.getSystemInfo({
 					success: res => {
 						this.barHeight = res.navigationBarSafeArea.height
@@ -120,16 +116,16 @@
 					}
 				})
 			}
-			// if(uni.getStorageSync('token')){
-			// 	if(uni.getStorageSync('user') &&uni.getStorageSync('user').storeRole){
-			// 		this.storeRole =uni.getStorageSync('user').storeRole
-			// 		this.userInfo=uni.getStorageSync('user')
-			// 		this.getStoreList(uni.getStorageSync('user'))
-			// 	}
-			// }else{
-			// 	this.userLogins()
-			// }
-	          this.userLogins()
+			if (uni.getStorageSync('token')) {
+				if (uni.getStorageSync('user') && uni.getStorageSync('user').storeRole) {
+					this.storeRole = uni.getStorageSync('user').storeRole
+					this.userInfo = uni.getStorageSync('user')
+					this.getStoreList(uni.getStorageSync('user'))
+				}
+			} else {
+				this.userLogins()
+			}
+			// this.userLogins()
 		},
 		methods: {
 			// 店长 刘亚娟  091267
@@ -142,7 +138,6 @@
 				if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
 					uni.login({
 						success(res) {
-							console.log('111',res.code)
 							that.$api
 								.userLogin({
 									code: res.code
@@ -154,30 +149,35 @@
 										// if(!resp.data.user){
 										// 	resp.data.user={"id":17613,"larkUserId":"1f46edd5","larkUnionId":"on_0f3f22f1ca64ed20738df7ca268f286f","larkOpenId":"ou_620337f0a39b5b9d7b419094e396624a","employeeNo":"1f46edd5","employeeType":5,"name":"Jiaodi Wang","enName":"","email":"jiaodi.wang@underarmour.com","mobile":"+8615337165851","avatarUrl":"https://pan16.larksuitecdn.com/static-resource/v1/v2_855215c3-fa6c-43ad-88af-6bbfcbc77cch~?image_size=noop&cut_type=&quality=&format=png&sticker_format=.webp","gender":"0","status":"{\"isActivated\":true,\"isExited\":false,\"isFrozen\":false,\"isResigned\":false,\"isUnjoin\":false}","deptId":1404,"larkDeptId":"398f96d8ed1a9e46","country":"","city":"","workStation":"","joinTime":"1970-01-20T12:18:43.000+00:00","isTenantManager":0,"jobTitle":"","storeRole":2,"isFrozen":1,"tenantCode":"1"}
 										// }
-										if(resp.data.user&& resp.data.user.storeRole){
-											that.storeRole = resp.data.user.storeRole
-											that.userInfo=resp.data.user
-											uni.setStorageSync('user',resp.data.user)
+										if ((resp.data.user && resp.data.user.systemRole) || (resp.data.user &&
+												resp.data.user.storeRole)) {
+											that.storeRole = resp.data.user.systemRole || resp.data.user
+												.storeRole
+											that.userInfo = resp.data.user
+											if (resp.data.user.systemRole) {
+												resp.data.user.storeRole = resp.data.user.systemRole
+											}
+											uni.setStorageSync('user', resp.data.user)
 											that.getStoreList(resp.data.user)
-										}else{
+										} else {
 											// 无权限
 											uni.redirectTo({
-												url:"/pages/pageErr/pageErr?type=1"
+												url: "/pages/pageErr/pageErr?type=1"
 											})
 										}
-									}else{
+									} else {
 										uni.hideLoading();
 										// 网络异常
 										uni.redirectTo({
-											url:"/pages/pageErr/pageErr?type=2"
+											url: "/pages/pageErr/pageErr?type=2"
 										})
 									}
 
-								}).catch(err=>{
+								}).catch(err => {
 									uni.hideLoading();
 									// 网络异常
 									uni.redirectTo({
-										url:"/pages/pageErr/pageErr?type=2"
+										url: "/pages/pageErr/pageErr?type=2"
 									})
 								});
 						}
@@ -185,49 +185,53 @@
 				} else {
 					that.$api
 						.userLogin2({
-							code:location.href.split('=')[1]
+							code: 'c2e2c441' //location.href.split('=')[1]
 						})
-					.then(resp => {
-						if (resp.code == '200') {
-							uni.hideLoading();
-							uni.setStorageSync('token', resp.data.token)
-							if(resp.data.user&& resp.data.user.storeRole){
-								that.storeRole = resp.data.user.storeRole
-								that.userInfo=resp.data.user
-								uni.setStorageSync('user',resp.data.user)
-								that.getStoreList(resp.data.user)
-							}else{
-								// 无权限
+						.then(resp => {
+							if (resp.code == '200') {
+								uni.hideLoading();
+								uni.setStorageSync('token', resp.data.token)
+								if ((resp.data.user && resp.data.user.systemRole) || (resp.data.user && resp.data.user
+										.storeRole)) {
+									that.storeRole = resp.data.user.systemRole || resp.data.user.storeRole
+									that.userInfo = resp.data.user
+									if (resp.data.user.systemRole) {
+										resp.data.user.storeRole = resp.data.user.systemRole
+									}
+									uni.setStorageSync('user', resp.data.user)
+									that.getStoreList(resp.data.user)
+								} else {
+									// 无权限
+									uni.redirectTo({
+										url: "/pages/pageErr/pageErr?type=1"
+									})
+								}
+							} else {
+								uni.hideLoading();
+								// 网络异常
 								uni.redirectTo({
-									url:"/pages/pageErr/pageErr?type=1"
+									url: "/pages/pageErr/pageErr?type=2"
 								})
 							}
-						}else{
+
+						}).catch(err => {
 							uni.hideLoading();
 							// 网络异常
 							uni.redirectTo({
-								url:"/pages/pageErr/pageErr?type=2"
+								url: "/pages/pageErr/pageErr?type=2"
 							})
-						}
-					
-					}).catch(err=>{
-						uni.hideLoading();
-						// 网络异常
-						uni.redirectTo({
-							url:"/pages/pageErr/pageErr?type=2"
-						})
-					});
+						});
 				}
 			},
 			getStoreList(user) {
-				let data={
+				let data = {
 					employeeNo: user.employeeNo,
-				     gender: user.gender,
+					gender: user.gender,
 					id: user.id,
 					mobile: user.mobile,
 					name: user.name,
 					nickname: user.nickname,
-				    tenantCode: user.tenantCode
+					tenantCode: user.tenantCode
 				}
 				this.$api.searchStoreList(data).then(res => {
 					console.log(res)
@@ -246,23 +250,23 @@
 			choosePage(index) {
 				if (index == 3) {
 					uni.navigateTo({
-						url:this.url
+						url: this.url
 					})
 				} else if (index == 2) {
 					uni.navigateTo({
 						url: "/pages/myApplication/myApplication"
 					})
 				} else {
-					if(this.storeRole==10){
+					if (this.storeRole == 10) {
 						uni.navigateTo({
 							url: "/pages/myApproval/opsMyApproval"
 						})
-					}else{
+					} else {
 						uni.navigateTo({
 							url: "/pages/myApproval/myApproval"
 						})
 					}
-					
+
 				}
 			},
 			changeLanguage() {
@@ -283,6 +287,7 @@
 	.container {
 		background-color: #F0F0F0;
 		padding-bottom: 30rpx;
+
 		.navbar {
 			position: sticky;
 			top: 0;

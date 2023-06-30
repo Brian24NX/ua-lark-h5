@@ -5,7 +5,7 @@
 				<view class="store" @click="selectStore">
 					<view class="store_l">
 						<image src="../../static/store.png" mode=""></image>
-						<text>{{store.name?`${this.$t('index.store')}：${store.name}`:`${this.$t('index.store')}`}}</text>
+						<text>{{store.name?`${this.$t('index.store')}：${store.name}`:`${this.$t('index.pleaseSelect')}`}}</text>
 					</view>
 					<image class="store_r" src="../../static/right.png" mode="" v-if="page"></image>
 				</view>
@@ -136,7 +136,6 @@
 		},
 		computed: {
 			getCarShop() {
-				console.log(this.$store.state.carShop,'---------')
 				var sumPrice = 0;
 				var num = 0;
 				var unit = ''
@@ -246,6 +245,13 @@
 				this.show = true
 			},
 			onSubmit(val) {
+				if(!this.store.name){
+					uni.showToast({
+						title: this.$t('index.pleaseSelect'),
+						duration: 2000
+					});
+					return
+				}
 				this.show = false
 				if (val <= 0) return
 				uni.navigateTo({

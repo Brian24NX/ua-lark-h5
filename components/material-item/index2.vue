@@ -1,8 +1,13 @@
 <!-- 申请单 -->
 <template>
 	<view class="info">
-		<image :src="dataDetail.imageUrl" mode=""></image>
-		<view class="info_r">
+		<!-- v-if="dataDetail.itemStatus ==5" -->
+		<van-checkbox use-icon-slot :value="dataDetail.selecte" custom-class="vancheck" @change.native="onChange(dataDetail)"
+			v-if="dataDetail.itemStatus ==5">
+			<image class="checkbox" slot="icon" :src="dataDetail.selecte ? activeIcon : inactiveIcon" />
+		</van-checkbox>
+		<image class="imageUrl" :src="dataDetail.imageUrl" mode=""  @click="toDetail"></image>
+		<view class="info_r"  @click="toDetail">
 			<view class="info_r_t">
 				<view class="title">
 					{{dataDetail.materialName}}
@@ -29,17 +34,15 @@
 			</view>
 			</view>
 		</view>
-	<!-- 	<public-dialog v-if="dialog" :title="this.$t('index.comment')" :pageFrom="'remark'" :content="dataDetail.remark"
-			@hideDialog="hideDialog"></public-dialog> -->
 	</view>
 </template>
 
 <script>
-	// import publicDialog from "../../components/public-dialog/index.vue"
+		import vanCheckbox from "@/wxcomponents/@vant/weapp/checkbox/index"
 	export default {
-		// components: {
-		// 	publicDialog
-		// },
+		components: {
+			vanCheckbox
+		},
 		props: {
 			dataDetail: {}
 		},
@@ -71,35 +74,55 @@
 		data() {
 			return {
 				dialog: false,
-				storeRole:uni.getStorageSync('user').storeRole
+				storeRole:uni.getStorageSync('user').storeRole,
+				activeIcon: '../../static/checkbox-active.png',
+				inactiveIcon: '../../static/checkbox.png',
 			}
 		},
 		onLoad() {
-
 		},
 		methods: {
-			NORMSTARTTIMEfilter(val) {
-				const jsonDate = new Date(val).toJSON()
-				return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
-					/\.[\d]{3}Z/, '')
+			onChange(val) {
+				if (val.selecte) {
+					this.$set(val, 'selecte', false)
+				} else {
+					this.$set(val, 'selecte', true)
+				}
+				console.log(val)
+				this.$emit('selectOrder', val)
 			},
 			hideDialog(val) {
 				this.dialog = val
+			},
+			toDetail(){
+				uni.navigateTo({
+					url:"/pages/materialDetails/materialDetails?detail="+JSON.stringify(this.dataDetail)
+				})
 			}
-			// searchClick(key){
-			// 	this.$emit('searchClick',key)
-			// }
 		}
 	}
 </script>
 
 <style lang="scss">
+	.vancheck {
+		width: 32rpx;
+		height: 32rpx;
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+		margin-right: 20rpx;
+	}
+	
+	.checkbox {
+		width: 32rpx;
+		height: 32rpx;
+	}
 	.info {
 		display: flex;
 		padding: 20rpx 0;
 		border-top: 2rpx solid #dddddd;
 
-		image {
+		.imageUrl {
 			width: 176rpx;
 			height: 176rpx;
 			background: #F0F0F0;

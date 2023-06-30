@@ -65,9 +65,9 @@
 		</view>
 		<view class="footer">
 			<view class="footer-l">
-				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
+				<!-- 		<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
 					<image class="checkbox" slot="icon" :src="checked ? selectAll : notAll" />
-				</van-checkbox>
+				</van-checkbox> -->
 				<text style="margin-top: 8rpx;" v-if="selectedList.length">Selected: {{selectedList.length}}</text>
 			</view>
 			<view class="footer-r">
@@ -88,8 +88,8 @@
 		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="this.$t('index.PurchaseOrder')"
 			:orderList="orderList" :isOk="isOk" @submit="submit" @hideDialog="dialogHide"
 			@createOrder="createOrder"></public-dialog>
-			<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip"
-				:num="total" @submit="submit" @hideDialog="dialogHide" />
+		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip"
+			:num="total" @submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -169,14 +169,14 @@
 					}
 				},
 				forms: {
-						orderStatus:2,
+					orderStatus: 2,
 					materialCode: "",
 					storeName: "",
 					stm: "",
 					etm: ""
 				},
 				// 1:大区经 2:小区经 3:店长 4:店员 10:OPS',
-				storeRole: 10 // uni.getStorageSync('user').storeRole
+				storeRole: uni.getStorageSync('user').storeRole
 			}
 		},
 		onLoad() {
@@ -298,11 +298,11 @@
 				})
 			},
 			controlsAll(id) {
-				this.param.id =id
-				if(id==4){
-					this.tip=this.$t('index.dispatchAll')
-				}else if(id==7){
-					this.tip=this.$t('index.reject-all')
+				this.param.id = id
+				if (id == 4) {
+					this.tip = this.$t('index.dispatchAll')
+				} else if (id == 7) {
+					this.tip = this.$t('index.reject-all')
 				}
 				this.confirmDialog = true
 			},
@@ -330,15 +330,16 @@
 											dialogActive.push(itemChildChild)
 										}
 									})
-
 									if (dialogActive.length > 0) {
 										let totalNumber = 0
 										if (dialogActive.length > 1) {
 											dialogActive.forEach((item) => {
-												totalNumber += item.costPrice
+												totalNumber += item.costPrice * item
+													.approvedQuantity
 											})
 										} else {
-											totalNumber = dialogActive[0].costPrice
+											totalNumber = dialogActive[0].costPrice * dialogActive[0]
+												.approvedQuantity
 										}
 
 										dialogArr.push({
@@ -415,11 +416,9 @@
 				this.param.id = id
 				this.param.params.status = type || this.checked ? 1 : 0
 				this.param.params.orderItemPos = this.param.params.orderItemPos.concat(this.selectedList)
-				console.log(this.selectedList,this.param)
-				// return
 				this.$api.updateApply(this.param).then(res => {
 					if (res.code == '200') {
-					if (id == 7) {
+						if (id == 7) {
 							uni.showToast({
 								title: this.$t('index.RejectSuccess'),
 								duration: 2000
@@ -430,9 +429,11 @@
 								duration: 2000
 							});
 						}
-
-						this.pageNum = 1
-						this.getApproveList()
+						let that = this
+						setTimeout(function() {
+							that.pageNum = 1
+							that.getApproveList()
+						}, 2000)
 					}
 				})
 			},
@@ -460,7 +461,7 @@
 								val.isOpen = true
 								val.selecte = false
 								val.list.forEach(va => {
-									va.approvedQuantity = 1
+									va.approvedQuantity = va.applyQuantity
 								})
 							})
 						})
@@ -516,29 +517,49 @@
 				}
 			},
 			onChange(val, index, type) {
-				if (val.selecte) {
-					this.approveList[index].selecte = false
-					this.approveList[index].list.forEach(item1 => {
-						item1.selecte = false
-						if (item1.list) {
-							item1.list.forEach((item2, i) => {
-								item2.selecte = false
-								this.selectedList = this.selectedList.filter(val => val.selecte != false)
-							})
-						}
-					})
+				if (type == 1) {
+					if (val.selecte) {
+						this.approveList[index].selecte = false
+						this.approveList[index].list.forEach(item1 => {
+							item1.selecte = false
+							if (item1.list) {
+								item1.list.forEach((item2, i) => {
+									item2.selecte = false
+									this.selectedList = this.selectedList.filter(val => val.selecte !=
+										false)
+								})
+							}
+						})
+					} else {
+						this.approveList[index].selecte = true
+						this.approveList[index].list.forEach(item1 => {
+							item1.selecte = true
+							if (item1.list) {
+								item1.list.forEach(item2 => {
+									item2.selecte = true
+									this.selectedList.push(item2)
+								})
+							}
+						})
+					}
 				} else {
-					this.approveList[index].selecte = true
-					this.approveList[index].list.forEach(item1 => {
-						item1.selecte = true
-						if (item1.list) {
-							item1.list.forEach(item2 => {
-								item2.selecte = true
-								this.selectedList.push(item2)
-							})
-						}
-					})
+					if (val.selecte) {
+						val.selecte = false
+						this.approveList[index].selecte = false
+						val.list.forEach(item1 => {
+							item1.selecte = false
+							this.selectedList = this.selectedList.filter(val => val.selecte != false)
+						})
+					} else {
+						val.selecte = true
+						this.approveList[index].selecte = true
+						val.list.forEach(item1 => {
+							item1.selecte = true
+							this.selectedList.push(item1)
+						})
+					}
 				}
+
 			},
 			onChangeAll() {
 				this.selectedList.length = this.total

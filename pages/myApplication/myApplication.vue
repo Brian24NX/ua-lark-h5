@@ -12,18 +12,18 @@
 				<view class="info-header">
 					<view class="info-header-top">
 						<van-checkbox use-icon-slot :value="item.choose" custom-class="vancheck"
-							@change="onChange(item,index)" v-if="showCheckbox">
+							@change="onChange(item,index)" v-if="item.itemStatus ==5">
 							<image class="checkbox" slot="icon" :src="item.choose ? activeIcon : inactiveIcon" />
 						</van-checkbox>
 						<text style="margin-left: 20rpx;">{{item.storeName}}</text>
-						<!-- <view class="tocar" @click="toCar(item)">
+						<!-- 	<view class="tocar" @click="toCar(item)">
 							{{this.$t('index.CopytoCart')}}
 						</view> -->
 						<image class="unfold" :style="item.open?'transform: rotate(180deg);':'transform: rotate(0deg);'"
 							src="../../static/unfold.png" mode="" @click="changeContent(item,index)">
 						</image>
 					</view>
-					<view class="info-header-bottom" >
+					<view class="info-header-bottom">
 						<view class="info-header-bottom-l">
 							<view>{{Quantity}}: {{item.totalQuantity}}</view>
 							<view>{{item.employeeName}}</view>
@@ -31,13 +31,13 @@
 						</view>
 						<view class="info-header-bottom-r">
 							<view>{{Total}}:{{item.totalPrice}}{{item.priceUnit}}</view>
-							<view>{{NORMSTARTTIMEfilter(item.applyTime)}}</view>
+							<view>{{item.applyTime}}</view>
 						</view>
 					</view>
 				</view>
 				<!-- 展开 -->
 				<view class="" v-show="item.open==true">
-					<material-item v-for="(val,i) in item.orderItemPos" :key="i" :dataDetail="val"></material-item>
+					<material-item v-for="(val,i) in item.orderItemPos" :key="i" :dataDetail="val" @selectOrder="selectOrder"></material-item>
 				</view>
 			</view>
 		</view>
@@ -175,7 +175,7 @@
 					}
 				},
 				forms: {
-					orderStatus:1,
+					orderStatus: 1,
 					materialCode: "",
 					storeName: "",
 					stm: "",
@@ -185,21 +185,25 @@
 				storeRole: uni.getStorageSync('user').storeRole
 			}
 		},
-		computed: {
-			showCheckbox() {
-				console.log(this.approveList)
-				this.approveList.forEach(item => {
-					if(item.orderItemPos){
-						item.orderItemPos.forEach(val => {
-							if (val.itemStatus == 5) {
-								return true
-							}
-						})
-					}
-					
-				})
-			}
-		},
+		// computed: {
+
+		// 	showCheckbox() {
+		// 		this.approveList.forEach(item => {
+		// 			if(item.orderItemPos){
+
+		// 				item.orderItemPos.forEach(val => {
+		// 						console.log('99999999999')
+		// 					if (val.itemStatus == 5) {
+		// 						console.log('99999999999')
+		// 						item.itemStatus == 5
+		// 						// return true
+		// 					}
+		// 				})
+		// 			}
+
+		// 		})
+		// 	}
+		// },
 		onLoad() {
 			uni.setNavigationBarTitle({
 				title: this.$t("index.my-application")
@@ -226,16 +230,38 @@
 			this.getApproveList()
 		},
 		methods: {
-			toCar(item){
-				this.$store.commit('copytocart',item.orderItemPos)
-				let store={}
-				this.dataList[0].list.forEach(val=>{
-					if(val.larkDeptId == item.storeLarkDeptId){
+			selectOrder(obj) {
+				// this.selectedList
+				this.approveList.forEach(item => {
+					if (item.orderItemPos) {
+						item.orderItemPos.forEach(item2 => {
+							if (item2.orderItemId == obj.orderItemId && obj.selecte) {
+								item2.selecte = true
+							} else if (item2.orderItemId == obj.orderItemId && !obj
+								.selecte) {
+								item2.selecte = false
+							}
+	
+						})
+					}
+				})
+				if (obj.selecte) {
+					this.selectedList.push(obj)
+				} else {
+					let index = this.selectedList.findIndex(val => val.orderItemId == obj.orderItemId)
+					this.selectedList.splice(index, 1)
+				}
+			},
+			toCar(item) {
+				this.$store.commit('copytocart', item.orderItemPos)
+				let store = {}
+				this.dataList[0].list.forEach(val => {
+					if (val.larkDeptId == item.storeLarkDeptId) {
 						store = val
 					}
 				})
 				uni.navigateTo({
-					url:"/pages/selectMaterial/selectMaterial?store="+JSON.stringify(store)
+					url: "/pages/selectMaterial/selectMaterial?store=" + JSON.stringify(store) + '&page=store'
 				})
 			},
 			searchStatus(val) {
@@ -312,23 +338,6 @@
 					}
 				})
 			},
-			// controlsAll(id) {
-			// 	if (id == 3) {
-			// 		this.tip = this.$t('index.approve-all')
-			// 	} else if (id == 7) {
-			// 		this.tip = this.$t('index.reject-all')
-			// 	}
-			// 	this.param.id = id
-			// 	if (uni.getStorageSync('platform') == "mp-lark") {
-			// 		this.confirmDialog = true
-			// 	} else {
-			// 		this.submit()
-			// 	}
-
-			// },
-			// submit() {
-			// 	this.changeStatus(this.param.id, 1)
-			// },
 			dialogHide() {
 				this.confirmDialog = false
 			},
@@ -338,21 +347,38 @@
 				this.param.params.status = type ? 1 : 0
 				this.selectedList.forEach(item => {
 					if (item.orderItemPos) {
-						this.param.params.orderItemPos = this.param.params.orderItemPos.concat(item.orderItemPos)
+					item.orderItemPos.forEach(val=>{
+						if(val.itemStatus==5){
+							this.param.params.orderItemPos = this.param.params.orderItemPos.push(item.orderItemPos)
+						}
+					})
+						
 					}
 				})
-				this.$api.updateApply(this.param).then(res => {
+				console.log(new Set(this.selectedList),
+				this.param)
+				return
+				this.$api.updateApply1(this.param).then(res => {
 					if (res.code == '200') {
 						this.selectedList = []
-						this.pageNum = 1
-						this.getApproveList()
+						uni.showToast({
+							title: this.$t('index.ReceiveSuccessful'),
+							duration: 2000
+						});
+						let that = this
+						setTimeout(function() {
+							that.pageNum = 1
+							that.getApproveList()
+						}, 2000)
+
 					}
 				})
 			},
 			NORMSTARTTIMEfilter(val) {
-				const jsonDate = new Date(val).toJSON()
-				return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
-					/\.[\d]{3}Z/, '')
+				// const jsonDate = new Date(val).toJSON()
+				// return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
+				// 	/\.[\d]{3}Z/, '')
+
 			},
 			getApproveList() {
 				let data = {
@@ -369,14 +395,21 @@
 						res.data.data.forEach(item => {
 							item.open = true,
 								item.choose = false
+							if (item.orderItemPos) {
+								item.orderItemPos.forEach(val => {
+									if (val.itemStatus == 5) {
+										item.itemStatus = 5
+									}
+								})
+							}
 						})
 						this.total = res.data.total
+
 						if (this.pageNum == 1) {
 							this.approveList = res.data.data
 						} else {
 							this.approveList = [...this.approveList, ...res.data.data]
 						}
-						console.log(this.approveList)
 					}
 
 				})
@@ -389,14 +422,20 @@
 					this.$set(val, 'choose', true)
 				}
 				this.$set(this.approveList, index, val)
-				this.approveList.forEach((item, index) => {
-					if (item.choose) {
+				val.orderItemPos.forEach(item=>{
+					if(item.itemStatus==5){
+						item.selecte=true
 						this.selectedList.push(item)
-					} else {
-						this.selectedList.splice(index, 1)
 					}
 				})
-				this.selectedList = Array.from(new Set(this.selectedList))
+				// this.approveList.forEach((item, index) => {
+				// 	if (item.choose) {
+				// 		this.selectedList.push(item)
+				// 	} else {
+				// 		this.selectedList.splice(index, 1)
+				// 	}
+				// })
+				// this.selectedList = Array.from(new Set(this.selectedList))
 			},
 			onChangeAll() {
 				this.selectedList.length = this.total
@@ -476,15 +515,16 @@
 						display: flex;
 						align-items: center;
 						position: relative;
-.tocar{
-	font-size: 24rpx;
-	color: #40A1FF;
-	line-height: 32rpx;
-	padding: 4px 12rpx;
-border-radius: 20rpx;
-border: 1rpx solid #40A1FF;
-margin-left: 12rpx;
-}
+
+						.tocar {
+							font-size: 24rpx;
+							color: #40A1FF;
+							line-height: 32rpx;
+							padding: 4px 12rpx;
+							border-radius: 20rpx;
+							border: 1rpx solid #40A1FF;
+							margin-left: 12rpx;
+						}
 
 						.unfold {
 							width: 58rpx;

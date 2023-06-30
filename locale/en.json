@@ -84,5 +84,12 @@
 	"index.Order":"Order",
 	"index.TotalCost":"Total Cost",
 	"index.CopytoCart":"Copy to Cart",
-	"index.dispatchAll": "，Are you sure to Dispath All?"
+	"index.dispatchAll": "Are you sure to Dispath All?",
+	"index.cost":"Cost",
+	"index.AppliedQuantity":"Applied Quantity",
+	"index.ReceiveSuccessful":"Receive Successful",
+	"index.approvedQuantity":"Approved Quantity",
+	"index.TotalPrice":"Total Price",
+	"index.reference":"Reference",
+	"index.pleaseSelect":"Please select store first"
 }

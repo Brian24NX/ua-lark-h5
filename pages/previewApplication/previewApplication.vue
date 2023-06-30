@@ -115,7 +115,6 @@
 			})
 		},
 		methods: {
-		
 			openOrClose() {
 				this.status = this.status == 1 ? 0 : 1;
 				this.btnTxt = this.status == 1 ? this.$t('index.pack-up') : this.$t('index.view-more');

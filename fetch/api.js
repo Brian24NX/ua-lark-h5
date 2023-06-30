@@ -121,7 +121,9 @@ export default {
 	getOpsMyApproval(params) {
 		return fetchPost(`/ua-lark-admin-api/admin/ops/get`,params,true)
 	},
-	// 获取我的审批列表
+	updateApply1(param) {
+		return fetchPost(`/ua-material-api/app/apply/update1/${param.id}`,param.params,true)
+	},
 	updateApply(param) {
 		return fetchPost(`/ua-material-api/app/apply/update/${param.id}`,param.params,true)
 	},

@@ -22,15 +22,15 @@
 			</view>
 			<view class="info_r_c">
 				<view class="desc">
-					{{dataDetail.supplierName}}
+					{{storeRole==10?dataDetail.applyEmployeeName:dataDetail.supplierName}}
 				</view>
 				<view style="flex-direction: column;align-items: end;" v-if="storeRole==10">
 					<view>
 						<text class="bold"
-							style="color: #C54646;">{{numMulti(dataDetail.approvedQuantity || 1, dataDetail.retailPrice)}}</text>
+							style="color: #C54646;">{{numMulti(Number(dataDetail.approvedQuantity) || 1, dataDetail.retailPrice)}}</text>
 						<text style="font-size: 16rpx; margin-left: 2rpx;">{{dataDetail.priceUnit}}</text>
 					</view>
-					<text class="cost">Cost {{numMulti(dataDetail.approvedQuantity || 1, dataDetail.costPrice)}}CNY</text>
+					<text class="cost">{{cost}} {{numMulti(Number(dataDetail.approvedQuantity) || 1, dataDetail.costPrice)}}CNY</text>
 				</view>
 
 			</view>
@@ -79,7 +79,8 @@
 				inactiveIcon: '../../static/checkbox.png',
 				dialog: false,
 				focus: false,
-				storeRole: uni.getStorageSync('user').storeRole
+				storeRole: uni.getStorageSync('user').storeRole,
+				cost:this.$t('index.cost')
 			}
 		},
 
@@ -87,19 +88,12 @@
 			handleInput(val) {
 				this.focus = false
 				if (Number(val) >= 999) {
-					console.log(val)
-					// this.$set(this.dataDetail, 'applyQuantity', 999)
 					this.$emit("defaultValue", this.dataDetail, 999)
 				} else if (Number(val) <= 0) {
-					console.log(val)
 					this.$emit("defaultValue", this.dataDetail, 1)
-
-					// this.$set(this.dataDetail, 'applyQuantity', 1)
 				} else {
 					this.$emit("defaultValue", this.dataDetail, Number(val))
 				}
-
-				// this.$emit("defaultValue", this.dataDetail)
 			},
 			// 乘法运算，避免精度丢失
 			numMulti(num1, num2) {

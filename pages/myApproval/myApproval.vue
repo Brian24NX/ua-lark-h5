@@ -26,7 +26,7 @@
 						</view>
 						<view class="info-header-bottom-r">
 							<view>{{Total}}:{{item.totalPrice}}{{item.priceUnit}}</view>
-							<view>{{NORMSTARTTIMEfilter(item.applyTime)}}</view>
+							<view>{{item.applyTime}}</view>
 						</view>
 					</view>
 				</view>
@@ -257,8 +257,12 @@
 								duration: 2000
 							});
 						}
-						this.pageNum = 1
-						this.getApproveList()
+						let that = this
+						setTimeout(function(){
+							that.pageNum = 1
+							that.getApproveList()
+						},2000)
+					
 					}
 				})
 			},

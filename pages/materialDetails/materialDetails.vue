@@ -2,32 +2,46 @@
 	<view class="container">
 		<view class="material">
 			<view class="titles">
-				Material
+				{{$t('index.material')}}
 			</view>
-			<van-cell title="Applied Quantity" value="1" title-class="title" value-class="content"
+			<view class="info">
+				<image :src="materialDetail.imageUrl" mode=""></image>
+				<view class="info_r">
+					<text class="name">{{materialDetail.materialName}}</text>
+					<view class="info_r_b">
+						<view class="oriSkuCode">{{materialDetail.oriSkuCode}}</view>
+						<view style="text-align: right;;"><text style="font-weight: bold;" class="price">{{materialDetail.retailPrice}}</text> <text class="unit">{{materialDetail.priceUnit}}</text>
+						  <view class="cost">
+						  	{{$t('index.cost')}}  {{materialDetail.costPrice}}{{materialDetail.priceUnit}}
+						  </view>
+						</view>
+					</view>
+				</view>
+			</view>
+			<van-cell :title="$t('index.AppliedQuantity')" :value="materialDetail.applyQuantity" title-class="title" value-class="content"
 				custom-class="bgColor" />
-			<van-cell title="Approved Quantity" value="1" title-class="title" value-class="content"
+			<van-cell v-if="materialDetail.approvedQuantity" :title="$t('index.approvedQuantity')" :value="materialDetail.approvedQuantity" title-class="title" value-class="content"
 				custom-class="bgColor" />
-			<van-cell title="Category" value="物料类/日常店铺物料" title-class="title" value-class="content"
+			<van-cell :title="$t('index.Category')" :value="materialDetail.categoryName" title-class="title" value-class="content"
 				custom-class="bgColor" />
-			<van-cell title="Specification" value="直径13mm｜高10mm｜100个/包" title-class="title" value-class="content"
+			<van-cell :title="$t('index.Specification')" :value="materialDetail.specifications" title-class="title" value-class="content"
 				custom-class="bgColor" />
-			<van-cell title="Total Price" value="64.00CNY" title-class="title" value-class="content"
+			<van-cell :title="$t('index.TotalPrice')" :value="`${(materialDetail.retailPrice*materialDetail.applyQuantity).toFixed(2)}${materialDetail.priceUnit}`" title-class="title" value-class="content"
 				custom-class="bgColor" />
-			<van-cell title="Total Cost" value="70.00CNY" title-class="title" value-class="content"
+			<van-cell :title="$t('index.TotalCost')" :value="`${(materialDetail.costPrice*materialDetail.applyQuantity).toFixed(2)}${materialDetail.priceUnit}`" title-class="title" value-class="content"
 				custom-class="bgColor" />
-			<van-cell title="Comment" label="Expect to be delivered as soon as possible" title-class="title"
+			<van-cell :title="$t('index.comment')" :value="materialDetail.remark" title-class="title"
 				value-class="content" custom-class="bgColor borderNone" />
 		</view>
 		<view class="reference">
 			<view class="titles">
-				Reference
+				{{$t('index.reference')}}
 			</view>
-			<van-cell title="Applied Quantity" value="1" title-class="title" value-class="content"
+			<van-cell :title="$t('index.store')" :value="materialDetail.storeName" title-class="title" value-class="content"
 				custom-class="bgColor" />
-			<van-cell title="Approved Quantity" value="1" title-class="title" value-class="content"
+			<van-cell title="PO" :value="materialDetail.purchaseOrderNo" title-class="title" value-class="content"
 				custom-class="bgColor" />
-			<van-cell title="Category" value="物料类/日常店铺物料" title-class="title" value-class="content"
+			<van-cell title="Tracking Number" value="物料类/日常店铺物料" title-class="title" value-class="content"
 				custom-class="bgColor borderNone" />
 		</view>
 		<view class="procedure">
@@ -80,15 +94,19 @@
 					role: "Store Manager",
 					status: "Applied",
 					time: '2023.03.01 10:30'
-				}]
+				}],
+				materialDetail:{}
 			}
 		},
 
-		onLoad() {
+		onLoad(option) {
+			this.materialDetail = JSON.parse(option.detail)
+			console.log(JSON.parse(option.detail))
 			uni.setNavigationBarTitle({
 				title: this.$t("index.itemDetails")
 			});
-console.log(this.$store.state.carShop[0])
+// 			this.materialDetail = this.$store.state.carShop[0]
+// console.log(this.$store.state.carShop[0])
 		},
 		mounted() {
 
@@ -104,7 +122,52 @@ console.log(this.$store.state.carShop[0])
 <style lang="scss">
 	.container {
 		margin: 0 30rpx;
-
+.info{
+	display: flex;
+	padding:20rpx;
+	border-bottom: 2rpx solid #DDDDDD;;
+	image{
+		width: 140rpx;
+		height: 140rpx;
+		background: #F0F0F0;
+		border-radius: 16rpx;
+	}
+	.info_r{
+		    flex: 1 auto;
+			margin-left: 24rpx;
+		.name{
+			font-size: 24rpx;
+			color: #111111;
+			line-height: 32rpx;
+		}
+		.info_r_b{
+			display: flex;
+			    justify-content: space-between;
+			    align-items: end;
+		}
+		.oriSkuCode{
+			font-size: 24rpx;
+		font-weight: bold;
+			color: #111111;
+			line-height: 32rpx;
+		}
+		.price{
+			font-size: 24rpx;
+			color: #C54646;
+			line-height: 32rpx;
+		}
+		.unit{
+			font-size: 16rpx;
+			color: #111111;
+			line-height: 22rpx;
+		}
+		.cost{
+			font-size: 20rpx;
+			color: #006EFF;
+			line-height: 28rpx;
+		}
+	}
+}
 		.material,
 		.reference,
 		.procedure {
