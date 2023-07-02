@@ -2,12 +2,12 @@
 <template>
 	<view class="info">
 		<!-- v-if="dataDetail.itemStatus ==5" -->
-		<van-checkbox use-icon-slot :value="dataDetail.selecte" custom-class="vancheck" @change.native="onChange(dataDetail)"
-			v-if="dataDetail.itemStatus ==5">
-			<image class="checkbox" slot="icon" :src="dataDetail.selecte ? activeIcon : inactiveIcon" />
+		<van-checkbox use-icon-slot :value="dataDetail.choose" custom-class="vancheck"
+			@change.native="onChange(dataDetail)" v-if="dataDetail.itemStatus ==5">
+			<image class="checkbox" slot="icon" :src="dataDetail.choose ? activeIcon : inactiveIcon" />
 		</van-checkbox>
-		<image class="imageUrl" :src="dataDetail.imageUrl" mode=""  @click="toDetail"></image>
-		<view class="info_r"  @click="toDetail">
+		<image class="imageUrl" :src="dataDetail.imageUrl" mode="" @click="toDetail"></image>
+		<view class="info_r" @click="toDetail">
 			<view class="info_r_t">
 				<view class="title">
 					{{dataDetail.materialName}}
@@ -27,76 +27,75 @@
 				<view class="bold">
 					x{{dataDetail.applyQuantity}}
 				</view>
-			<view>
-				<text class="bold"
-					style="color: #C54646;">{{getStatus}}</text>
-				
-			</view>
+				<view>
+					<text class="bold" style="color: #C54646;">{{getStatus}}</text>
+
+				</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-		import vanCheckbox from "@/wxcomponents/@vant/weapp/checkbox/index"
+	import vanCheckbox from "@/wxcomponents/@vant/weapp/checkbox/index"
 	export default {
 		components: {
 			vanCheckbox
 		},
 		props: {
-			dataDetail: {}
+			dataDetail: {},
+			parentIndex: 0
 		},
-		computed:{
+		computed: {
 			// 2. Waiting for Approval - 待审核 3. Approved - 待派单 - 区经已审核 4. Dispatched - 待发货 - 已派单  5. Delivered - 待收货 - 已发货 6. Received - 已收货（已完成） 7. Rejected - 已驳回
-			getStatus(){
-				switch(this.dataDetail.itemStatus){
+			getStatus() {
+				switch (this.dataDetail.itemStatus) {
 					case 2:
-					return this.$t('index.WaitingApproval')
-					break;
+						return this.$t('index.WaitingApproval')
+						break;
 					case 3:
-					return this.$t('index.Approved')
-					break;
+						return this.$t('index.Approved')
+						break;
 					case 4:
-					return this.$t('index.Dispatched')
-					break;
+						return this.$t('index.Dispatched')
+						break;
 					case 5:
-					return this.$t('index.delivered')
-					break;
+						return this.$t('index.delivered')
+						break;
 					case 6:
-					return this.$t('index.received')
-					break;
+						return this.$t('index.received')
+						break;
 					case 7:
-					return this.$t('index.rejected')
-					break;
+						return this.$t('index.rejected')
+						break;
 				}
 			}
 		},
 		data() {
 			return {
 				dialog: false,
-				storeRole:uni.getStorageSync('user').storeRole,
+				storeRole: uni.getStorageSync('user').storeRole,
 				activeIcon: '../../static/checkbox-active.png',
 				inactiveIcon: '../../static/checkbox.png',
 			}
 		},
-		onLoad() {
-		},
+		onLoad() {},
 		methods: {
 			onChange(val) {
-				if (val.selecte) {
-					this.$set(val, 'selecte', false)
+				if (val.choose) {
+					this.$set(val, 'choose', false)
 				} else {
-					this.$set(val, 'selecte', true)
+					this.$set(val, 'choose', true)
 				}
 				console.log(val)
-				this.$emit('selectOrder', val)
+				this.$emit('selectOrder', val, this.parentIndex)
 			},
 			hideDialog(val) {
 				this.dialog = val
 			},
-			toDetail(){
+			toDetail() {
 				uni.navigateTo({
-					url:"/pages/materialDetails/materialDetails?detail="+JSON.stringify(this.dataDetail)
+					url: "/pages/materialDetails/materialDetails?detail=" + JSON.stringify(this.dataDetail)
 				})
 			}
 		}
@@ -107,20 +106,22 @@
 	.vancheck {
 		width: 32rpx;
 		height: 32rpx;
-		position: relative;
+		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
-		margin-right: 20rpx;
+		left: 0;
 	}
-	
+
 	.checkbox {
 		width: 32rpx;
 		height: 32rpx;
 	}
+
 	.info {
 		display: flex;
-		padding: 20rpx 0;
+		padding: 20rpx 0 20rpx 52rpx;
 		border-top: 2rpx solid #dddddd;
+		position: relative;
 
 		.imageUrl {
 			width: 176rpx;

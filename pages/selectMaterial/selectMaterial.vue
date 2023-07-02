@@ -132,6 +132,10 @@
 			if (option.page) {
 				this.page = option.page
 			}
+			
+		},
+		onShow() {
+			this.pageNum=1
 			this.getAllMaterial()
 		},
 		computed: {

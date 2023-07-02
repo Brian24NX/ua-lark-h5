@@ -135,7 +135,7 @@
 					title: '加载中'
 				});
 				let that = this
-				if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
+				if (uni.getSystemInfoSync().uniPlatform != "mp-lark") {
 					uni.login({
 						success(res) {
 							that.$api

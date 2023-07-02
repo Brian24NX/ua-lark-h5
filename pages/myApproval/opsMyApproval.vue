@@ -525,8 +525,8 @@
 							if (item1.list) {
 								item1.list.forEach((item2, i) => {
 									item2.selecte = false
-									this.selectedList = this.selectedList.filter(val => val.selecte !=
-										false)
+									let eq = this.selectedList.findIndex(va => va.categoryId == item1.categoryId)
+						        	this.selectedList.splice(eq, 1)
 								})
 							}
 						})
@@ -548,7 +548,8 @@
 						this.approveList[index].selecte = false
 						val.list.forEach(item1 => {
 							item1.selecte = false
-							this.selectedList = this.selectedList.filter(val => val.selecte != false)
+							let eq = this.selectedList.findIndex(va => va.categoryId == item1.categoryId)
+							this.selectedList.splice(eq, 1)
 						})
 					} else {
 						val.selecte = true
@@ -559,7 +560,11 @@
 						})
 					}
 				}
-
+		          let obj = {}
+					this.selectedList = this.selectedList.reduce((preVal, curVal) => {
+						obj[curVal.categoryId] ? "" : obj[curVal.categoryId] = preVal.push(curVal)
+						return preVal
+					}, [])
 			},
 			onChangeAll() {
 				this.selectedList.length = this.total

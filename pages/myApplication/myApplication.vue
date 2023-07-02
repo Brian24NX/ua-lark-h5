@@ -15,7 +15,7 @@
 							@change="onChange(item,index)" v-if="item.itemStatus ==5">
 							<image class="checkbox" slot="icon" :src="item.choose ? activeIcon : inactiveIcon" />
 						</van-checkbox>
-						<text style="margin-left: 20rpx;">{{item.storeName}}</text>
+						<text>{{item.storeName}}</text>
 						<!-- 	<view class="tocar" @click="toCar(item)">
 							{{this.$t('index.CopytoCart')}}
 						</view> -->
@@ -37,7 +37,8 @@
 				</view>
 				<!-- 展开 -->
 				<view class="" v-show="item.open==true">
-					<material-item v-for="(val,i) in item.orderItemPos" :key="i" :dataDetail="val" @selectOrder="selectOrder"></material-item>
+					<material-item v-for="(val,i) in item.orderItemPos" :key="i" :dataDetail="val" :parentIndex="index"
+						@selectOrder="selectOrder(arguments)"></material-item>
 				</view>
 			</view>
 		</view>
@@ -185,25 +186,7 @@
 				storeRole: uni.getStorageSync('user').storeRole
 			}
 		},
-		// computed: {
 
-		// 	showCheckbox() {
-		// 		this.approveList.forEach(item => {
-		// 			if(item.orderItemPos){
-
-		// 				item.orderItemPos.forEach(val => {
-		// 						console.log('99999999999')
-		// 					if (val.itemStatus == 5) {
-		// 						console.log('99999999999')
-		// 						item.itemStatus == 5
-		// 						// return true
-		// 					}
-		// 				})
-		// 			}
-
-		// 		})
-		// 	}
-		// },
 		onLoad() {
 			uni.setNavigationBarTitle({
 				title: this.$t("index.my-application")
@@ -231,24 +214,23 @@
 		},
 		methods: {
 			selectOrder(obj) {
-				// this.selectedList
 				this.approveList.forEach(item => {
 					if (item.orderItemPos) {
 						item.orderItemPos.forEach(item2 => {
-							if (item2.orderItemId == obj.orderItemId && obj.selecte) {
-								item2.selecte = true
-							} else if (item2.orderItemId == obj.orderItemId && !obj
-								.selecte) {
-								item2.selecte = false
+							if (item2.orderItemId == obj[0].orderItemId && obj[0].choose) {
+								item2.choose = true
+							} else if (item2.orderItemId == obj[0].orderItemId && !obj[0]
+								.choose) {
+								item2.choose = false
 							}
-	
+
 						})
 					}
 				})
-				if (obj.selecte) {
-					this.selectedList.push(obj)
+				if (obj[0].choose) {
+					this.selectedList.push(obj[0])
 				} else {
-					let index = this.selectedList.findIndex(val => val.orderItemId == obj.orderItemId)
+					let index = this.selectedList.findIndex(val => val.orderItemId == obj[0].orderItemId)
 					this.selectedList.splice(index, 1)
 				}
 			},
@@ -345,19 +327,7 @@
 				if (!type && this.selectedList.length <= 0) return;
 				this.param.id = id
 				this.param.params.status = type ? 1 : 0
-				this.selectedList.forEach(item => {
-					if (item.orderItemPos) {
-					item.orderItemPos.forEach(val=>{
-						if(val.itemStatus==5){
-							this.param.params.orderItemPos = this.param.params.orderItemPos.push(item.orderItemPos)
-						}
-					})
-						
-					}
-				})
-				console.log(new Set(this.selectedList),
-				this.param)
-				return
+				this.param.params.orderItemPos = type ? [] : this.selectedList
 				this.$api.updateApply1(this.param).then(res => {
 					if (res.code == '200') {
 						this.selectedList = []
@@ -398,6 +368,7 @@
 							if (item.orderItemPos) {
 								item.orderItemPos.forEach(val => {
 									if (val.itemStatus == 5) {
+										val.choose = false
 										item.itemStatus = 5
 									}
 								})
@@ -415,27 +386,33 @@
 				})
 			},
 			onChange(val, index) {
-				this.checked = false
 				if (val.choose) {
-					this.$set(val, 'choose', false)
+					val.choose = false
+					this.approveList[index].choose = false
+					val.orderItemPos.forEach(item1 => {
+						item1.choose = false
+						if (item1.itemStatus == 5) {
+							let i = this.selectedList.findIndex(va => va.categoryId == item1.categoryId)
+							this.selectedList.splice(i, 1)
+						}
+					})
+					console.log(this.selectedList)
 				} else {
-					this.$set(val, 'choose', true)
+					val.choose = true
+					this.approveList[index].choose = true
+					val.orderItemPos.forEach(item1 => {
+						if (item1.itemStatus == 5) {
+							item1.choose = true
+							this.selectedList.push(item1)
+						}
+
+					})
+					let obj = {}
+					this.selectedList = this.selectedList.reduce((preVal, curVal) => {
+						obj[curVal.categoryId] ? "" : obj[curVal.categoryId] = preVal.push(curVal)
+						return preVal
+					}, [])
 				}
-				this.$set(this.approveList, index, val)
-				val.orderItemPos.forEach(item=>{
-					if(item.itemStatus==5){
-						item.selecte=true
-						this.selectedList.push(item)
-					}
-				})
-				// this.approveList.forEach((item, index) => {
-				// 	if (item.choose) {
-				// 		this.selectedList.push(item)
-				// 	} else {
-				// 		this.selectedList.splice(index, 1)
-				// 	}
-				// })
-				// this.selectedList = Array.from(new Set(this.selectedList))
 			},
 			onChangeAll() {
 				this.selectedList.length = this.total
@@ -485,7 +462,10 @@
 	.vancheck {
 		width: 32rpx;
 		height: 32rpx;
-		position: relative;
+		position: absolute;
+		left: 0;
+		top: 50%;
+		transform: translateY(-50%);
 	}
 
 	.checkbox {
@@ -515,6 +495,7 @@
 						display: flex;
 						align-items: center;
 						position: relative;
+						padding-left: 52rpx;
 
 						.tocar {
 							font-size: 24rpx;
@@ -543,7 +524,7 @@
 						color: #999999;
 						line-height: 32rpx;
 						display: flex;
-						margin: 12rpx 0 0 20rpx;
+						margin: 12rpx 0 0 52rpx;
 						flex-direction: column;
 
 						.info-header-bottom-l,
