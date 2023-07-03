@@ -184,15 +184,15 @@
 				this.getApproveList()
 			},
 			getRecentMonth(n) {
-				let month = moment(new Date()).subtract(n, 'months').format('YYYY-MM-DD HH:mm:ss');
-				let datetime = moment().format('YYYY-MM-DD HH:mm:ss') //24小时制 HH:mm:ss
+				let month = moment(new Date()).subtract(n, 'months').format('YYYY-MM-DD');
+				let datetime = moment().format('YYYY-MM-DD') //24小时制 HH:mm:ss
 				this.forms.stm = month
 				this.forms.etm = datetime
 			},
 			// 近N天 -Moment.js
 			getRecentDay(n) {
-				let day = moment(new Date()).subtract(n, 'days').format('YYYY-MM-DD HH:mm:ss');
-				let datetime = moment().format('YYYY-MM-DD HH:mm:ss') //24小时制
+				let day = moment(new Date()).subtract(n, 'days').format('YYYY-MM-DD');
+				let datetime = moment().format('YYYY-MM-DD') //24小时制
 				this.forms.stm = day
 				this.forms.etm = datetime
 			},
@@ -266,11 +266,11 @@
 					}
 				})
 			},
-			NORMSTARTTIMEfilter(val) {
-				const jsonDate = new Date(val).toJSON()
-				return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
-					/\.[\d]{3}Z/, '')
-			},
+			// NORMSTARTTIMEfilter(val) {
+			// 	const jsonDate = new Date(val).toJSON()
+			// 	return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
+			// 		/\.[\d]{3}Z/, '')
+			// },
 			getApproveList() {
 				let data = {
 					pageNum: this.pageNum,
@@ -455,61 +455,7 @@
 		z-index: 2;
 	}
 
-	.operate-all-active {
-		animation: enter-x-right 0.4s ease-in-out 0.3s;
-		animation-fill-mode: forwards;
-
-	}
-
-	@keyframes enter-x-right {
-		to {
-			width: 220rpx;
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	.operate {
-		// width: -webkit-fill-available;
-		height: 100rpx;
-		position: fixed;
-		bottom: 190rpx;
-		display: flex;
-		align-items: center;
-		justify-content: flex-end;
-		margin-right: 30rpx;
-		right: 0;
-		z-index: 22;
-
-		.operate-all {
-			width: 0;
-			height: 92rpx;
-			border-radius: 92rpx;
-			border: 2rpx solid #111111;
-			background: #ffffff;
-			font-size: 32rpx;
-			color: #111111;
-			font-family: MicrosoftYaHeiSemibold;
-			transform: translateX(50px);
-			opacity: 0;
-		}
-
-		.operate-all::after {
-			content: ' ';
-		}
-
-		.batch {
-			width: 100rpx;
-			height: 100rpx;
-			border-radius: 50%;
-			background: #FFFFFF;
-			border: 2rpx solid #111111;
-			font-size: 32rpx;
-			font-family: MicrosoftYaHeiSemibold;
-			color: #111111;
-			z-index: 9;
-		}
-	}
+	
 
 	.footer {
 		width: -webkit-fill-available;
@@ -537,7 +483,8 @@
 			display: flex;
 
 			view {
-				width: 220rpx;
+				// width: 220rpx;
+				min-width: 200rpx;
 				height: 80rpx;
 				background: #FFFFFF;
 				border-radius: 45rpx;
@@ -548,6 +495,7 @@
 				font-weight: bold;
 				color: #111111;
 				line-height: 42rpx;
+				padding: 0 22rpx;
 			}
 
 			image.reject {

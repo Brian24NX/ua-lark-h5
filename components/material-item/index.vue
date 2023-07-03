@@ -47,7 +47,7 @@
 			</view>
 			<view class="info_r_b" v-if="storeRole==10">
 				<view class="">
-					{{NORMSTARTTIMEfilter(dataDetail.applyTime)}}
+					{{dataDetail.applyTime}}
 				</view>
 				<view class="remark bold" v-if="dataDetail.remark" @tap.native="dialog=true">
 					{{this.$t('index.comment')}}
@@ -115,17 +115,14 @@
 				}
 				this.$emit('selectOrder', val)
 			},
-			NORMSTARTTIMEfilter(val) {
-				const jsonDate = new Date(val).toJSON()
-				return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
-					/\.[\d]{3}Z/, '')
-			},
+			// NORMSTARTTIMEfilter(val) {
+			// 	const jsonDate = new Date(val).toJSON()
+			// 	return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
+			// 		/\.[\d]{3}Z/, '')
+			// },
 			hideDialog(val) {
 				this.dialog = val
 			}
-			// searchClick(key){
-			// 	this.$emit('searchClick',key)
-			// }
 		}
 	}
 </script>

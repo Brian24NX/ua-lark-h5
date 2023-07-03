@@ -135,4 +135,8 @@ export default {
 	getCarList(param) {
 		return fetchPost(`/ua-material-api/app/material/searchMaterial/ids`,param,true)
 	},
+// 获取我的审批数量
+	getOpsMyApprovalNum(params) {
+		return fetchGet(`/ua-material-api/app/apply/getCount`,params)
+	},
 }

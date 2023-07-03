@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<view class="navbar" v-if="storeRole">
+		<view class="navbar" v-if="storeRole && barWith">
 			<view class="userInfo" :style="{'width':barWith+'px','height':barHeight +'px','padding-top':barTop +'px'}">
 				<view class="info" v-if="userInfo">
 					<image :src="userInfo.avatarUrl" mode=""></image>
@@ -35,14 +35,14 @@
 		<van-divider customStyle="background-color: #000;; border-color: #000; height:6px;margin:0;margin-top:10rpx"
 			v-if="storeRole" />
 		<!-- sa -->
-		<view class="" v-if="storeRole==3">
+		<view class="" v-show="storeRole==3">
 			<sa-nav-arrow :newApplication="newApplication" :img="addimg" :haveIcon="true" :myApplication="myApplication"
 				@tap.native="choosePage(3)"></sa-nav-arrow>
 			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
 			<sa-nav-arrow :haveIcon="false" :myApplication="myApplication" @tap.native="choosePage(2)"></sa-nav-arrow>
 		</view>
 		<!-- ops -->
-		<view class="" v-if="storeRole==10">
+		<view class="" v-show="storeRole==10">
 			<nav-arrow :newApplication="myApproval" :img="ticket" :haveIcon="true" :myApplication="myApplication"
 				@tap.native="choosePage(1)"></nav-arrow>
 			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
@@ -52,7 +52,7 @@
 			<nav-arrow :haveIcon="false" :myApplication="newApplication" @tap.native="choosePage(3)"></nav-arrow>
 		</view>
 		<!-- 区域经理 -->
-		<view class="" v-if="storeRole==1 ||storeRole==2">
+		<view class="" v-show="storeRole==1 ||storeRole==2">
 			<region-nav-arrow :newApplication="myApproval" :haveBtn="true" @tap.native="choosePage(1)"
 				:havepending="true"></region-nav-arrow>
 			<van-divider customStyle="background-color: #DEDEDE; border-color:#DEDEDE; height:1px;margin:0" />
@@ -83,7 +83,7 @@
 				addimg: '../../static/add.png',
 				ticket: "../../static/ticket.png",
 				edit: "../../static/edit.png",
-				userInfo: null,
+				userInfo: {},
 				system: {},
 				barHeight: 0,
 				barTop: 0,
@@ -116,16 +116,16 @@
 					}
 				})
 			}
-			if (uni.getStorageSync('token')) {
-				if (uni.getStorageSync('user') && uni.getStorageSync('user').storeRole) {
-					this.storeRole = uni.getStorageSync('user').storeRole
-					this.userInfo = uni.getStorageSync('user')
-					this.getStoreList(uni.getStorageSync('user'))
-				}
-			} else {
-				this.userLogins()
-			}
-			// this.userLogins()
+			// if (uni.getStorageSync('token')) {
+			// 	if (uni.getStorageSync('user') && uni.getStorageSync('user').storeRole) {
+			// 		this.storeRole = uni.getStorageSync('user').storeRole
+			// 		this.userInfo = uni.getStorageSync('user')
+			// 		this.getStoreList(uni.getStorageSync('user'))
+			// 	}
+			// } else {
+			// 	this.userLogins()
+			// }
+			this.userLogins()
 		},
 		methods: {
 			// 店长 刘亚娟  091267
@@ -135,7 +135,7 @@
 					title: '加载中'
 				});
 				let that = this
-				if (uni.getSystemInfoSync().uniPlatform != "mp-lark") {
+				if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
 					uni.login({
 						success(res) {
 							that.$api
@@ -185,7 +185,7 @@
 				} else {
 					that.$api
 						.userLogin2({
-							code: 'c2e2c441' //location.href.split('=')[1]
+							code:'c2e2c441'//location.href.split('=')[1] //c2e2c441
 						})
 						.then(resp => {
 							if (resp.code == '200') {
@@ -194,6 +194,7 @@
 								if ((resp.data.user && resp.data.user.systemRole) || (resp.data.user && resp.data.user
 										.storeRole)) {
 									that.storeRole = resp.data.user.systemRole || resp.data.user.storeRole
+									console.log('role',that.storeRole)
 									that.userInfo = resp.data.user
 									if (resp.data.user.systemRole) {
 										resp.data.user.storeRole = resp.data.user.systemRole

@@ -12,7 +12,7 @@
 				<view class="info-header">
 					<view class="info-header-top">
 						<van-checkbox use-icon-slot :value="item.choose" custom-class="vancheck"
-							@change="onChange(item,index)" v-if="item.itemStatus ==5">
+							@change="onChange(item,index)" v-if="item.itemStatus ==5 &&storeRole==3">
 							<image class="checkbox" slot="icon" :src="item.choose ? activeIcon : inactiveIcon" />
 						</van-checkbox>
 						<text>{{item.storeName}}</text>
@@ -42,21 +42,37 @@
 				</view>
 			</view>
 		</view>
+		<view class="operate" v-if="storeRole==3">
+		<!-- 	<view
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
+				@click="controlsAll(4)">
+				{{this.$t('index.Dispatch-All')}}
+			</view> -->
+			<view
+				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
+				@click="changeStatus(6,1)">
+				 {{this.$t('index.Receive')}}
+			</view>
+			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
+				Batch
+			</view>
+		</view>
 		<view class="footer" v-if="storeRole==3">
 			<view class="footer-l">
 				<text style="margin-top: 8rpx;" v-if="selectedList.length">Selected: {{selectedList.length}}</text>
 			</view>
 			<view class="footer-r">
-				<view style="margin-right: 40rpx;" :class="[selectedList.length<=0?'disabled':'']"
+				<view :class="[selectedList.length<=0?'disabled':'']"
 					@click="changeStatus(6)">
-					<image class="approve"
+				<!-- 	<image class="approve"
 						:src="selectedList.length<=0?'../../static/approve-sec.png':'../../static/approve.png'" mode="">
-					</image>{{this.$t('index.Receipt')}}
+					</image> -->
+					{{this.$t('index.Receipt')}}
 				</view>
-				<view @click="changeStatus(6,1)">
+				<!-- <view @click="changeStatus(6,1)">
 					<image class="reject" src="../../static/reject.png" mode="">
 					</image> {{this.$t('index.Receive')}}
-				</view>
+				</view> -->
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
@@ -275,15 +291,15 @@
 				this.getApproveList()
 			},
 			getRecentMonth(n) {
-				let month = moment(new Date()).subtract(n, 'months').format('YYYY-MM-DD HH:mm:ss');
-				let datetime = moment().format('YYYY-MM-DD HH:mm:ss') //24小时制 HH:mm:ss
+				let month = moment(new Date()).subtract(n, 'months').format('YYYY-MM-DD');
+				let datetime = moment().format('YYYY-MM-DD') //24小时制 HH:mm:ss
 				this.forms.stm = month
 				this.forms.etm = datetime
 			},
 			// 近N天 -Moment.js
 			getRecentDay(n) {
-				let day = moment(new Date()).subtract(n, 'days').format('YYYY-MM-DD HH:mm:ss');
-				let datetime = moment().format('YYYY-MM-DD HH:mm:ss') //24小时制
+				let day = moment(new Date()).subtract(n, 'days').format('YYYY-MM-DD');
+				let datetime = moment().format('YYYY-MM-DD') //24小时制
 				this.forms.stm = day
 				this.forms.etm = datetime
 			},
@@ -344,12 +360,12 @@
 					}
 				})
 			},
-			NORMSTARTTIMEfilter(val) {
+			// NORMSTARTTIMEfilter(val) {
 				// const jsonDate = new Date(val).toJSON()
 				// return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
 				// 	/\.[\d]{3}Z/, '')
 
-			},
+			// },
 			getApproveList() {
 				let data = {
 					pageNum: this.pageNum,
@@ -361,7 +377,6 @@
 				});
 				this.$api.getAllMyApproval(data).then(res => {
 					if (res.code == '200') {
-						uni.hideLoading();
 						res.data.data.forEach(item => {
 							item.open = true,
 								item.choose = false
@@ -383,6 +398,8 @@
 						}
 					}
 
+				}).finally(()=>{
+						uni.hideLoading();
 				})
 			},
 			onChange(val, index) {
@@ -392,7 +409,7 @@
 					val.orderItemPos.forEach(item1 => {
 						item1.choose = false
 						if (item1.itemStatus == 5) {
-							let i = this.selectedList.findIndex(va => va.categoryId == item1.categoryId)
+							let i = this.selectedList.findIndex(va => va.orderItemId == item1.orderItemId)
 							this.selectedList.splice(i, 1)
 						}
 					})
@@ -409,7 +426,7 @@
 					})
 					let obj = {}
 					this.selectedList = this.selectedList.reduce((preVal, curVal) => {
-						obj[curVal.categoryId] ? "" : obj[curVal.categoryId] = preVal.push(curVal)
+						obj[curVal.orderItemId] ? "" : obj[curVal.orderItemId] = preVal.push(curVal)
 						return preVal
 					}, [])
 				}
@@ -574,14 +591,12 @@
 
 	@keyframes enter-x-right {
 		to {
-			width: 220rpx;
 			opacity: 1;
 			transform: translateY(0);
 		}
 	}
 
 	.operate {
-		// width: -webkit-fill-available;
 		height: 100rpx;
 		position: fixed;
 		bottom: 190rpx;
@@ -592,7 +607,6 @@
 		right: 0;
 
 		.operate-all {
-			width: 0;
 			height: 92rpx;
 			border-radius: 92rpx;
 			border: 2rpx solid #111111;
@@ -602,6 +616,7 @@
 			font-family: MicrosoftYaHeiSemibold;
 			transform: translateX(50px);
 			opacity: 0;
+			padding: 0 36rpx;
 		}
 
 		.operate-all::after {
@@ -646,7 +661,6 @@
 			display: flex;
 
 			view {
-				// width: 220rpx;
 				height: 80rpx;
 				background: #FFFFFF;
 				border-radius: 45rpx;
@@ -657,7 +671,7 @@
 				font-weight: bold;
 				color: #111111;
 				line-height: 42rpx;
-				padding: 0 24rpx;
+				padding: 0 140rpx;
 			}
 
 			image.reject {

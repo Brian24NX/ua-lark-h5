@@ -89,7 +89,7 @@
 			:orderList="orderList" :isOk="isOk" @submit="submit" @hideDialog="dialogHide"
 			@createOrder="createOrder"></public-dialog>
 		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip"
-			:num="total" @submit="submit" @hideDialog="dialogHide" />
+			:num="OPSNum" @submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -161,6 +161,7 @@
 				pageNum: 1,
 				pageSize: 10,
 				total: 0,
+				OPSNum:0,
 				param: {
 					id: 0,
 					params: {
@@ -186,6 +187,7 @@
 		},
 		onShow() {
 			this.getApproveList()
+			this.getOpsMyApprovalNum()
 			this.getStoreList()
 			this.getSupplier()
 		},
@@ -241,15 +243,15 @@
 				this.getApproveList()
 			},
 			getRecentMonth(n) {
-				let month = moment(new Date()).subtract(n, 'months').format('YYYY-MM-DD HH:mm:ss');
-				let datetime = moment().format('YYYY-MM-DD HH:mm:ss') //24小时制 HH:mm:ss
+				let month = moment(new Date()).subtract(n, 'months').format('YYYY-MM-DD');
+				let datetime = moment().format('YYYY-MM-DD') //24小时制 HH:mm:ss
 				this.forms.stm = month
 				this.forms.etm = datetime
 			},
 			// 近N天 -Moment.js
 			getRecentDay(n) {
-				let day = moment(new Date()).subtract(n, 'days').format('YYYY-MM-DD HH:mm:ss');
-				let datetime = moment().format('YYYY-MM-DD HH:mm:ss') //24小时制
+				let day = moment(new Date()).subtract(n, 'days').format('YYYY-MM-DD');
+				let datetime = moment().format('YYYY-MM-DD') //24小时制
 				this.forms.stm = day
 				this.forms.etm = datetime
 			},
@@ -437,21 +439,29 @@
 					}
 				})
 			},
-			NORMSTARTTIMEfilter(val) {
-				const jsonDate = new Date(val).toJSON()
-				return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
-					/\.[\d]{3}Z/, '')
+			// NORMSTARTTIMEfilter(val) {
+			// 	const jsonDate = new Date(val).toJSON()
+			// 	return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
+			// 		/\.[\d]{3}Z/, '')
+			// },
+			getOpsMyApprovalNum(){
+				this.$api.getOpsMyApprovalNum().then(res=>{
+					console.log(res)
+					if(res.code=='200'){
+						this.OPSNum = res.data
+					}
+				})
 			},
 			getApproveList() {
-				let data = {
-					pageNum: this.pageNum,
-					pageSize: this.pageSize,
-					param: this.forms
-				}
+				// let data = {
+				// 	pageNum: this.pageNum,
+				// 	pageSize: this.pageSize,
+				// 	param: this.forms
+				// }
 				uni.showLoading({
 					title: this.$t('index.loading')
 				});
-				this.$api.getOpsMyApproval(data).then(res => {
+				this.$api.getOpsMyApproval(this.forms).then(res => {
 					if (res.code == 200) {
 						uni.hideLoading();
 						res.data.list.forEach(item => {
@@ -525,7 +535,7 @@
 							if (item1.list) {
 								item1.list.forEach((item2, i) => {
 									item2.selecte = false
-									let eq = this.selectedList.findIndex(va => va.categoryId == item1.categoryId)
+									let eq = this.selectedList.findIndex(va => va.orderItemId == item1.orderItemId)
 						        	this.selectedList.splice(eq, 1)
 								})
 							}
@@ -548,7 +558,7 @@
 						this.approveList[index].selecte = false
 						val.list.forEach(item1 => {
 							item1.selecte = false
-							let eq = this.selectedList.findIndex(va => va.categoryId == item1.categoryId)
+							let eq = this.selectedList.findIndex(va => va.orderItemId == item1.orderItemId)
 							this.selectedList.splice(eq, 1)
 						})
 					} else {
@@ -562,7 +572,7 @@
 				}
 		          let obj = {}
 					this.selectedList = this.selectedList.reduce((preVal, curVal) => {
-						obj[curVal.categoryId] ? "" : obj[curVal.categoryId] = preVal.push(curVal)
+						obj[curVal.orderItemId] ? "" : obj[curVal.orderItemId] = preVal.push(curVal)
 						return preVal
 					}, [])
 			},
@@ -727,7 +737,6 @@
 		z-index: 22;
 
 		.operate-all {
-			width: 220rpx;
 			height: 92rpx;
 			border-radius: 92rpx;
 			border: 2rpx solid #111111;
@@ -737,6 +746,7 @@
 			font-family: MicrosoftYaHeiSemibold;
 			transform: translateX(50px);
 			opacity: 0;
+			padding: 0 36rpx;
 		}
 
 		.operate-all::after {
@@ -782,7 +792,8 @@
 			display: flex;
 
 			view {
-				width: 220rpx;
+				// width: 220rpx;
+				min-width: 200rpx;
 				height: 80rpx;
 				background: #FFFFFF;
 				border-radius: 45rpx;
@@ -793,6 +804,7 @@
 				font-weight: bold;
 				color: #111111;
 				line-height: 42rpx;
+				padding: 0 22rpx;
 			}
 
 			image.reject {
