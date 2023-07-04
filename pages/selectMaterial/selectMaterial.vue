@@ -5,7 +5,7 @@
 				<view class="store" @click="selectStore">
 					<view class="store_l">
 						<image src="../../static/store.png" mode=""></image>
-						<text>{{store.name?`${this.$t('index.store')}：${store.name}`:`${this.$t('index.pleaseSelect')}`}}</text>
+						<text>{{store.name?`${$t('index.store')}：${store.name}`:`${$t('index.pleaseSelect')}`}}</text>
 					</view>
 					<image class="store_r" src="../../static/right.png" mode="" v-if="page"></image>
 				</view>
@@ -15,7 +15,7 @@
 						v-for="(item,index) in categoryList" :key="index" @click="toggleTab(item)">
 						{{item.categoryName}}
 					</view>
-					<view class="tab" @click="choose">{{this.$t('index.more')}}
+					<view class="tab" @click="choose">{{$t('index.more')}}
 						<image src="../../static/more.png" mode=""></image>
 					</view>
 				</view>
@@ -43,14 +43,14 @@
 				<view class="price">{{getCarShop.sumPrice}} <text class="suffix">CNY</text></view>
 			</view>
 			<view :class="['submit_right',getCarShop.num?'':'forbidden']" @click="onSubmit(getCarShop.num)">
-				{{this.$t('index.preview')}}
+				{{$t('index.preview')}}
 			</view>
 		</view>
 		<!-- 物料车 -->
 		<car-detail v-if="show" @hideDetail="hideDetail" @minusNum="minusNum" @plusNum="plusNum" @editNum="editNum"
 			@deleteItem="deleteItem" @showDialog='showDialog' />
 		<!-- 确认弹窗 -->
-		<public-dialog v-if="clearShow" @deleteAll="deleteAll" :title="this.$t('index.Confirm')" :tip="tip"
+		<public-dialog v-if="clearShow" @deleteAll="deleteAll" :title="$t('index.Confirm')" :tip="tip"
 			:pageFrom="'clear'" @hideDialog="dialogHide" />
 	</view>
 </template>

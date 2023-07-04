@@ -3,7 +3,7 @@
 		<image :src="detail.imageUrl" mode="" @tap="preview(detail.imageUrl)"></image>
 		<view class="info_detail_b">
 			<view class="info_detail_b_l">
-				{{this.$t('index.name')}}:
+				{{$t('index.name')}}:
 			</view>
 			<view class="info_detail_b_r">
 				{{detail.materialName}}
@@ -11,7 +11,7 @@
 		</view>
 		<view class="info_detail_b">
 			<view class="info_detail_b_l">
-				{{this.$t('index.SKUCode')}}:
+				{{$t('index.SKUCode')}}:
 			</view>
 			<view class="info_detail_b_r">
 				{{detail.oriSkuCode}}
@@ -19,7 +19,7 @@
 		</view>
 		<view class="info_detail_b">
 			<view class="info_detail_b_l">
-				{{this.$t('index.Category')}}:
+				{{$t('index.Category')}}:
 			</view>
 			<view class="info_detail_b_r">
 				{{detail.categoryPath}}
@@ -27,7 +27,7 @@
 		</view>
 		<view class="info_detail_b">
 			<view class="info_detail_b_l">
-				{{this.$t('index.Specification')}}:
+				{{$t('index.Specification')}}:
 			</view>
 			<view class="info_detail_b_r">
 				{{detail.specifications}}
@@ -43,7 +43,7 @@
 		</view> -->
 		<view class="info_detail_b">
 			<view class="info_detail_b_l">
-				{{this.$t('index.supplier')}}:
+				{{$t('index.supplier')}}:
 			</view>
 			<view class="info_detail_b_r">
 				{{detail.supplierName}}
@@ -51,7 +51,7 @@
 		</view>
 		<view class="info_detail_b">
 			<view class="info_detail_b_l">
-				{{this.$t('index.Price')}}:
+				{{$t('index.Price')}}:
 			</view>
 			<view class="info_detail_b_r price">
 				{{detail.retailPrice}} <text> {{detail.priceUnit}}</text>

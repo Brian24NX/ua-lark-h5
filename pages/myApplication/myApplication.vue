@@ -17,7 +17,7 @@
 						</van-checkbox>
 						<text>{{item.storeName}}</text>
 						<!-- 	<view class="tocar" @click="toCar(item)">
-							{{this.$t('index.CopytoCart')}}
+							{{$t('index.CopytoCart')}}
 						</view> -->
 						<image class="unfold" :style="item.open?'transform: rotate(180deg);':'transform: rotate(0deg);'"
 							src="../../static/unfold.png" mode="" @click="changeContent(item,index)">
@@ -30,8 +30,8 @@
 
 						</view>
 						<view class="info-header-bottom-r">
-							<view>{{Total}}:{{item.totalPrice}}{{item.priceUnit}}</view>
-							<view>{{item.applyTime}}</view>
+							<view>{{Total}}:{{item.totalRetailPrice}}{{item.priceUnit}}</view>
+							<view>{{formatTimeFn(item.applyTime)}}</view>
 						</view>
 					</view>
 				</view>
@@ -46,12 +46,12 @@
 		<!-- 	<view
 				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
 				@click="controlsAll(4)">
-				{{this.$t('index.Dispatch-All')}}
+				{{$t('index.Dispatch-All')}}
 			</view> -->
 			<view
 				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
 				@click="changeStatus(6,1)">
-				 {{this.$t('index.Receive')}}
+				 {{$t('index.Receive')}}
 			</view>
 			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
 				Batch
@@ -67,18 +67,18 @@
 				<!-- 	<image class="approve"
 						:src="selectedList.length<=0?'../../static/approve-sec.png':'../../static/approve.png'" mode="">
 					</image> -->
-					{{this.$t('index.Receipt')}}
+					{{$t('index.Receipt')}}
 				</view>
 				<!-- <view @click="changeStatus(6,1)">
 					<image class="reject" src="../../static/reject.png" mode="">
-					</image> {{this.$t('index.Receive')}}
+					</image> {{$t('index.Receive')}}
 				</view> -->
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
 		<public-dialog v-if="dialogShow"></public-dialog>
 		<!-- 弹窗 -->
-		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip"
+		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="$t('index.Confirm')" :tip="tip"
 			:num="total" @submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
@@ -88,6 +88,7 @@
 	import searchBar from "../../components/search-bar/index.vue"
 	import materialItem from "../../components/material-item/index2.vue"
 	import publicDialog from "../../components/public-dialog/index.vue"
+	import { formatDate } from '../../fetch/tools.js'
 	import moment from 'moment';
 	export default {
 		components: {
@@ -360,12 +361,9 @@
 					}
 				})
 			},
-			// NORMSTARTTIMEfilter(val) {
-				// const jsonDate = new Date(val).toJSON()
-				// return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
-				// 	/\.[\d]{3}Z/, '')
-
-			// },
+			formatTimeFn(val) {
+			 return formatDate(val)
+			},
 			getApproveList() {
 				let data = {
 					pageNum: this.pageNum,

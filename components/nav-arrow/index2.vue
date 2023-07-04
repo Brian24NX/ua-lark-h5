@@ -11,23 +11,23 @@
 		</view>
 		<view class="btns" v-if="haveBtn">
 			<view class="btn" v-if="havepending">
-				{{ this.$t('index.pending')}}
+				{{ $t('index.pending')}}
 				<view class="num">
 					2
 				</view>
 			</view>
 			<view class="btn-b" v-else>
 				<view class="btn">
-					{{ this.$t('index.delivered')}}
+					{{ $t('index.delivered')}}
 					<view class="num">
 						2
 					</view>
 				</view>
 				<view class="btn">
-					{{ this.$t('index.received')}}
+					{{ $t('index.received')}}
 				</view>
 				<view class="btn">
-					{{ this.$t('index.rejected')}}
+					{{ $t('index.rejected')}}
 				</view>
 			</view>
 		</view>

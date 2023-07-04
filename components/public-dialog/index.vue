@@ -3,12 +3,12 @@
 		z-index='900' @close="onClose">
 		<view class="dialog flex-vcenter column">
 			<h3 class="title">{{title}}</h3>
-			<view class="color-1DBA00 title2" v-if="pageFrom=='myApproval'&&isOk">{{this.$t('index.PO')}}</view>
+			<view class="color-1DBA00 title2" v-if="pageFrom=='myApproval'&&isOk">{{$t('index.PO')}}</view>
 			<view class="massage " v-if="pageFrom=='clear'|| pageFrom=='submit'">
 				{{tip}}
 			</view>
 			<view class="massage " v-if="pageFrom=='approval'">
-				<text>{{this.$t('index.selected')}}<text style="font-weight: bold;color: #111;">{{num}}</text>，</text>
+				<text>{{$t('index.selected')}}<text style="font-weight: bold;color: #111;">{{num}}</text>，</text>
 				{{tip}}
 			</view>
 			<!-- 备注 -->
@@ -16,34 +16,40 @@
 				{{content}}
 			</view>
 			<view class="dialog-content" v-if="pageFrom=='myApproval'">
-				<view class="dialog-content-item" v-for="(item, i) in orderList">
+				<view class="dialog-content-item" v-for="(item, i) in orderList" :key="i">
 					<view class="dialog-content-order flex-vcenter">
-						<view v-if="item.purchaseOrderNo">{{item.purchaseOrderNo}}</view>
+						<view v-if="isOk">{{item.purchaseOrderNo}}</view>
 						<view v-else>{{Order}}{{i+1}}</view>
-						<view>{{item.nameChild}}</view>
+						<view>{{ isOk?item.supplierName:item.nameChild}}</view>
 					</view>
 					<view class="dialog-content-details ">
 						<view class="dialog-content-details-item flex-vcenter">
 							<view class="width-150 color-999">{{store}}：</view>
-							<view>{{item.store}}</view>
+							<view>{{isOk?item.storeName:item.store}}</view>
 						</view>
 						<view class="dialog-content-details-item flex-vcenter">
 							<view class="width-150 color-999">{{totalCost}}：</view>
-							<view>{{item.totalCost}}{{item.priceUnit}}</view>
+							<view v-if="isOk">{{item.totalCostPrice}}{{item.priceUnit}}</view>
+							<view v-else>{{item.totalCost}}{{item.priceUnit}}</view>
 						</view>
 						<view class="dialog-content-details-item flex-vcenter">
 							<view class="width-150 color-999">{{Quantity}}：</view>
-							<view>{{item.quantity}}</view>
+							<view>{{isOk?item.totalQuantity: item.quantity}}</view>
 						</view>
 					</view>
 				</view>
 			</view>
-			<view class="btn">
+			<view class="btn" v-if="pageFrom=='myApproval'&&isOk">
+				<view class="confirm" @click="onClose">
+					{{$t('index.OK')}}
+				</view>
+			</view>
+			<view class="btn" v-else>
 				<view class="cancle" @click="onClose" v-if="pageFrom !='remark'">
-					{{this.$t('index.cancle')}}
+					{{$t('index.cancle')}}
 				</view>
 				<view class="confirm" @click="confirm">
-					{{pageFrom =='remark'?'OK':this.$t('index.confirm')}}
+					{{pageFrom =='remark'?'OK':$t('index.confirm')}}
 				</view>
 			</view>
 		</view>

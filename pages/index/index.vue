@@ -5,13 +5,13 @@
 				<view class="info" v-if="userInfo">
 					<image :src="userInfo.avatarUrl" mode=""></image>
 					<view class="name">
-						<view class="">{{this.$t('index.hi')}}</view>
+						<view class="">{{$t('index.hi')}}</view>
 						<view class="">{{userInfo.name}} !</view>
 					</view>
 				</view>
 				<div class="language" @click="changeLanguage">
 					<view class="">
-						{{this.$t('index.language')}}
+						{{$t('index.language')}}
 					</view>
 				</div>
 			</view>
@@ -116,6 +116,7 @@
 					}
 				})
 			}
+	
 			// if (uni.getStorageSync('token')) {
 			// 	if (uni.getStorageSync('user') && uni.getStorageSync('user').storeRole) {
 			// 		this.storeRole = uni.getStorageSync('user').storeRole
@@ -146,13 +147,14 @@
 									if (resp.code == '200') {
 										uni.hideLoading();
 										uni.setStorageSync('token', resp.data.token)
-										// if(!resp.data.user){
-										// 	resp.data.user={"id":17613,"larkUserId":"1f46edd5","larkUnionId":"on_0f3f22f1ca64ed20738df7ca268f286f","larkOpenId":"ou_620337f0a39b5b9d7b419094e396624a","employeeNo":"1f46edd5","employeeType":5,"name":"Jiaodi Wang","enName":"","email":"jiaodi.wang@underarmour.com","mobile":"+8615337165851","avatarUrl":"https://pan16.larksuitecdn.com/static-resource/v1/v2_855215c3-fa6c-43ad-88af-6bbfcbc77cch~?image_size=noop&cut_type=&quality=&format=png&sticker_format=.webp","gender":"0","status":"{\"isActivated\":true,\"isExited\":false,\"isFrozen\":false,\"isResigned\":false,\"isUnjoin\":false}","deptId":1404,"larkDeptId":"398f96d8ed1a9e46","country":"","city":"","workStation":"","joinTime":"1970-01-20T12:18:43.000+00:00","isTenantManager":0,"jobTitle":"","storeRole":2,"isFrozen":1,"tenantCode":"1"}
-										// }
 										if ((resp.data.user && resp.data.user.systemRole) || (resp.data.user &&
 												resp.data.user.storeRole)) {
-											that.storeRole = resp.data.user.systemRole || resp.data.user
-												.storeRole
+												if(resp.data.user.systemRole==10){
+													that.storeRole=10
+												}else{
+													that.storeRole =resp.data.user.storeRole
+												}
+										
 											that.userInfo = resp.data.user
 											if (resp.data.user.systemRole) {
 												resp.data.user.storeRole = resp.data.user.systemRole
@@ -162,22 +164,22 @@
 										} else {
 											// 无权限
 											uni.redirectTo({
-												url: "/pages/pageErr/pageErr?type=1"
+												url: "/pages/permissionErr/permissionErr"
 											})
 										}
 									} else {
 										uni.hideLoading();
 										// 网络异常
 										uni.redirectTo({
-											url: "/pages/pageErr/pageErr?type=2"
+											url: "/pages/networkErr/networkErr"
 										})
 									}
 
 								}).catch(err => {
 									uni.hideLoading();
 									// 网络异常
-									uni.redirectTo({
-										url: "/pages/pageErr/pageErr?type=2"
+								uni.redirectTo({
+										url: "/pages/networkErr/networkErr"
 									})
 								});
 						}
@@ -193,8 +195,11 @@
 								uni.setStorageSync('token', resp.data.token)
 								if ((resp.data.user && resp.data.user.systemRole) || (resp.data.user && resp.data.user
 										.storeRole)) {
-									that.storeRole = resp.data.user.systemRole || resp.data.user.storeRole
-									console.log('role',that.storeRole)
+									if(resp.data.user.systemRole==10){
+										that.storeRole=10
+									}else{
+										that.storeRole =resp.data.user.storeRole
+									}
 									that.userInfo = resp.data.user
 									if (resp.data.user.systemRole) {
 										resp.data.user.storeRole = resp.data.user.systemRole
@@ -204,14 +209,14 @@
 								} else {
 									// 无权限
 									uni.redirectTo({
-										url: "/pages/pageErr/pageErr?type=1"
+										url: "/pages/permissionErr/permissionErr"
 									})
 								}
 							} else {
 								uni.hideLoading();
 								// 网络异常
 								uni.redirectTo({
-									url: "/pages/pageErr/pageErr?type=2"
+									url: "/pages/networkErr/networkErr"
 								})
 							}
 
@@ -219,7 +224,7 @@
 							uni.hideLoading();
 							// 网络异常
 							uni.redirectTo({
-								url: "/pages/pageErr/pageErr?type=2"
+								url: "/pages/networkErr/networkErr"
 							})
 						});
 				}

@@ -89,5 +89,6 @@
 		"index.approvedQuantity":"审批数量",
 		"index.TotalPrice":"总价格",
 		"index.reference":"参考",
-		"index.pleaseSelect":"请选择收货店铺"
+		"index.pleaseSelect":"请选择收货店铺",
+		"index.OK":"好的"
 }

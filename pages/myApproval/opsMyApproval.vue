@@ -52,12 +52,12 @@
 			<view
 				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
 				@click="controlsAll(4)">
-				{{this.$t('index.Dispatch-All')}}
+				{{$t('index.Dispatch-All')}}
 			</view>
 			<view
 				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
 				@click="controlsAll(7)">
-				{{this.$t('index.Reject-All')}}
+				{{$t('index.Reject-All')}}
 			</view>
 			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
 				Batch
@@ -75,20 +75,20 @@
 					@click="changeStatus(4)">
 					<image class="approve"
 						:src="selectedList.length<=0?'../../static/approve-sec.png':'../../static/approve.png'" mode="">
-					</image>{{this.$t('index.Dispatch')}}
+					</image>{{$t('index.Dispatch')}}
 				</view>
 				<view :class="[selectedList.length<=0?'disabled':'']" @click="changeStatus(7)">
 					<image class="reject"
 						:src="selectedList.length<=0?'../../static/reject-err.png':'../../static/reject.png'" mode="">
-					</image> {{this.$t('index.Reject')}}
+					</image> {{$t('index.Reject')}}
 				</view>
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
-		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="this.$t('index.PurchaseOrder')"
+		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="$t('index.PurchaseOrder')"
 			:orderList="orderList" :isOk="isOk" @submit="submit" @hideDialog="dialogHide"
 			@createOrder="createOrder"></public-dialog>
-		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="this.$t('index.Confirm')" :tip="tip"
+		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="$t('index.Confirm')" :tip="tip"
 			:num="OPSNum" @submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
@@ -379,18 +379,9 @@
 					arr = arr.concat(item.list)
 				})
 				this.$api.buildOrder(arr).then(res => {
-					console.log(res)
 					if (res.code == 200) {
 						this.isOk = true
-						res.data.forEach(item => {
-							this.orderList.forEach(val => {
-								if (item.supplierName == val.nameChild && item.store == val
-									.storeName) {
-									val.purchaseOrderNo = item.purchaseOrderNo
-								}
-							})
-						})
-
+						this.orderList = res.data
 					}
 				})
 			},
@@ -403,6 +394,7 @@
 				if (val == 'reload') {
 					this.isOk = false
 					this.selectedList = []
+					this.getOpsMyApprovalNum()
 					this.getApproveList()
 				}
 
@@ -434,6 +426,7 @@
 						let that = this
 						setTimeout(function() {
 							that.pageNum = 1
+						    that.getOpsMyApprovalNum()
 							that.getApproveList()
 						}, 2000)
 					}
@@ -463,7 +456,6 @@
 				});
 				this.$api.getOpsMyApproval(this.forms).then(res => {
 					if (res.code == 200) {
-						uni.hideLoading();
 						res.data.list.forEach(item => {
 							item.isOpen = true
 							item.selecte = false
@@ -484,6 +476,8 @@
 						console.log(this.approveList)
 					}
 
+				}).finally(()=>{
+					uni.hideLoading();
 				})
 			},
 			defaultValue(obj) {

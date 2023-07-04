@@ -3,11 +3,11 @@
 			<view class="">
 				<view class="clearAll">
 					<view class="clearAll_l">
-						{{this.$t("index.selectMaterial")}}
+						{{$t("index.selectMaterial")}}
 					</view>
 					<view class="clearAll_r" @click="clearAll">
 						<image src="../../static/delete.png" mode=""></image>
-						{{this.$t('index.clear-all')}}
+						{{$t('index.clear-all')}}
 					</view>
 				</view>
 				<view class="conts" v-for="(item,index) in carList" :key="index">
@@ -22,7 +22,7 @@
 						</view>
 						<view class="pro-right">
 							<view class="pro-right-delete" @click="deleteItem(item)">
-								<image src="../../static/delete_active.png" mode=""></image>{{this.$t('index.delete')}}
+								<image src="../../static/delete_active.png" mode=""></image>{{$t('index.delete')}}
 							</view>
 							<view class="change-num">
 								<image class="addcar" src="../../static/minuscar.png" @tap.stop="minusNum(item)"></image>

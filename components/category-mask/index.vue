@@ -2,7 +2,7 @@
 		<van-popup :show="true"  position="right"
 			custom-style="height: 100%;width:90%; border-radius: 40rpx 0rpx 0rpx 40rpx;z-index:201;background-color: #F0F0F0"  @close="onClose">
 			<view class="category">
-				<view class="instructions">{{this.$t('index.main-category')}}</view>
+				<view class="instructions">{{$t('index.main-category')}}</view>
 				<view class="category-main">
 					<view v-for="(item,index) in categoryList" :key='index' @tap='searchProd(item,index,1)'
 						:class="['category-item',item.cid==currentObj.current?'active' :'']">
@@ -10,7 +10,7 @@
 					</view>
 				</view>
 				<view v-if="tabslist.length>0">
-					<view class="instructions" style="margin-top: 40rpx;">{{this.$t('index.sub-category')}}</view>
+					<view class="instructions" style="margin-top: 40rpx;">{{$t('index.sub-category')}}</view>
 					<view class="category-main">
 						<view v-for="(item,index) in tabslist" :key='index' @tap='searchProd(item,index,2)'
 							:class="['category-item',item.cid==currentObj.subcurrent?'active' :'']">
@@ -19,7 +19,7 @@
 					</view>
 				</view>
 				<view v-if="supplierList.length>0">
-					<view class="instructions" style="margin-top: 40rpx;">{{this.$t('index.supplier')}}</view>
+					<view class="instructions" style="margin-top: 40rpx;">{{$t('index.supplier')}}</view>
 					<view class="category-main">
 						<view v-for="(item,index) in supplierList" :key='index' @tap='searchProd(item,index,3)'
 							:class="['category-item',item.employeeNo==currentObj.suppliercurrent?'active' :'']">
@@ -31,10 +31,10 @@
 					<van-divider customStyle="margin:0;color: #ddd; border-color: #ddd; padding:0 30rpx" />
 					<view class="btns">
 						<view class="cancel" @tap="resert">
-							{{this.$t('index.reset')}}
+							{{$t('index.reset')}}
 						</view>
 						<view class="complate" @tap="complate">
-							{{this.$t('index.confirm')}}
+							{{$t('index.confirm')}}
 						</view>
 					</view>
 				</view>

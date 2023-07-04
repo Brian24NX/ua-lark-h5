@@ -4,7 +4,7 @@
 			<image src="../../static/search.png">
 			</image>
 			<input type="text" confirm-type="search" v-model="keyword" @confirm="searchClick(keyword)"
-				:placeholder="this.$t('index.material-name') " />
+				:placeholder="$t('index.material-name') " />
 		</view>
 	</view>
 </template>

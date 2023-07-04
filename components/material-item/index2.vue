@@ -14,7 +14,7 @@
 				</view>
 				<view>
 					<text class="bold"
-						style="color: #C54646;">{{(dataDetail.retailPrice*dataDetail.applyQuantity).toFixed(2)}}</text>
+						style="color: #C54646;">{{dataDetail.totalRetailPrice}}</text>
 					<text style="font-size: 16rpx; margin-left: 2rpx;">{{dataDetail.priceUnit}}</text>
 				</view>
 			</view>
@@ -25,7 +25,7 @@
 			</view>
 			<view class="info_r_b">
 				<view class="bold">
-					x{{dataDetail.applyQuantity}}
+					x{{dataDetail.approvedQuantity||dataDetail.applyQuantity}}
 				</view>
 				<view>
 					<text class="bold" style="color: #C54646;">{{getStatus}}</text>

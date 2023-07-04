@@ -34,7 +34,7 @@
 			</view>
 			<view class="empty" v-if="contlist.length==0">
 				<image src="../../static/empty.png" mode=""></image>
-				{{this.$t('index.empty')}}
+				{{$t('index.empty')}}
 			</view>
 		</view>
 		<!-- 物料详情 -->

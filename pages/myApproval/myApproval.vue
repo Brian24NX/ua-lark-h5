@@ -26,7 +26,7 @@
 						</view>
 						<view class="info-header-bottom-r">
 							<view>{{Total}}:{{item.totalPrice}}{{item.priceUnit}}</view>
-							<view>{{item.applyTime}}</view>
+							<view>{{formatTimeFn(item.applyTime)}}</view>
 						</view>
 					</view>
 				</view>
@@ -48,12 +48,12 @@
 					@click="changeStatus(3)">
 					<image class="approve"
 						:src="selectedList.length<=0?'../../static/approve-sec.png':'../../static/approve.png'" mode="">
-					</image>{{this.$t('index.Approve')}}
+					</image>{{$t('index.Approve')}}
 				</view>
 				<view :class="[selectedList.length<=0?'disabled':'']" @click="changeStatus(7)">
 					<image class="reject"
 						:src="selectedList.length<=0?'../../static/reject-err.png':'../../static/reject.png'" mode="">
-					</image> {{this.$t('index.Reject')}}
+					</image> {{$t('index.Reject')}}
 				</view>
 			</view>
 		</view>
@@ -65,6 +65,7 @@
 	import searchBar from "../../components/search-bar/index.vue"
 	import materialItem from "../../components/material-item/index.vue"
 	import publicDialog from "../../components/public-dialog/index.vue"
+	import { formatDate } from '../../fetch/tools.js'
 	import moment from 'moment';
 	export default {
 		components: {
@@ -174,11 +175,8 @@
 				if (val.label == 'week') {
 					this.getRecentDay(7)
 				} else if (val.label == 'month') {
-
-					// this.dataList[1].name = val.name
 					this.getRecentMonth(1);
 				} else if (val.label == 'three-month') {
-					// this.dataList[1].name = val.name
 					this.getRecentMonth(3);
 				}
 				this.getApproveList()
@@ -266,11 +264,9 @@
 					}
 				})
 			},
-			// NORMSTARTTIMEfilter(val) {
-			// 	const jsonDate = new Date(val).toJSON()
-			// 	return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
-			// 		/\.[\d]{3}Z/, '')
-			// },
+		formatTimeFn(val) {
+		 return formatDate(val)
+		},
 			getApproveList() {
 				let data = {
 					pageNum: this.pageNum,
@@ -282,7 +278,6 @@
 				});
 				this.$api.getAllMyApproval(data).then(res => {
 					if (res.code == '200') {
-						uni.hideLoading();
 						res.data.data.forEach(item => {
 							item.open = true
 							item.choose = false
@@ -293,9 +288,10 @@
 						} else {
 							this.approveList = [...this.approveList, ...res.data.data]
 						}
-						console.log(this.approveList)
 					}
 
+				}).finally(()=>{
+					uni.hideLoading();
 				})
 			},
 			onChange(val, index) {
@@ -322,6 +318,7 @@
 					this.selectedList.length = this.total
 				} else {
 					this.selectedList.length = 0
+					this.approveList.forEach(item=>item.choose=false)
 				}
 			},
 			selectMenu(val) {

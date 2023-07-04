@@ -5,7 +5,7 @@
 			<image src="../../static/store.png" mode=""></image>{{form.storeName}}
 		</view>
 		<view class="title">
-			{{this.$t('index.material')}}
+			{{$t('index.material')}}
 		</view>
 		<view class="product">
 			<div id="article" class="article" :class="[status == 1 && 'extended']">
@@ -35,31 +35,31 @@
 		</view>
 		<!-- 备注 -->
 		<view class="title">
-			{{this.$t('index.comment')}}
+			{{$t('index.comment')}}
 		</view>
 		<!-- 备注 -->
 	      <view class="textarea-wrp">
 			  <view class="" v-if="!focus" @click="focus=true" :style="form.remark?'color: #111;':'color: #999;'">
-			  	{{form.remark || this.$t('index.textarea')}}
+			  	{{form.remark ||$t('index.textarea')}}
 			  </view>
-	        <textarea v-else v-model="form.remark"   auto-height :placeholder="this.$t('index.textarea')" :focus="focus" @blur="focus=false" placeholder-style="color: #999"/>
+	        <textarea v-else v-model="form.remark"   auto-height :placeholder="$t('index.textarea')" :focus="focus" @blur="focus=false" placeholder-style="color: #999"/>
 	      </view>
 
 		<!-- 提交 -->
 		<view class="submit-bar">
 			<view class="submit-bar-l">
-				<view class="num">{{this.$t('index.Quantity')}}： <text class="bold">{{priceInfo.num}}</text> </view>
+				<view class="num">{{$t('index.Quantity')}}： <text class="bold">{{priceInfo.num}}</text> </view>
 				<view class="price">
 					<text>Total： </text><text class="bold">{{priceInfo.sumPrice}}</text><text
 						style="font-size: 20rpx">CNY</text>
 				</view>
 			</view>
 			<view class="submit-bar-r" @click="onSubmit">
-				{{this.$t('index.submit')}}
+				{{$t('index.submit')}}
 			</view>
 		</view>
 		<!-- 弹窗 -->
-		<public-dialog v-if="dialogShow" :pageFrom="'submit'" :title="this.$t('index.Confirm')"  @submit="submit" :tip="tip"
+		<public-dialog v-if="dialogShow" :pageFrom="'submit'" :title="$t('index.Confirm')"  @submit="submit" :tip="tip"
 			@hideDialog="dialogHide" />
 	</view>
 </template>

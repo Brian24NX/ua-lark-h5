@@ -36,7 +36,7 @@
 			</view>
 			<view class="info_r_b" v-if="storeRole==1||storeRole==2 ">
 				<view class="remark bold" v-if="dataDetail.remark" @tap.native="dialog=true">
-					{{this.$t('index.comment')}}
+					{{$t('index.comment')}}
 					<image class="more" src="../../static/more.png"></image>
 				</view>
 				<view>
@@ -50,13 +50,13 @@
 					{{dataDetail.applyTime}}
 				</view>
 				<view class="remark bold" v-if="dataDetail.remark" @tap.native="dialog=true">
-					{{this.$t('index.comment')}}
+					{{$t('index.comment')}}
 					<image class="more" src="../../static/more.png"></image>
 				</view>
 
 			</view>
 		</view>
-		<public-dialog v-if="dialog" :title="this.$t('index.comment')" :pageFrom="'remark'" :content="dataDetail.remark"
+		<public-dialog v-if="dialog" :title="$t('index.comment')" :pageFrom="'remark'" :content="dataDetail.remark"
 			@hideDialog="hideDialog"></public-dialog>
 	</view>
 </template>

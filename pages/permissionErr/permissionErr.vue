@@ -1,14 +1,14 @@
 <template>
 	<view class="container">
-		<image :src="type==1?'../../static/permission.png':'../../static/network.png'" mode=""></image>
+		<image src="../../static/permission.png" mode=""></image>
 		<view class="title">
-			{{type==1?this.$t("index.permissionErr"):this.$t("index.networkErr")}}
+			{{$t('index.permissionErr')}}
 		</view>
 		<view class="desc">
-			{{type==1?this.$t("index.permissionDec"):this.$t("index.networkDec")}}
+			{{$t('index.permissionDec')}}
 		</view>
 		<view class="retry" @click="retry">
-			{{this.$t("index.Retry")}}
+			{{$t('index.Retry')}}
 		</view>
 	</view>
 </template>
@@ -17,23 +17,14 @@
 	export default {
 		data() {
 			return {
-			type:1 //1无权限  2网络异常
+		
 			}
 		},
 
-		onLoad(option) {
-		  if(option.type==1){
-			  this.type=1
-			  uni.setNavigationBarTitle({
-			  	title: this.$t("index.permissionErr")
-			  });
-		  }else{
-			  this.type=2
-			  uni.setNavigationBarTitle({
-			  	title: this.$t("index.networkErr")
-			  });
-		  }
-			
+		onLoad() {
+		uni.setNavigationBarTitle({
+			title: this.$t("index.permissionErr")
+		});
 		},
 		methods: {
 			retry(){
