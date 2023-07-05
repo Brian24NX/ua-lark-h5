@@ -6,8 +6,8 @@
 			@change.native="onChange(dataDetail)" v-if="dataDetail.itemStatus ==5 && storeRole==3">
 			<image class="checkbox" slot="icon" :src="dataDetail.choose ? activeIcon : inactiveIcon" />
 		</van-checkbox>
-		<image class="imageUrl" :src="dataDetail.imageUrl" mode="" @click="toDetail"></image>
-		<view class="info_r" @click="toDetail">
+		<image class="imageUrl" :src="dataDetail.imageUrl" mode="" ></image>
+		<view class="info_r" >
 			<view class="info_r_t">
 				<view class="title">
 					{{dataDetail.materialName}}
@@ -93,11 +93,11 @@
 			hideDialog(val) {
 				this.dialog = val
 			},
-			toDetail() {
-				uni.navigateTo({
-					url: "/pages/materialDetails/materialDetails?detail=" + JSON.stringify(this.dataDetail)
-				})
-			}
+			// toDetail() {
+			// 	uni.navigateTo({
+			// 		url: "/pages/materialDetails/materialDetails?detail=" + JSON.stringify(this.dataDetail)
+			// 	})
+			// }
 		}
 	}
 </script>

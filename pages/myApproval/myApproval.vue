@@ -4,7 +4,8 @@
 			<!-- 搜索 -->
 			<search-bar @searchClick="searchClick"></search-bar>
 			<!-- 中心区域 :key="item"-->
-			<drop-down-list @selectMenu="selectMenu(arguments)" @changeStore="changeStore" @changeTime="changeTime" @hideMenu="hideMenu" :dataList="dataList"></drop-down-list>
+			<drop-down-list @selectMenu="selectMenu(arguments)" @changeStore="changeStore" @changeTime="changeTime"
+				@hideMenu="hideMenu" :dataList="dataList"></drop-down-list>
 		</view>
 		<view class="content">
 			<view class="goods-info" v-for="(item,index) in approveList" :key="index">
@@ -65,7 +66,9 @@
 	import searchBar from "../../components/search-bar/index.vue"
 	import materialItem from "../../components/material-item/index.vue"
 	import publicDialog from "../../components/public-dialog/index.vue"
-	import { formatDate } from '../../fetch/tools.js'
+	import {
+		formatDate
+	} from '../../fetch/tools.js'
 	import moment from 'moment';
 	export default {
 		components: {
@@ -129,7 +132,7 @@
 					}
 				},
 				forms: {
-					orderStatus:2,
+					orderStatus: 2,
 					materialCode: "",
 					storeName: "",
 					stm: "",
@@ -153,17 +156,18 @@
 			if (this.pageNum * this.pageSize >= this.total) return
 			// 让页码值自增+1
 			this.pageNum++
+			this.checked = false
 			this.getApproveList()
 		},
 		// 下拉刷新的事件
-		onPullDownRefresh() {
-			// 1. 重置关键数据
-			this.pageNum = 1
-			this.total = 0
-			this.approveList = []
-			// 2. 重新发起请求
-			this.getApproveList()
-		},
+		// onPullDownRefresh() {
+		// 	// 1. 重置关键数据
+		// 	this.pageNum = 1
+		// 	this.total = 0
+		// 	this.approveList = []
+		// 	// 2. 重新发起请求
+		// 	this.getApproveList()
+		// },
 		methods: {
 			changeTime(val) {
 				if (val.label == 'all') {
@@ -236,12 +240,15 @@
 			changeStatus(id, type) {
 				if (!type && this.selectedList.length <= 0) return;
 				this.param.id = id
-				this.param.params.status = type || this.checked ? 1 : 0
+				// this.param.params.status = type || this.checked ? 1 : 0
+				let arr = []
 				this.selectedList.forEach(item => {
 					if (item.orderItemPos) {
-						this.param.params.orderItemPos = this.param.params.orderItemPos.concat(item.orderItemPos)
+						item.orderItemPos.forEach(val=>arr.push(val))
+						
 					}
 				})
+				this.param.params.orderItemPos = arr
 				this.$api.updateApply(this.param).then(res => {
 					if (res.code == '200') {
 						if (id == 3) {
@@ -256,17 +263,19 @@
 							});
 						}
 						let that = this
-						setTimeout(function(){
+						setTimeout(function() {
 							that.pageNum = 1
+							that.checked=false
+							that.selectedList.length = 0	
 							that.getApproveList()
-						},2000)
-					
+						}, 2000)
+
 					}
 				})
 			},
-		formatTimeFn(val) {
-		 return formatDate(val)
-		},
+			formatTimeFn(val) {
+				return formatDate(val)
+			},
 			getApproveList() {
 				let data = {
 					pageNum: this.pageNum,
@@ -290,7 +299,7 @@
 						}
 					}
 
-				}).finally(()=>{
+				}).finally(() => {
 					uni.hideLoading();
 				})
 			},
@@ -312,14 +321,11 @@
 				this.selectedList = Array.from(new Set(this.selectedList))
 			},
 			onChangeAll() {
-				this.selectedList.length = this.total
 				this.checked = !this.checked
-				if (this.checked) {
-					this.selectedList.length = this.total
-				} else {
-					this.selectedList.length = 0
-					this.approveList.forEach(item=>item.choose=false)
-				}
+				this.approveList.forEach(item => item.choose = this.checked)
+				this.selectedList = this.approveList.filter(item => {
+					if (item.choose) return item
+				})
 			},
 			selectMenu(val) {
 				this.dataList.forEach(i => {
@@ -452,7 +458,7 @@
 		z-index: 2;
 	}
 
-	
+
 
 	.footer {
 		width: -webkit-fill-available;

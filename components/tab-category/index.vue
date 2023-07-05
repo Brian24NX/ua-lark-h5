@@ -1,8 +1,8 @@
 <template>
 	<view class="classbox">
 		<!-- 左侧 -->
-		<view class="tabs">
-			<view class="sub-tabs" v-if="!hideTab">
+		<view class="tabs"  v-if="!hideTab">
+			<view class="sub-tabs">
 				<view :class="['sub-tab',item.cid==subcurrent?'navActive' :'']" v-for="(item,index) in tabslist"
 					:key="item.cid" @click="select(item)">{{item.categoryName}}</view>
 			</view>

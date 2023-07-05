@@ -145,7 +145,6 @@
 								})
 								.then(resp => {
 									if (resp.code == '200') {
-										uni.hideLoading();
 										uni.setStorageSync('token', resp.data.token)
 										if ((resp.data.user && resp.data.user.systemRole) || (resp.data.user &&
 												resp.data.user.storeRole)) {
@@ -168,7 +167,6 @@
 											})
 										}
 									} else {
-										uni.hideLoading();
 										// 网络异常
 										uni.redirectTo({
 											url: "/pages/networkErr/networkErr"
@@ -176,11 +174,12 @@
 									}
 
 								}).catch(err => {
-									uni.hideLoading();
 									// 网络异常
 								uni.redirectTo({
 										url: "/pages/networkErr/networkErr"
 									})
+								}).finally(()=>{
+										uni.hideLoading();
 								});
 						}
 					});
@@ -191,7 +190,6 @@
 						})
 						.then(resp => {
 							if (resp.code == '200') {
-								uni.hideLoading();
 								uni.setStorageSync('token', resp.data.token)
 								if ((resp.data.user && resp.data.user.systemRole) || (resp.data.user && resp.data.user
 										.storeRole)) {
@@ -213,7 +211,6 @@
 									})
 								}
 							} else {
-								uni.hideLoading();
 								// 网络异常
 								uni.redirectTo({
 									url: "/pages/networkErr/networkErr"
@@ -221,11 +218,12 @@
 							}
 
 						}).catch(err => {
-							uni.hideLoading();
 							// 网络异常
 							uni.redirectTo({
 								url: "/pages/networkErr/networkErr"
 							})
+						}).finally(()=>{
+								uni.hideLoading();
 						});
 				}
 			},

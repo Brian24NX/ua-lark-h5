@@ -65,9 +65,9 @@
 		</view>
 		<view class="footer">
 			<view class="footer-l">
-				<!-- 		<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
+				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
 					<image class="checkbox" slot="icon" :src="checked ? selectAll : notAll" />
-				</van-checkbox> -->
+				</van-checkbox>
 				<text style="margin-top: 8rpx;" v-if="selectedList.length">Selected: {{selectedList.length}}</text>
 			</view>
 			<view class="footer-r">
@@ -88,8 +88,8 @@
 		<public-dialog v-if="dialogShow" :pageFrom="'myApproval'" :title="$t('index.PurchaseOrder')"
 			:orderList="orderList" :isOk="isOk" @submit="submit" @hideDialog="dialogHide"
 			@createOrder="createOrder"></public-dialog>
-		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="$t('index.Confirm')" :tip="tip"
-			:num="OPSNum" @submit="submit" @hideDialog="dialogHide" />
+		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="$t('index.Confirm')" :tip="tip" :num="OPSNum"
+			@submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -161,7 +161,7 @@
 				pageNum: 1,
 				pageSize: 10,
 				total: 0,
-				OPSNum:0,
+				OPSNum: 0,
 				param: {
 					id: 0,
 					params: {
@@ -393,6 +393,7 @@
 				this.confirmDialog = false
 				if (val == 'reload') {
 					this.isOk = false
+					this.checked=false
 					this.selectedList = []
 					this.getOpsMyApprovalNum()
 					this.getApproveList()
@@ -426,21 +427,18 @@
 						let that = this
 						setTimeout(function() {
 							that.pageNum = 1
-						    that.getOpsMyApprovalNum()
+							that.checked=false
+							that.selectedList.length=0
+							that.getOpsMyApprovalNum()
 							that.getApproveList()
 						}, 2000)
 					}
 				})
 			},
-			// NORMSTARTTIMEfilter(val) {
-			// 	const jsonDate = new Date(val).toJSON()
-			// 	return new Date(new Date(jsonDate) + 8 * 3600 * 1000).toISOString().replace(/T/g, ' ').replace(
-			// 		/\.[\d]{3}Z/, '')
-			// },
-			getOpsMyApprovalNum(){
-				this.$api.getOpsMyApprovalNum().then(res=>{
+			getOpsMyApprovalNum() {
+				this.$api.getOpsMyApprovalNum().then(res => {
 					console.log(res)
-					if(res.code=='200'){
+					if (res.code == '200') {
 						this.OPSNum = res.data
 					}
 				})
@@ -476,7 +474,7 @@
 						console.log(this.approveList)
 					}
 
-				}).finally(()=>{
+				}).finally(() => {
 					uni.hideLoading();
 				})
 			},
@@ -529,8 +527,9 @@
 							if (item1.list) {
 								item1.list.forEach((item2, i) => {
 									item2.selecte = false
-									let eq = this.selectedList.findIndex(va => va.orderItemId == item1.orderItemId)
-						        	this.selectedList.splice(eq, 1)
+									let eq = this.selectedList.findIndex(va => va.orderItemId == item1
+										.orderItemId)
+									this.selectedList.splice(eq, 1)
 								})
 							}
 						})
@@ -564,20 +563,34 @@
 						})
 					}
 				}
-		          let obj = {}
-					this.selectedList = this.selectedList.reduce((preVal, curVal) => {
-						obj[curVal.orderItemId] ? "" : obj[curVal.orderItemId] = preVal.push(curVal)
-						return preVal
-					}, [])
+				let obj = {}
+				this.selectedList = this.selectedList.reduce((preVal, curVal) => {
+					obj[curVal.orderItemId] ? "" : obj[curVal.orderItemId] = preVal.push(curVal)
+					return preVal
+				}, [])
 			},
 			onChangeAll() {
-				this.selectedList.length = this.total
 				this.checked = !this.checked
-				if (this.checked) {
-					this.selectedList.length = this.total
-				} else {
-					this.selectedList.length = 0
-				}
+				this.approveList.forEach(item => {
+					item.selecte = this.checked
+					item.list.forEach(item1 => {
+						item1.selecte = this.checked
+						if (item1.list) {
+							item1.list.forEach((item2, i) => {
+								item2.selecte = this.checked
+								if (item2.selecte) {
+									this.selectedList.push(item2)
+								}
+							})
+						}
+					})
+				})
+				this.selectedList = this.selectedList.filter(va => va.selecte == true)
+				let obj = {}
+				this.selectedList = this.selectedList.reduce((preVal, curVal) => {
+					obj[curVal.orderItemId] ? "" : obj[curVal.orderItemId] = preVal.push(curVal)
+					return preVal
+				}, [])
 			},
 			selectMenu(val) {
 				this.dataList.forEach(i => {
