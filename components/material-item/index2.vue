@@ -1,7 +1,6 @@
 <!-- 申请单 -->
 <template>
 	<view class="info">
-		<!-- v-if="dataDetail.itemStatus ==5" -->
 		<van-checkbox use-icon-slot :value="dataDetail.choose" custom-class="vancheck"
 			@change.native="onChange(dataDetail)" v-if="dataDetail.itemStatus ==5 && storeRole==3">
 			<image class="checkbox" slot="icon" :src="dataDetail.choose ? activeIcon : inactiveIcon" />
