@@ -31,7 +31,7 @@
 			<van-cell :title="$t('index.TotalCost')" :value="`${(materialDetail.costPrice*materialDetail.applyQuantity).toFixed(2)}${materialDetail.priceUnit}`" title-class="title" value-class="content"
 				custom-class="bgColor" />
 			<van-cell :title="$t('index.comment')" :value="materialDetail.remark" title-class="title"
-				value-class="content" custom-class="bgColor borderNone" />
+				value-class="content" custom-class="bgColor borderNone" v-if="materialDetail.remark" />
 		</view>
 		<view class="reference">
 			<view class="titles">
@@ -40,9 +40,9 @@
 			<van-cell :title="$t('index.store')" :value="materialDetail.storeName" title-class="title" value-class="content"
 				custom-class="bgColor" />
 			<van-cell title="PO" :value="materialDetail.purchaseOrderNo" title-class="title" value-class="content"
-				custom-class="bgColor" />
-			<van-cell title="Tracking Number" value="物料类/日常店铺物料" title-class="title" value-class="content"
-				custom-class="bgColor borderNone" />
+				custom-class="bgColor" v-if="materialDetail.purchaseOrderNo"/>
+			<van-cell title="Tracking Number" :value="materialDetail.trackingNo" title-class="title" value-class="content"
+				custom-class="bgColor borderNone" v-if="materialDetail.trackingNo" />
 		</view>
 		<view class="procedure">
 			<view class="titles">
