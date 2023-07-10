@@ -139,4 +139,8 @@ export default {
 	getOpsMyApprovalNum(params) {
 		return fetchGet(`/ua-material-api/app/apply/getCount`,params)
 	},
+	// 物料详情step
+		getSteps(orderItemId) {
+			return fetchGet(`/ua-material-api/app/apply/getInfo/${orderItemId}`)
+		},
 }

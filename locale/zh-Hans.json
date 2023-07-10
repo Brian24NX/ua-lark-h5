@@ -90,5 +90,7 @@
 		"index.TotalPrice":"总价格",
 		"index.reference":"参考",
 		"index.pleaseSelect":"请选择收货店铺",
-		"index.OK":"好的"
+		"index.OK":"好的",
+		"index.TrackingNumber":"追踪号码",
+		"index.Procedure":"过程"
 }

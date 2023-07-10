@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import api from '../fetch/api.js'
+// import api from '../fetch/api.js'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
@@ -11,17 +11,19 @@ const store = new Vuex.Store({
 	mutations: {
 		//相当于同步的操作
 		addCar(state, item) {
+			let index = state.carShop.findIndex(v => v.mid == item.mid)
 			state.carShop = state.carShop.filter((v) => v.mid != item.mid)
-			state.carShop.push(item)
+			state.carShop.splice(index, 0, item)
 			uni.setStorageSync('carShop', JSON.stringify(state))
 		},
 		minusCar(state, item) {
+			let index = state.carShop.findIndex(v => v.mid == item.mid)
 			state.carShop = state.carShop.filter((v) => v.mid != item.mid)
 			if (item.scalar <= 0) {
 				let index = state.carShop.findIndex(value => value.mid == item.mid)
 				state.carShop.slice(index, 1)
 			} else {
-				state.carShop.push(item)
+				state.carShop.splice(index, 0, item)
 			}
 			uni.setStorageSync('carShop', JSON.stringify(state))
 		},
@@ -38,10 +40,10 @@ const store = new Vuex.Store({
 			state.carShop = []
 			uni.setStorageSync('carShop', JSON.stringify(state))
 		},
-		replaceCar(state,list){
-			state.carShop.forEach(item=>{
-				list.forEach(val=>{
-					if(item.mid == val.mid){
+		replaceCar(state, list) {
+			state.carShop.forEach(item => {
+				list.forEach(val => {
+					if (item.mid == val.mid) {
 						val.scalar = item.scalar
 					}
 				})
@@ -49,8 +51,8 @@ const store = new Vuex.Store({
 			state.carShop = list
 			uni.setStorageSync('carShop', JSON.stringify(state))
 		},
-		copytocart(state,orderItemPos){
-			orderItemPos.forEach(item=>{
+		copytocart(state, orderItemPos) {
+			orderItemPos.forEach(item => {
 				item.scalar = item.applyQuantity
 			})
 			state.carShop = orderItemPos

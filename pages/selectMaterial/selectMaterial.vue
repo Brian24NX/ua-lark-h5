@@ -11,10 +11,13 @@
 				</view>
 				<search-bar @searchClick="searchClick"></search-bar>
 				<view class="tabs" v-if="!hideTab">
-					<view :class="['tab',item.cid==currntObject.current?'active' :'']"
-						v-for="(item,index) in categoryList" :key="index" @click="toggleTab(item)">
-						{{item.categoryName}}
-					</view>
+					 <scroll-view class="scroll-view_H sub-container" scroll-x>
+						 <view :class="['tab',item.cid==currntObject.current?'active' :'']"
+						 	v-for="(item,index) in categoryList" :key="index" @click="toggleTab(item)">
+						 	{{item.categoryName}}
+						 </view>
+					 </scroll-view>
+				
 					<view class="tab" @click="choose">{{$t('index.more')}}
 						<image src="../../static/more.png" mode=""></image>
 					</view>
@@ -471,13 +474,16 @@
 	}
 
 	.tabs {
-		display: flex;
-		font-size: 18px;
-		padding: 38rpx 0rpx 32rpx 30rpx;
-		width: max-content;
-		align-items: center;
-		margin-right: 28rpx;
+display: flex;
+font-size: 18px;
+ padding: 38rpx 30rpx 32rpx 30rpx;
+    width: -moz-max-content;
 
+    align-items: center;
+.scroll-view_H{
+	width: 75%;
+	    white-space: nowrap;
+}
 		.tab {
 			position: relative;
 		}
@@ -487,6 +493,7 @@
 			font-size: 28rpx;
 			color: #999999;
 			line-height: 40rpx;
+			    display: inline-block;
 		}
 
 		.tab:last-child {

@@ -92,5 +92,7 @@
 	"index.TotalPrice":"Total Price",
 	"index.reference":"Reference",
 	"index.pleaseSelect":"Please select store first",
-	"index.OK":"OK"
+	"index.OK":"OK",
+	"index.TrackingNumber":"Tracking Number",
+	"index.Procedure":"Procedure"
 }

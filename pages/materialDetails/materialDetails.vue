@@ -41,28 +41,26 @@
 				custom-class="bgColor" />
 			<van-cell title="PO" :value="materialDetail.purchaseOrderNo" title-class="title" value-class="content"
 				custom-class="bgColor" v-if="materialDetail.purchaseOrderNo"/>
-			<van-cell title="Tracking Number" :value="materialDetail.trackingNo" title-class="title" value-class="content"
+			<van-cell :title="$t('index.TrackingNumber')" :value="materialDetail.trackingNo" title-class="title" value-class="content"
 				custom-class="bgColor borderNone" v-if="materialDetail.trackingNo" />
 		</view>
-		<view class="procedure">
+		<view class="procedure" v-if="steps.length">
 			<view class="titles">
-				Procedure
+			   {{$t('index.Procedure')}}
 			</view>
 			<kl-steps :active="activeStep">
-				<kl-step v-for="(item,index) in steps" :key="index" :activeIndex="2" :index="index"
+				<kl-step v-for="(item,index) in steps" :key="index" :activeIndex="steps.length-1" :index="index"
 					:maxIndex="steps.length">
 					<view class="step-top">
-						<text>{{item.name}}</text>
-						<text style="font-weight: bold;">{{item.status}}</text>
+						<text>{{item.role}}</text>
+						<text :style="item.status=='Adjust and Dispatched'?'font-weight: bold;color:#C54646':'font-weight: bold;'">{{item.status}}</text>
 					</view>
 					<view class="step-bottom">
-						<text>{{item.role}}</text>
-						<text>{{item.time}}</text>
+						<text v-if="item.name">{{item.name}}({{item.no}})</text>
+						<text>{{formatTimeFn(item.time)}}</text>
 					</view>
 				</kl-step>
 			</kl-steps>
-
-
 		</view>
 	</view>
 </template>
@@ -70,6 +68,7 @@
 <script>
 	import klSteps from "../../components/kl-steps/index.vue"
 	import klStep from "../../components/kl-step/index.vue"
+		import { formatDate } from '../../fetch/tools.js'
 	export default {
 		components: {
 			klSteps,
@@ -79,39 +78,33 @@
 			return {
 				currentSwipeItem: 0,
 				active: 1,
-				steps: [{
-					name: "Cici Wang (092081)",
-					role: "Store Manager",
-					status: "Applied",
-					time: '2023.03.01 10:30'
-				}, {
-					name: "Coco Li (092876)",
-					role: "Store Manager",
-					status: "Applied",
-					time: '2023.03.01 10:30'
-				}, {
-					name: "Coco Li (092876)",
-					role: "Store Manager",
-					status: "Applied",
-					time: '2023.03.01 10:30'
-				}],
+				steps: [],
 				materialDetail:{}
 			}
 		},
 
 		onLoad(option) {
 			this.materialDetail = JSON.parse(option.detail)
-			console.log(JSON.parse(option.detail))
 			uni.setNavigationBarTitle({
 				title: this.$t("index.itemDetails")
 			});
-// 			this.materialDetail = this.$store.state.carShop[0]
-// console.log(this.$store.state.carShop[0])
+			this.getSteps(this.materialDetail.orderItemId)
 		},
 		mounted() {
 
 		},
 		methods: {
+			formatTimeFn(val) {
+			 return formatDate(val)
+			},
+			getSteps(orderItemId){
+			this.$api.getSteps(orderItemId).then(res=>{
+				console.log(res)
+				if(res.code=='200'){
+					this.steps=res.data
+				}
+			})
+			},
 			onStep(index) {
 				this.currentSwipeItem = index
 			},

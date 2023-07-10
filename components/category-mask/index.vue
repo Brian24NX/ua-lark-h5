@@ -1,6 +1,6 @@
 <template>
-		<van-popup :show="true"  position="right"
-			custom-style="height: 100%;width:90%; border-radius: 40rpx 0rpx 0rpx 40rpx;z-index:201;background-color: #F0F0F0"  @close="onClose">
+		<van-popup :show="true"  position="right" z-index="201"
+			custom-style="height: 100%;width:80%; border-radius: 40rpx 0rpx 0rpx 40rpx;background-color: #F0F0F0"  @close="onClose">
 			<view class="category">
 				<view class="instructions">{{$t('index.main-category')}}</view>
 				<view class="category-main">
