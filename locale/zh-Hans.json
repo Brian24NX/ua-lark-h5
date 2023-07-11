@@ -21,7 +21,7 @@
 	"index.now": "现在",
 	"index.pending": "等待",
 	"index.delivered": "已发货",
-	"index.received": "已收获",
+	"index.received": "已收货",
 	"index.rejected": "被拒",
 	"index.store": "店铺",
 	"index.material-name": "请输入物料名称/编码",

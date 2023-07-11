@@ -11,13 +11,13 @@
 				</view>
 				<search-bar @searchClick="searchClick"></search-bar>
 				<view class="tabs" v-if="!hideTab">
-					 <scroll-view class="scroll-view_H sub-container" scroll-x>
-						 <view :class="['tab',item.cid==currntObject.current?'active' :'']"
-						 	v-for="(item,index) in categoryList" :key="index" @click="toggleTab(item)">
-						 	{{item.categoryName}}
-						 </view>
-					 </scroll-view>
-				
+					<scroll-view class="scroll-view_H sub-container" scroll-x>
+						<view :class="['tab',item.cid==currntObject.current?'active' :'']"
+							v-for="(item,index) in categoryList" :key="index" @click="toggleTab(item)">
+							{{item.categoryName}}
+						</view>
+					</scroll-view>
+
 					<view class="tab" @click="choose">{{$t('index.more')}}
 						<image src="../../static/more.png" mode=""></image>
 					</view>
@@ -32,7 +32,8 @@
 		<!-- 分类弹窗 -->
 
 		<category-mask v-if="categoryShow" :currntObject="currntObject" @updateCurrent="updateCurrent"
-			@getSearchProd="getContlist" @closeSearch="closeSearch"></category-mask>
+			:supplierList="supplierList" :categoryList="categoryList" :tabslist="tabslist" @getSearchProd="getContlist"
+			@closeSearch="closeSearch"></category-mask>
 		<!-- 提交 -->
 		<view class="submit" :style="clearShow?'z-index:100':'z-index:101'">
 			<view class="submit_left">
@@ -99,6 +100,10 @@
 					cid: 0,
 					categoryName: this.$t('index.all')
 				}],
+				supplierdefault: [{
+					employeeNo: 0,
+					nickName: this.$t('index.all')
+				}],
 				pageNum: 1,
 				pageSize: 10,
 				param: {
@@ -135,10 +140,10 @@
 			if (option.page) {
 				this.page = option.page
 			}
-			
+
 		},
 		onShow() {
-			this.pageNum=1
+			this.pageNum = 1
 			this.getAllMaterial()
 		},
 		computed: {
@@ -147,9 +152,9 @@
 				var num = 0;
 				var unit = ''
 				this.$store.state.carShop.forEach(item => {
-					sumPrice +=item.scalar * item.retailPrice
+					sumPrice += item.scalar * item.retailPrice
 					num += parseInt(item.scalar),
-					unit = item.priceUnit
+						unit = item.priceUnit
 				})
 				return {
 					sumPrice: sumPrice.toFixed(2),
@@ -159,7 +164,6 @@
 			}
 		},
 		onReachBottom() {
-			console.log('1111')
 			// 触底的事件
 			if (this.pageNum * this.pageSize >= this.total) return
 			// 让页码值自增+1
@@ -183,13 +187,14 @@
 				})
 			},
 			getAllMaterial() {
-				this.$api.getAllMaterialCategory1().then(res => {
-					let arr = [{
-						cid: 0,
-						categoryName: this.$t('index.all')
-					}]
-					this.categoryList = arr.concat(res.data.category1)
-					this.tabslist = arr.concat(res.data.category2)
+				this.$api.getAllMaterialCategory2().then(res => {
+					this.categoryList = this.subdefault.concat(res.data.category1)
+					if (res.data.category2) {
+						this.tabslist = this.subdefault.concat(res.data.category2)
+					}
+					if (res.data.supplier) {
+						this.supplierList = this.supplierdefault.concat(res.data.supplier)
+					}
 					this.getContlist(this.tabslist[0].cid)
 				})
 			},
@@ -244,15 +249,15 @@
 				this.$api.getCarList({
 					mids
 				}).then(res => {
-					if(res.code=='200'){
+					if (res.code == '200') {
 						this.$store.commit('replaceCar', res.data)
 					}
-					
+
 				})
 				this.show = true
 			},
 			onSubmit(val) {
-				if(!this.store.name){
+				if (!this.store.name) {
 					uni.showToast({
 						title: this.$t('index.pleaseSelect'),
 						duration: 2000
@@ -276,9 +281,15 @@
 				this.categoryShow = true
 			},
 			toggleTab(item) {
+				console.log(item)
 				this.currntObject.current = item.cid
 				this.currntObject.subcurrent = 0
-				this.getSubCategory(item.cid)
+				if (item.cid == 0) {
+					this.getAllMaterial()
+				} else {
+					this.getSubCategory(item.cid)
+				}
+
 			},
 			selectStore() {
 				if (!this.page) return
@@ -288,16 +299,30 @@
 			},
 			// 获取二级分类列表
 			getSubCategory(id, type) {
-				this.$api.getMaterialCategory({
+				this.$api.getMaterialCategory3({
 					id: id
 				}).then(res => {
 					if (res.code == '200') {
-						res.data.forEach((item, index) => {
-							item.isChoose = false
-						})
-						this.tabslist = this.subdefault.concat(res.data)
+						if (res.data.supplier) {
+							res.data.supplier.forEach((item, index) => {
+								item.isChoose = false
+							})
+							this.supplierList = this.supplierdefault.concat(res.data.supplier)
+						} else {
+							this.supplierList = []
+						}
+						if (res.data.category2) {
+							res.data.category2.forEach((item, index) => {
+								item.isChoose = false
+							})
+							this.tabslist = this.subdefault.concat(res.data.category2)
+						} else {
+							this.tabslist = []
+						}
 						// 获取二级菜单全部
-						this.getContlist(id)
+						if (!type) {
+							this.getContlist(id)
+						}
 					}
 
 				})
@@ -311,13 +336,52 @@
 				} else {
 					this.getContlist(val)
 				}
+				this.$api.getMaterialCategory3({
+					id: val
+				}).then(res => {
+					if (res.code == '200') {
+						if (res.data.supplier) {
+							res.data.supplier.forEach((item, index) => {
+								item.isChoose = false
+							})
+							this.supplierList = this.supplierdefault.concat(res.data.supplier)
+						} else {
+							this.supplierList = []
+						}
+					}
+
+				})
 			},
 			closeSearch() {
 				this.categoryShow = false
 			},
 			getContlist(id) {
+				console.log(id)
 				this.categoryShow = false
 				if (id && id.constructor === Object) {
+					if (id.categoryId == 0) {
+						this.getAllMaterial()
+					} else {
+						this.getSubCategory(this.currntObject.current, 1)
+						let that = this
+						setTimeout(function() {
+							that.$api.getMaterialCategory3({
+								id: id.categoryId
+							}).then(res => {
+								if (res.code == '200') {
+									if (res.data.supplier) {
+										res.data.supplier.forEach((item, index) => {
+											item.isChoose = false
+										})
+										that.supplierList = that.supplierdefault.concat(res.data.supplier)
+									} else {
+										that.supplierList = []
+									}
+								}
+							})
+						}, 500)
+
+					}
 					this.pageNum = 1
 					this.param.categoryId = id.categoryId
 					this.param.supplierCode = id.supplierCode
@@ -474,16 +538,18 @@
 	}
 
 	.tabs {
-display: flex;
-font-size: 18px;
- padding: 38rpx 30rpx 32rpx 30rpx;
-    width: -moz-max-content;
+		display: flex;
+		font-size: 18px;
+		padding: 38rpx 30rpx 32rpx 30rpx;
+		width: -moz-max-content;
 
-    align-items: center;
-.scroll-view_H{
-	width: 75%;
-	    white-space: nowrap;
-}
+		align-items: center;
+
+		.scroll-view_H {
+			width: 75%;
+			white-space: nowrap;
+		}
+
 		.tab {
 			position: relative;
 		}
@@ -493,7 +559,8 @@ font-size: 18px;
 			font-size: 28rpx;
 			color: #999999;
 			line-height: 40rpx;
-			    display: inline-block;
+			display: inline-block;
+			padding-bottom: 10rpx;
 		}
 
 		.tab:last-child {
@@ -522,9 +589,10 @@ font-size: 18px;
 				content: "";
 				position: absolute;
 				left: 0;
-				bottom: -16rpx;
-				border: 4rpx solid #111;
+				bottom: 0;
 				min-width: -webkit-fill-available;
+				height: 6rpx;
+				background-color: #111;
 			}
 		}
 	}

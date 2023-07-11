@@ -4,24 +4,24 @@
 			<view class="category">
 				<view class="instructions">{{$t('index.main-category')}}</view>
 				<view class="category-main">
-					<view v-for="(item,index) in categoryList" :key='index' @tap='searchProd(item,index,1)'
+					<view v-for="(item,index) in categoryLists" :key='index' @tap='searchProd(item,index,1)'
 						:class="['category-item',item.cid==currentObj.current?'active' :'']">
 						{{item.categoryName}}
 					</view>
 				</view>
-				<view v-if="tabslist.length>0">
+				<view v-if="tabslists.length>0">
 					<view class="instructions" style="margin-top: 40rpx;">{{$t('index.sub-category')}}</view>
 					<view class="category-main">
-						<view v-for="(item,index) in tabslist" :key='index' @tap='searchProd(item,index,2)'
+						<view v-for="(item,index) in tabslists" :key='index' @tap='searchProd(item,index,2)'
 							:class="['category-item',item.cid==currentObj.subcurrent?'active' :'']">
 							{{item.categoryName}}
 						</view>
 					</view>
 				</view>
-				<view v-if="supplierList.length>0">
+				<view v-if="supplierLists.length>0">
 					<view class="instructions" style="margin-top: 40rpx;">{{$t('index.supplier')}}</view>
 					<view class="category-main">
-						<view v-for="(item,index) in supplierList" :key='index' @tap='searchProd(item,index,3)'
+						<view v-for="(item,index) in supplierLists" :key='index' @tap='searchProd(item,index,3)'
 							:class="['category-item',item.employeeNo==currentObj.suppliercurrent?'active' :'']">
 							{{item.nickName}}
 						</view>
@@ -56,12 +56,24 @@
 				type: Object,
 				default: {}
 			},
+			categoryList:{
+				type:Array,
+				default:[]
+			},
+			tabslist:{
+				type:Array,
+				default:[]
+			},
+			supplierList:{
+				type:Array,
+				default:[]
+			}
 		},
 		data() {
 			return {
-				tabslist: [],
-				categoryList: [],
-				supplierList: [],
+				tabslists: this.tabslist,
+				categoryLists: this.categoryList,
+				supplierLists: this.supplierList,
 				subdefault: [{
 					cid: 0,
 					categoryName: this.$t('index.all')
@@ -81,18 +93,18 @@
 			this.currentObj.current = this.currntObject.current
 			this.currentObj.subcurrent = this.currntObject.subcurrent
 			this.currentObj.suppliercurrent = this.currntObject.suppliercurrent
-			this.getAllMaterial2()
 		},
 		methods: {
 			getAllMaterial2() {
 				this.$api.getAllMaterialCategory2().then(res => {
 					if(res.data.supplier){
-						this.supplierList = this.supplierdefault.concat(res.data.supplier)
+						this.supplierLists = this.supplierdefault.concat(res.data.supplier)
 					}
 					if(res.data.category2){
-					   this.tabslist = this.subdefault.concat(res.data.category2)
+					   this.tabslists = this.subdefault.concat(res.data.category2)
 					}
-					this.categoryList = this.subdefault.concat(res.data.category1)
+					this.categoryLists = this.subdefault.concat(res.data.category1)
+					
 				})
 			},
 			// 获取二级分类列表
@@ -106,17 +118,17 @@
 							res.data.supplier.forEach((item, index) => {
 								item.isChoose = false
 							})
-							this.supplierList = this.supplierdefault.concat(res.data.supplier)
+							this.supplierLists = this.supplierdefault.concat(res.data.supplier)
 						}else{
-							this.supplierList=[]
+							this.supplierLists=[]
 						}
 						if(res.data.category2){
 							res.data.category2.forEach((item, index) => {
 								item.isChoose = false
 							})
-							this.tabslist = this.subdefault.concat(res.data.category2)
+							this.tabslists = this.subdefault.concat(res.data.category2)
 						}else{
-							this.tabslist=[]
+							this.tabslists=[]
 						}
 					
 					}
@@ -133,9 +145,9 @@
 							res.data.supplier.forEach((item, index) => {
 								item.isChoose = false
 							})
-							this.supplierList = this.supplierdefault.concat(res.data.supplier)
+							this.supplierLists = this.supplierdefault.concat(res.data.supplier)
 						}else{
-							this.supplierList=[]
+							this.supplierLists=[]
 						}
 						
 					}
@@ -168,7 +180,6 @@
 				} else if (type == 3) {
 					this.currentObj.suppliercurrent = item.employeeNo
 				}
-				// this.$emit("updateCurrent",this.currentObj)
 			},
 			resert() {
 				this.getAllMaterial2()
