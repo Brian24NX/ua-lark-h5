@@ -16,9 +16,9 @@
 							<image class="checkbox" slot="icon" :src="item.choose ? activeIcon : inactiveIcon" />
 						</van-checkbox>
 						<text>{{item.storeName}}</text>
-						<!-- 	<view class="tocar" @click="toCar(item)">
+							<view class="tocar" @click="toCar(item)">
 							{{$t('index.CopytoCart')}}
-						</view> -->
+						</view>
 						<image class="unfold" :style="item.open?'transform: rotate(180deg);':'transform: rotate(0deg);'"
 							src="../../static/unfold.png" mode="" @click="changeContent(item,index)">
 						</image>
@@ -43,11 +43,6 @@
 			</view>
 		</view>
 		<view class="operate" v-if="storeRole==3">
-		<!-- 	<view
-				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-1',btnActive?'operate-all-active':'']"
-				@click="controlsAll(4)">
-				{{$t('index.Dispatch-All')}}
-			</view> -->
 			<view
 				:class="['operate-all','flex-center','font-bold','margin-right-10','z-index-2',btnActive?'operate-all-active':'']"
 				@click="changeStatus(6,1)">
@@ -64,22 +59,15 @@
 			<view class="footer-r">
 				<view :class="[selectedList.length<=0?'disabled':'']"
 					@click="changeStatus(6)">
-				<!-- 	<image class="approve"
-						:src="selectedList.length<=0?'../../static/approve-sec.png':'../../static/approve.png'" mode="">
-					</image> -->
 					{{$t('index.Receipt')}}
 				</view>
-				<!-- <view @click="changeStatus(6,1)">
-					<image class="reject" src="../../static/reject.png" mode="">
-					</image> {{$t('index.Receive')}}
-				</view> -->
 			</view>
 		</view>
 		<!-- 弹窗 ops-->
 		<public-dialog v-if="dialogShow"></public-dialog>
 		<!-- 弹窗 -->
-		<public-dialog v-if="confirmDialog" :pageFrom="'approval'" :title="$t('index.Confirm')" :tip="tip"
-			:num="total" @submit="submit" @hideDialog="dialogHide" />
+		<public-dialog v-if="confirmDialog" :pageFrom="'application'" :title="$t('index.Confirm')" :tip="tip"
+			 @submit="submit" @hideDialog="dialogHide" />
 	</view>
 </template>
 
@@ -102,7 +90,7 @@
 				Quantity: this.$t('index.Quantity'),
 				Total: this.$t('index.total'),
 				confirmDialog: false,
-				tip: this.$t('index.reject-all'),
+				tip: this.$t('index.toCart'),
 				btnActive: false,
 				dialogShow: false,
 				checked: false,
@@ -185,6 +173,7 @@
 				pageNum: 1,
 				pageSize: 10,
 				total: 0,
+				carList:{},
 				param: {
 					id: 0,
 					params: {
@@ -204,10 +193,19 @@
 			}
 		},
 
-		onLoad() {
+		onLoad(option) {
 			uni.setNavigationBarTitle({
 				title: this.$t("index.my-application")
 			});
+			console.log(option)
+			if(option.itemStatus){
+				this.forms.itemStatus = option.itemStatus
+				this.dataList[1].list.forEach(item=>{
+					if(item.value ==option.itemStatus){
+						this.dataList[1].name = item.name
+					}
+				})
+			}
 		},
 		onShow() {
 			this.getApproveList()
@@ -252,10 +250,14 @@
 				}
 			},
 			toCar(item) {
-				this.$store.commit('copytocart', item.orderItemPos)
+				this.carList=item
+				this.confirmDialog=true
+			},
+			submit(){
+				this.$store.commit('copytocart', this.carList.orderItemPos)
 				let store = {}
 				this.dataList[0].list.forEach(val => {
-					if (val.larkDeptId == item.storeLarkDeptId) {
+					if (val.larkDeptId == this.carList.storeLarkDeptId) {
 						store = val
 					}
 				})

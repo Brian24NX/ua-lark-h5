@@ -94,5 +94,11 @@
 	"index.pleaseSelect":"Please select store first",
 	"index.OK":"OK",
 	"index.TrackingNumber":"Tracking Number",
-	"index.Procedure":"Procedure"
+	"index.Procedure":"Procedure",
+	"index.StoreCode":"Store Code",
+	"index.Address":"Address",
+	"index.Tel":"Tel",
+	"index.PhoneNumber":"Phone Number",
+	"index.Contact":"Contact",
+	"index.toCart":"Are you sure to copy materials to cart？"
 }

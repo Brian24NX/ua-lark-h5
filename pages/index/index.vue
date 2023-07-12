@@ -1,6 +1,6 @@
 <template>
 	<view class="container">
-		<view class="navbar" v-if="storeRole && barWith">
+		<view class="navbar" v-if="storeRole">
 			<view class="userInfo" :style="{'width':barWith+'px','height':barHeight +'px','padding-top':barTop +'px'}">
 				<view class="info" v-if="userInfo">
 					<image :src="userInfo.avatarUrl" mode=""></image>
@@ -91,7 +91,7 @@
 				url: "/pages/selectMaterial/selectMaterial",
 				storeList: [],
 				// 1:大区经 2:小区经 3:店长 4:店员 10:OPS',
-				storeRole: 0,
+				storeRole: 1,
 				permissionErr: false
 			}
 		},
@@ -116,7 +116,6 @@
 					}
 				})
 			}
-	
 			if (uni.getStorageSync('token')) {
 				if (uni.getStorageSync('user') && uni.getStorageSync('user').storeRole) {
 					this.storeRole = uni.getStorageSync('user').storeRole

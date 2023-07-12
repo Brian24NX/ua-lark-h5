@@ -17,16 +17,16 @@
 				</view> -->
 			</view>
 			<view class="btn-b" v-else>
-				<view class="btn">
+				<view class="btn" @click.stop="changeStatus(5)">
 					{{ $t('index.delivered')}}
 					<!-- <view class="num">
 						2
 					</view> -->
 				</view>
-				<view class="btn">
+				<view class="btn" @click.stop="changeStatus(6)">
 					{{ $t('index.received')}}
 				</view>
-				<view class="btn">
+				<view class="btn" @click.stop="changeStatus(7)">
 					{{ $t('index.rejected')}}
 				</view>
 			</view>
@@ -50,7 +50,11 @@
 			}
 		},
 		methods: {
-
+			changeStatus(val) {
+				uni.navigateTo({
+					url: "/pages/myApplication/myApplication?itemStatus=" + val
+				})
+			}
 		}
 	}
 </script>
@@ -107,6 +111,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 16rpx 30rpx 0 30rpx;
+
 		.nav-l {
 
 			image {
@@ -121,6 +126,7 @@
 
 				line-height: 48rpx;
 			}
+
 			.title {
 				font-weight: bold;
 			}
@@ -143,7 +149,8 @@
 			transform: translateY(-50%);
 		}
 	}
-	.nav:last-child{
+
+	.nav:last-child {
 		padding-top: 36rpx;
 		// padding-bottom: 36rpx;
 	}

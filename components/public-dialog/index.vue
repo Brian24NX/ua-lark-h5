@@ -2,9 +2,9 @@
 	<van-popup :show="true" position="center" custom-style="width: 85%;border-radius: 40rpx;background-color:#f8f8f8"
 		z-index='900' @close="onClose">
 		<view class="dialog flex-vcenter column">
-			<h3 class="title">{{title}}</h3>
+			<h3 class="title" v-if="pageFrom!='detail'">{{title}}</h3>
 			<view class="color-1DBA00 title2" v-if="pageFrom=='myApproval'&&isOk">{{$t('index.PO')}}</view>
-			<view class="massage " v-if="pageFrom=='clear'|| pageFrom=='submit'">
+			<view class="massage " v-if="pageFrom=='clear'|| pageFrom=='submit' || pageFrom=='application'">
 				{{tip}}
 			</view>
 			<view class="massage " v-if="pageFrom=='approval'">
@@ -39,7 +39,21 @@
 					</view>
 				</view>
 			</view>
-			<view class="btn" v-if="pageFrom=='myApproval'&&isOk">
+			<view class="addressDetail" v-if="pageFrom=='detail'">
+				<van-cell :title="$t('index.store')" :value="storeDetail.name" title-class="title" value-class="content"
+					custom-class="bgColor" />
+				<van-cell :title="$t('index.StoreCode')" :value="storeDetail.code" title-class="title"
+					value-class="content" custom-class="bgColor" />
+				<van-cell :title="$t('index.Address')" :value="storeDetail.address" title-class="title"
+					value-class="content" custom-class="bgColor" />
+				<van-cell :title="$t('index.Tel')" :value="storeDetail.teleNumber" title-class="title"
+					value-class="content" custom-class="bgColor" />
+				<van-cell :title="$t('index.PhoneNumber')" :value="storeDetail.mobile" title-class="title"
+					value-class="content" custom-class="bgColor" />
+				<van-cell :title="$t('index.Contact')" :value="storeDetail.contacts" title-class="title"
+					value-class="content" custom-class="bgColor borderNone" />
+			</view>
+			<view class="btn" v-if="(pageFrom=='myApproval'&&isOk) || pageFrom=='detail'">
 				<view class="confirm" @click="onClose">
 					{{$t('index.OK')}}
 				</view>
@@ -58,9 +72,11 @@
 
 <script>
 	import vanPopup from "@/wxcomponents/@vant/weapp/popup/index"
+	import vanCell from "@/wxcomponents/@vant/weapp/cell/index"
 	export default {
 		components: {
-			vanPopup
+			vanPopup,
+			vanCell
 		},
 		props: {
 			pageFrom: {
@@ -87,6 +103,7 @@
 				type: Array,
 				default: []
 			},
+			storeDetail: {},
 			isOk: false
 		},
 		data() {
@@ -100,7 +117,7 @@
 		},
 		methods: {
 			onClose() {
-				if(this.pageFrom == 'myApproval' && this.isOk){
+				if (this.pageFrom == 'myApproval' && this.isOk) {
 					this.$emit('hideDialog', 'reload')
 					return
 				}
@@ -111,14 +128,14 @@
 					this.$emit('deleteAll')
 					this.$store.commit('deleteCarAll')
 					this.$emit('hideDialog', false)
-				} else if (this.pageFrom == 'submit' || this.pageFrom == 'approval') {
+				} else if (this.pageFrom == 'submit' || this.pageFrom == 'approval' || this.pageFrom=='application') {
 					this.$emit('submit')
 					this.$emit('hideDialog', false)
 				} else if (this.pageFrom == 'myApproval' && !this.isOk) {
 					this.$emit('createOrder')
 				} else if (this.pageFrom == 'myApproval' && this.isOk) {
 					this.$emit('hideDialog', 'reload')
-				}else{
+				} else {
 					this.$emit('hideDialog', false)
 				}
 
@@ -126,6 +143,30 @@
 		}
 	}
 </script>
+<style lang="scss" >
+	.bgColor {
+		width: auto !important;
+		background-color: #f8f8f8 !important;
+		margin: 0rpx 20rpx !important;
+		padding: 30rpx 0 30rpx !important;
+		border-bottom: 2rpx solid #DDDDDD;
+	}
+	.borderNone {
+		border-bottom: none;
+	}
+	.title {
+		font-size: 28rpx;
+		color: #999999;
+		line-height: 38rpx;
+	}
+
+	.content {
+		font-size: 28rpx;
+		color: #111111 !important;
+		line-height: 38rpx;
+	}
+
+</style>
 <style lang="scss" scoped>
 	.textareas {
 		width: -webkit-fill-available;
@@ -259,5 +300,12 @@
 				background: #111111;
 			}
 		}
+	}
+
+	.addressDetail {
+		width: 90%;
+		margin-top: 30rpx;
+		border-radius: 24rpx;
+		border: 2rpx solid #DDDDDD;
 	}
 </style>
