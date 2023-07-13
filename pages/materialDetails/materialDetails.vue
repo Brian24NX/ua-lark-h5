@@ -62,7 +62,7 @@
 							:style="item.status=='Adjust and Dispatched'?'font-weight: bold;color:#C54646':'font-weight: bold;'">{{item.status}}</text>
 					</view>
 					<view class="step-bottom">
-						<text>{{item.name}}({{item.no}})</text>
+						<text>{{item.name}} <text v-if="item.no">({{item.no}})</text> </text>
 						<text>{{formatTimeFn(item.time)}}</text>
 					</view>
 				</kl-step>

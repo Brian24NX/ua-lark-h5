@@ -59,7 +59,7 @@
 			</view>
 		</view>
 		<!-- 弹窗 -->
-		<public-dialog v-if="dialogShow" :pageFrom="'submit'" :title="$t('index.Confirm')"  @submit="submit" :tip="tip"
+		<public-dialog v-if="dialogShow" :pageFrom="pageFrom" :title="$t('index.Confirm')" :errList="errList" @submit="submit" :tip="tip"
 			@hideDialog="dialogHide" />
 	</view>
 </template>
@@ -78,7 +78,9 @@
 				dialogShow: false,
 				priceInfo: {},
 				materialList: [],
+				errList:[],
 				focus:false,
+				pageFrom:"submit",
 				form: {
 					remark: "",
 					storeLarkDeptId: 0, //74,
@@ -121,6 +123,7 @@
 			},
 			onSubmit() {
 				if (uni.getStorageSync('platform') == "mp-lark") {
+					this.tip=this.$t('index.isSubmit')
 					this.dialogShow = true
 				} else {
 					this.submit()
@@ -131,12 +134,16 @@
 					if (res.code == '200') {
 						this.$store.commit('deleteCarAll')
 						uni.navigateBack()
+					} else if(res.code == '1002'){
+						this.dialogShow = true
+						this.tip = this.$t('index.delist')
+						this.pageFrom = 'delist'
+						
 					}else{
 						uni.showToast({
 							title: res.message,
 							duration: 2000
 						});
-
 					}
 				})
 			},

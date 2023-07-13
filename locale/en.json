@@ -100,5 +100,7 @@
 	"index.Tel":"Tel",
 	"index.PhoneNumber":"Phone Number",
 	"index.Contact":"Contact",
-	"index.toCart":"Are you sure to copy materials to cart？"
+	"index.toCart":"Are you sure to copy the following materials to your cart?",
+	"index.item":"item",
+	"index.delist":"The cart contains materials that are offsale or in material approval process.Please remove them from the cart beforesubmitting the application"
 }

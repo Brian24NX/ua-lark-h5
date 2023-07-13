@@ -98,5 +98,7 @@
 	"index.Tel": "电话",
 	"index.PhoneNumber": "手机号码",
 	"index.Contact": "联系",
-	"index.toCart":"你确定要把材料拷贝到购物车里吗?"
+	"index.toCart":"您确定要将以下材料复制到您的购物车中吗?",
+	"index.item":"个物料",
+	"index.delist":"购物车中包含未出售或正在材料审批过程中的材料。请在提交申请前将它们从购物车中删除"
 }

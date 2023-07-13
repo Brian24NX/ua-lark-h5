@@ -4,11 +4,17 @@
 		<view class="dialog flex-vcenter column">
 			<h3 class="title" v-if="pageFrom!='detail'">{{title}}</h3>
 			<view class="color-1DBA00 title2" v-if="pageFrom=='myApproval'&&isOk">{{$t('index.PO')}}</view>
-			<view class="massage " v-if="pageFrom=='clear'|| pageFrom=='submit' || pageFrom=='application'">
+			<view class="massage" v-if="pageFrom=='clear'|| pageFrom=='submit' || pageFrom=='application'">
 				{{tip}}
 			</view>
+			<view class="massage" style="text-align: left;" v-if="pageFrom=='delist'">
+				<text style="color: #111;">{{tip}}</text>
+				<view class="" v-for="(item,index) in errList" :key="index">
+					{{item.materialName}}
+				</view>
+			</view>
 			<view class="massage " v-if="pageFrom=='approval'">
-				<text>{{$t('index.selected')}}<text style="font-weight: bold;color: #111;">{{num}}</text>，</text>
+				<text>{{$t('index.selected')}}<text style="font-weight: bold;color: #111;">{{num}} {{$t('index.item')}}</text>，</text>
 				{{tip}}
 			</view>
 			<!-- 备注 -->
@@ -103,6 +109,7 @@
 				type: Array,
 				default: []
 			},
+			errList:[],
 			storeDetail: {},
 			isOk: false
 		},

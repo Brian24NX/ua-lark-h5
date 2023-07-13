@@ -186,7 +186,7 @@
 				} else {
 					that.$api
 						.userLogin2({
-							code:'c2e2c441'//location.href.split('=')[1] //c2e2c441
+							code:location.href.split('=')[1] //c2e2c441
 						})
 						.then(resp => {
 							if (resp.code == '200') {
