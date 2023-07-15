@@ -151,11 +151,13 @@
 				var sumPrice = 0;
 				var num = 0;
 				var unit = ''
-				this.$store.state.carShop.forEach(item => {
-					sumPrice += item.scalar * item.retailPrice
-					num += parseInt(item.scalar),
-						unit = item.priceUnit
-				})
+				if(this.$store.state.carShop.length>0){
+					this.$store.state.carShop.forEach(item => {
+						sumPrice += item.scalar * item.retailPrice
+						num += parseInt(item.scalar),
+							unit = item.priceUnit
+					})
+				}
 				return {
 					sumPrice: sumPrice.toFixed(2),
 					num,
@@ -186,7 +188,7 @@
 					item.scalar = 0
 				})
 			},
-			getAllMaterial() {
+			getAllMaterial(type) {
 				this.$api.getAllMaterialCategory2().then(res => {
 					this.categoryList = this.subdefault.concat(res.data.category1)
 					if (res.data.category2) {
@@ -195,7 +197,10 @@
 					if (res.data.supplier) {
 						this.supplierList = this.supplierdefault.concat(res.data.supplier)
 					}
-					this.getContlist(this.tabslist[0].cid)
+					if(type !=1){
+						this.getContlist(this.tabslist[0].cid)
+					}
+					
 				})
 			},
 			minusNum(val) {
@@ -356,11 +361,12 @@
 				this.categoryShow = false
 			},
 			getContlist(id) {
-				console.log(id)
+				console.log(id,this.currntObject)
 				this.categoryShow = false
 				if (id && id.constructor === Object) {
-					if (id.categoryId == 0) {
-						this.getAllMaterial()
+					if (id.categoryId == 0 || this.currntObject.current==0) {
+						this.getAllMaterial(1)
+						// return
 					} else {
 						this.getSubCategory(this.currntObject.current, 1)
 						let that = this
@@ -380,7 +386,7 @@
 								}
 							})
 						}, 500)
-
+                     return
 					}
 					this.pageNum = 1
 					this.param.categoryId = id.categoryId

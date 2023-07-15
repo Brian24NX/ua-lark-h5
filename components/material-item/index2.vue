@@ -53,10 +53,10 @@
 						return this.$t('index.WaitingApproval')
 						break;
 					case 3:
-						return this.$t('index.Approved')
+						return this.$t('index.approved')
 						break;
 					case 4:
-						return this.$t('index.Dispatched')
+						return this.$t('index.dispatched')
 						break;
 					case 5:
 						return this.$t('index.delivered')

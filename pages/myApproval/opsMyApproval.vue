@@ -60,7 +60,7 @@
 				{{$t('index.Reject-All')}}
 			</view>
 			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
-				Batch
+				{{$t('index.Batch')}}
 			</view>
 		</view>
 		<view class="footer">
@@ -68,7 +68,7 @@
 				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
 					<image class="checkbox" slot="icon" :src="checked ? selectAll : notAll" />
 				</van-checkbox>
-				<text style="margin-top: 8rpx;" v-if="selectedList.length">Selected: {{selectedList.length}}</text>
+				<text style="margin-top: 8rpx;" v-if="selectedList.length">{{$t('index.Selected')}}: {{selectedList.length}}</text>
 			</view>
 			<view class="footer-r">
 				<view style="margin-right: 40rpx;" :class="[selectedList.length<=0?'disabled':'']"
@@ -591,6 +591,9 @@
 					obj[curVal.orderItemId] ? "" : obj[curVal.orderItemId] = preVal.push(curVal)
 					return preVal
 				}, [])
+				if(!this.checked){
+					this.selectedList=[]
+				}
 			},
 			selectMenu(val) {
 				this.dataList.forEach(i => {

@@ -22,9 +22,9 @@
 			</view>
 			<van-cell :title="$t('index.AppliedQuantity')" :value="materialDetail.applyQuantity" title-class="title"
 				value-class="content" custom-class="bgColor" />
-			<van-cell v-if="materialDetail.approvedQuantity" :title="$t('index.approvedQuantity')"
+			<van-cell v-if="materialDetail.approvedQuantity && (materialDetail.itemStatus==4 || materialDetail.itemStatus==5||materialDetail.itemStatus==6)" :title="$t('index.approvedQuantity')"
 				:value="materialDetail.approvedQuantity" title-class="title" value-class="content"
-				custom-class="bgColor" />
+				custom-class="bgColor"  />
 			<van-cell :title="$t('index.Category')" :value="materialDetail.categoryName" title-class="title"
 				value-class="content" custom-class="bgColor" />
 			<van-cell :title="$t('index.Specification')" :value="materialDetail.specifications" title-class="title"
@@ -57,12 +57,12 @@
 				<kl-step v-for="(item,index) in steps" :key="index" :activeIndex="steps.length-1" :index="index"
 					:maxIndex="steps.length">
 					<view class="step-top">
-						<text>{{item.role}}</text>
+						<text>{{$t(`index.${item.role}`)}}</text>
 						<text
-							:style="item.status=='Adjust and Dispatched'?'font-weight: bold;color:#C54646':'font-weight: bold;'">{{item.status}}</text>
+							:style="item.status=='Adjust and Dispatched'?'font-weight: bold;color:#C54646':'font-weight: bold;'">{{$t(`index.${item.status}`)}}</text>
 					</view>
 					<view class="step-bottom">
-						<text>{{item.name}} <text v-if="item.no">({{item.no}})</text> </text>
+						<text>{{item.name=="System"?$t('index.System'):item.name}} <text v-if="item.role !='Supplier' && item.no && item.no!='0' ">({{item.no}})</text> </text>
 						<text>{{formatTimeFn(item.time)}}</text>
 					</view>
 				</kl-step>

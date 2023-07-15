@@ -42,7 +42,7 @@
 				<van-checkbox use-icon-slot :value="checked" custom-class="vancheck" @change="onChangeAll">
 					<image class="checkbox" slot="icon" :src="checked ? selectAll : notAll" />
 				</van-checkbox>
-				<text style="margin-top: 8rpx;" v-if="selectedList.length">Selected: {{selectedList.length}}</text>
+				<text style="margin-top: 8rpx;" v-if="selectedList.length">{{$t('index.Selected')}}: {{selectedList.length}}</text>
 			</view>
 			<view class="footer-r">
 				<view style="margin-right: 40rpx;" :class="[selectedList.length<=0?'disabled':'']"

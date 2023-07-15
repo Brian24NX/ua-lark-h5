@@ -116,17 +116,17 @@
 					}
 				})
 			}
-			if (uni.getStorageSync('token')) {
-				if (uni.getStorageSync('user') && uni.getStorageSync('user').storeRole) {
-					this.storeRole = uni.getStorageSync('user').storeRole
-					this.userInfo = uni.getStorageSync('user')
-					this.getStoreList(uni.getStorageSync('user'))
-				}
-			} else {
-				this.userLogins()
-			}
+			// if (uni.getStorageSync('token')) {
+			// 	if (uni.getStorageSync('user') && uni.getStorageSync('user').storeRole) {
+			// 		this.storeRole = uni.getStorageSync('user').storeRole
+			// 		this.userInfo = uni.getStorageSync('user')
+			// 		this.getStoreList(uni.getStorageSync('user'))
+			// 	}
+			// } else {
+			// 	this.userLogins()
+			// }
 
-			// this.userLogins()
+			this.userLogins()
 		},
 		methods: {
 			// 店长 刘亚娟  091267
@@ -186,7 +186,7 @@
 				} else {
 					that.$api
 						.userLogin2({
-							code:location.href.split('=')[1] //c2e2c441
+							code:location.href.split('=')[1] //c2e2c441 f8ebdg2c
 						})
 						.then(resp => {
 							if (resp.code == '200') {

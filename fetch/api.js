@@ -56,7 +56,7 @@ export function fetchPost(url, params, need_error) {
 			timeout: 10000,
 			success(res) {
 				if (res.statusCode === 200) {
-					if (res.data.code === '200'|| res.data.code === 200) {
+					if (res.data.code === '200'||res.data.code === '1002'|| res.data.code === 200) {
 						resolve(res.data)
 					} else {
 						uni.showToast({

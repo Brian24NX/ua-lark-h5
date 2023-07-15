@@ -20,7 +20,7 @@
 								{{item.supplierName}}
 							</view>
 							<view class="num">
-								Quantity: {{item.scalar}}
+								{{$t('index.Quantity')}}: {{item.scalar}}
 							</view>
 						</view>
 						<view class="info_r_r">
@@ -50,7 +50,7 @@
 			<view class="submit-bar-l">
 				<view class="num">{{$t('index.Quantity')}}： <text class="bold">{{priceInfo.num}}</text> </view>
 				<view class="price">
-					<text>Total： </text><text class="bold">{{priceInfo.sumPrice}}</text><text
+					<text>{{$t('index.total')}}： </text><text class="bold">{{priceInfo.sumPrice}}</text><text
 						style="font-size: 20rpx">CNY</text>
 				</view>
 			</view>
@@ -115,6 +115,7 @@
 				item.regionLarkDeptId = this.form.regionLarkDeptId
 				item.storeName = this.form.storeName
 			})
+			this.form.materialPos = this.form.orderItemPos
 		},
 		methods: {
 			openOrClose() {
@@ -124,6 +125,7 @@
 			onSubmit() {
 				if (uni.getStorageSync('platform') == "mp-lark") {
 					this.tip=this.$t('index.isSubmit')
+					this.pageFrom = 'submit'
 					this.dialogShow = true
 				} else {
 					this.submit()
@@ -135,14 +137,14 @@
 						this.$store.commit('deleteCarAll')
 						uni.navigateBack()
 					} else if(res.code == '1002'){
-						this.dialogShow = true
 						this.tip = this.$t('index.delist')
 						this.pageFrom = 'delist'
-						
+						this.errList = JSON.parse(res.message)
+						this.dialogShow = true
 					}else{
 						uni.showToast({
 							title: res.message,
-							duration: 2000
+							icon: 'none'
 						});
 					}
 				})

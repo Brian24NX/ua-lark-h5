@@ -49,7 +49,7 @@
 				 {{$t('index.Receive')}}
 			</view>
 			<view class="batch flex-center font-bold" @click="btnActive = !btnActive">
-				Batch
+				{{$t('index.Batch')}}
 			</view>
 		</view>
 		<view class="footer" v-if="storeRole==3">
@@ -120,12 +120,12 @@
 							},
 							{
 								label: 'Approved',
-								name: this.$t('index.Approved'),
+								name: this.$t('index.approved'),
 								value: 3
 							},
 							{
 								label: 'Dispatched',
-								name: this.$t('index.Dispatched'),
+								name: this.$t('index.dispatched'),
 								value: 4
 							},
 							{
@@ -273,6 +273,7 @@
 					this.dataList[1].name = val.name
 					this.forms.itemStatus = val.value
 				}
+				this.pageNum=1
 				this.getApproveList()
 			},
 			changeTime(val) {
@@ -291,6 +292,7 @@
 					this.dataList[2].name = val.name
 					this.getRecentMonth(3);
 				}
+				this.pageNum=1
 				this.getApproveList()
 			},
 			getRecentMonth(n) {

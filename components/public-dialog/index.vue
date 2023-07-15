@@ -7,10 +7,12 @@
 			<view class="massage" v-if="pageFrom=='clear'|| pageFrom=='submit' || pageFrom=='application'">
 				{{tip}}
 			</view>
-			<view class="massage" style="text-align: left;" v-if="pageFrom=='delist'">
+			<view class="massage" style="text-align: left;width: 85%;" v-if="pageFrom=='delist'">
 				<text style="color: #111;">{{tip}}</text>
-				<view class="" v-for="(item,index) in errList" :key="index">
-					{{item.materialName}}
+				<view style="max-height: 200rpx; overflow-y: scroll;" >
+					<view class="ellipsis" v-for="(item,index) in errList" :key="index" >
+						{{item.shortName?item.shortName:item.materialName}}
+					</view>
 				</view>
 			</view>
 			<view class="massage " v-if="pageFrom=='approval'">
@@ -59,7 +61,7 @@
 				<van-cell :title="$t('index.Contact')" :value="storeDetail.contacts" title-class="title"
 					value-class="content" custom-class="bgColor borderNone" />
 			</view>
-			<view class="btn" v-if="(pageFrom=='myApproval'&&isOk) || pageFrom=='detail'">
+			<view class="btn" v-if="(pageFrom=='myApproval'&&isOk) ||pageFrom=='delist'|| pageFrom=='detail'">
 				<view class="confirm" @click="onClose">
 					{{$t('index.OK')}}
 				</view>
@@ -69,7 +71,7 @@
 					{{$t('index.cancle')}}
 				</view>
 				<view class="confirm" @click="confirm">
-					{{pageFrom =='remark'?'OK':$t('index.confirm')}}
+					{{pageFrom =='remark'?$t('index.OK'):$t('index.confirm')}}
 				</view>
 			</view>
 		</view>
@@ -109,7 +111,10 @@
 				type: Array,
 				default: []
 			},
-			errList:[],
+			errList: {
+				type: Array,
+				default: []
+			},
 			storeDetail: {},
 			isOk: false
 		},
@@ -314,5 +319,11 @@
 		margin-top: 30rpx;
 		border-radius: 24rpx;
 		border: 2rpx solid #DDDDDD;
+	}
+	.ellipsis{
+		    overflow: hidden;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;
+		    width: 100%;
 	}
 </style>

@@ -3,7 +3,7 @@
 		<view class="search_box">
 			<image src="../../static/search.png">
 			</image>
-			<input type="text" confirm-type="search" v-model="keyword" @confirm="searchClick(keyword)"
+			<input type="text" confirm-type="search" v-model="keyword" @input="searchClick(keyword)"
 				:placeholder="$t('index.material-name') " />
 			<image class="close" src="../../static/car-close.png" @click="deleteKey">
 			</image>
