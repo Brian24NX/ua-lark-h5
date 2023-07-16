@@ -16,21 +16,25 @@
 				</div>
 			</view>
 		</view>
-		<swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="true" indicator-dots="true"
+		<image :src="`${image_url}/prod/banner/banner1.jpg`"  style="width: 100vw;height: 940rpx;!important">
+		</image>
+	<!-- 	<image src="../../static/banner.png" style="width: 100vw;height: 940rpx;!important">
+		</image> -->
+<!-- 		<swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="true" indicator-dots="true"
 			style="height: 940rpx;" duration="500" v-if="storeRole">
 			<swiper-item>
-				<image src="../../static/banner.png" mode="aspectFill" style="width: 100vw;height: 940rpx;!important">
+				<image src="../../static/banner1.jpg" mode="aspectFill" style="width: 100vw;height: 940rpx;!important">
 				</image>
 			</swiper-item>
 			<swiper-item>
-				<image src="../../static/banner.png" mode="aspectFill" style="width: 100vw;height: 940rpx;!important">
+				<image src="../../static/banner1.jpg" mode="aspectFill" style="width: 100vw;height: 940rpx;!important">
 				</image>
 			</swiper-item>
 			<swiper-item>
-				<image src="../../static/banner.png" mode="aspectFill" style="width: 100vw;height: 940rpx;!important">
+				<image src="../../static/banner1.jpg" mode="aspectFill" style="width: 100vw;height: 940rpx;!important">
 				</image>
 			</swiper-item>
-		</swiper>
+		</swiper> -->
 		<van-divider customStyle="background-color: #000;; border-color: #000; height:2px;margin:0" v-if="storeRole" />
 		<van-divider customStyle="background-color: #000;; border-color: #000; height:6px;margin:0;margin-top:10rpx"
 			v-if="storeRole" />
@@ -69,6 +73,7 @@
 	import navArrow from "../../components/nav-arrow/index"
 	import regionNavArrow from "../../components/nav-arrow/index2"
 	import saNavArrow from "../../components/nav-arrow/index3"
+	import config from '../../fetch/config.js'
 	export default {
 		components: {
 			navArrow,
@@ -92,7 +97,8 @@
 				storeList: [],
 				// 1:大区经 2:小区经 3:店长 4:店员 10:OPS',
 				storeRole: 1,
-				permissionErr: false
+				permissionErr: false,
+				image_url:config.image_url
 			}
 		},
 		computed: {

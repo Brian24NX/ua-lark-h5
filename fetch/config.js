@@ -7,4 +7,5 @@ export default {
 	// base_url:"",
 	// base_url:"https://incentive-uat.underarmour.cn", 
 	// secret:"F92E2FF249C65B533E1705F829FB1C5F92Wdfr0Iuur" , //uat
+	image_url:"https://lark-prd-blob.s3.ap-southeast-1.amazonaws.com"
 }
