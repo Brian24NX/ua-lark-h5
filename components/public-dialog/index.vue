@@ -37,8 +37,8 @@
 						</view>
 						<view class="dialog-content-details-item flex-vcenter">
 							<view class="width-150 color-999">{{totalCost}}：</view>
-							<view v-if="isOk">{{item.totalCostPrice}}{{item.priceUnit}}</view>
-							<view v-else>{{item.totalCost}}{{item.priceUnit}}</view>
+							<view v-if="isOk">{{item.totalCostPrice.toFixed(2)}}{{item.priceUnit}}</view>
+							<view v-else>{{item.totalCost.toFixed(2)}}{{item.priceUnit}}</view>
 						</view>
 						<view class="dialog-content-details-item flex-vcenter">
 							<view class="width-150 color-999">{{Quantity}}：</view>

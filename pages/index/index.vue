@@ -116,9 +116,9 @@
 			if (uni.getSystemInfoSync().uniPlatform == "mp-lark") {
 				uni.getSystemInfo({
 					success: res => {
-						this.barHeight = res.navigationBarSafeArea.height
-						this.barTop = res.navigationBarSafeArea.top
-						this.barWith = res.navigationBarSafeArea.width
+						this.barHeight = res.navigationBarSafeArea.height ||44
+						this.barTop = res.navigationBarSafeArea.top||16
+						this.barWith = res.navigationBarSafeArea.width ||299
 					}
 				})
 			}
